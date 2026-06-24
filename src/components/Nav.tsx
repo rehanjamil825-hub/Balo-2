@@ -1,7 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { GraduationCap, Heart, Menu, X } from "lucide-react";
+import { Heart, Menu, X } from "lucide-react";
 import { useState } from "react";
+import baloLogo from "@/assets/balo-logo.jpg.asset.json";
 
 const navItems = [
   { label: "Home", href: "/", hash: undefined },
