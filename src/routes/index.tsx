@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import {
   BookOpen, Heart, Users, Star, MapPin, Phone, Mail, ArrowRight,
-  GraduationCap, Sparkles, HandHeart, Quote,
+  Sparkles, HandHeart, Quote,
 } from "lucide-react";
 
 import hero from "@/assets/hero-classroom.jpg";
@@ -46,34 +46,6 @@ const fadeUp = {
   show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.7, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] as const } }),
 };
 
-function Nav() {
-  return (
-    <motion.nav
-      initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6 }}
-      className="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-background/70 border-b border-border/50"
-    >
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-        <a href="#top" className="flex items-center gap-2">
-          <div className="size-9 rounded-xl gradient-hero grid place-items-center shadow-soft">
-            <GraduationCap className="size-5 text-white" />
-          </div>
-          <div className="leading-tight">
-            <div className="font-display font-bold text-lg">Balo English</div>
-            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">School · Howrah</div>
-          </div>
-        </a>
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium">
-          {["About", "Programs", "Gallery", "Impact", "Contact"].map((l) => (
-            <a key={l} href={`#${l.toLowerCase()}`} className="text-foreground/70 hover:text-foreground transition-colors">{l}</a>
-          ))}
-        </div>
-        <a href="#donate" className="inline-flex items-center gap-2 rounded-full bg-accent text-accent-foreground px-5 py-2.5 text-sm font-semibold shadow-soft hover:scale-105 transition-transform">
-          <Heart className="size-4" /> Donate
-        </a>
-      </div>
-    </motion.nav>
-  );
-}
 
 function Hero() {
   const ref = useRef<HTMLDivElement>(null);
@@ -375,29 +347,10 @@ function Contact() {
   );
 }
 
-function Footer() {
-  return (
-    <footer className="py-12 px-6 border-t border-border">
-      <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-6 text-sm">
-        <div className="flex items-center gap-3">
-          <div className="size-9 rounded-xl gradient-hero grid place-items-center">
-            <GraduationCap className="size-5 text-white" />
-          </div>
-          <div>
-            <div className="font-display font-bold">Balo English School</div>
-            <div className="text-xs text-muted-foreground">Salkia, Howrah · A community NGO</div>
-          </div>
-        </div>
-        <div className="text-muted-foreground text-xs">© {new Date().getFullYear()} Balo English School. Built with love by our community.</div>
-      </div>
-    </footer>
-  );
-}
 
 function Index() {
   return (
     <main>
-      <Nav />
       <Hero />
       <Stats />
       <About />
@@ -406,7 +359,6 @@ function Index() {
       <Impact />
       <Donate />
       <Contact />
-      <Footer />
     </main>
   );
 }

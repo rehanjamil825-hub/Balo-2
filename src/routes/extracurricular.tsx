@@ -1,0 +1,221 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import {
+  Trophy, Sun, Activity, PartyPopper, Calendar, MapPin, ArrowRight,
+} from "lucide-react";
+
+import sportsDay from "@/assets/sports-day.jpg";
+import summerCamp from "@/assets/summer-camp.jpg";
+import rugby from "@/assets/rugby.jpg";
+import funFiesta from "@/assets/fun-fiesta.jpg";
+import hero from "@/assets/playground.jpg";
+
+export const Route = createFileRoute("/extracurricular")({
+  head: () => ({
+    meta: [
+      { title: "Extracurricular Activities — Balo English School, Howrah" },
+      { name: "description", content: "Discover sports day, summer camp, rugby, and fun fiesta at Balo English School — where learning extends beyond the classroom." },
+      { property: "og:title", content: "Extracurricular Activities — Balo English School" },
+      { property: "og:description", content: "Sports day, summer camp, rugby, and fun fiesta at Balo English School, Howrah." },
+      { property: "og:image", content: sportsDay },
+    ],
+    links: [{ rel: "canonical", href: "/extracurricular" }],
+  }),
+  component: ExtracurricularPage,
+});
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  show: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] as const },
+  }),
+};
+
+const activities = [
+  {
+    icon: Trophy,
+    title: "Sports Day",
+    image: sportsDay,
+    season: "Annual Event",
+    description: "Our Annual Sports Day is the highlight of the year. Children compete in races, relays, sack races, and team games, learning sportsmanship, discipline, and the joy of movement.",
+    highlights: ["Track & field races", "Team games", "House competitions", "Medals & certificates"],
+  },
+  {
+    icon: Sun,
+    title: "Summer Camp",
+    image: summerCamp,
+    season: "Summer Break",
+    description: "During summer break, our campus transforms into a creative playground. Students enjoy art, crafts, storytelling, music, dance, and outdoor adventures in a safe, supervised environment.",
+    highlights: ["Arts & crafts", "Music & dance", "Storytelling sessions", "Outdoor exploration"],
+  },
+  {
+    icon: Activity,
+    title: "Rugby",
+    image: rugby,
+    season: "Year-round Training",
+    description: "Rugby builds strength, teamwork, and resilience. Our students train regularly and participate in friendly matches, with a strong focus on inclusivity and fair play.",
+    highlights: ["Weekly practice sessions", "Mixed-team participation", "Fitness & coordination", "Inter-school matches"],
+  },
+  {
+    icon: PartyPopper,
+    title: "Fun Fiesta",
+    image: funFiesta,
+    season: "Annual Carnival",
+    description: "Fun Fiesta is our annual carnival filled with games, rides, food stalls, performances, and laughter. It brings students, families, and teachers together to celebrate community.",
+    highlights: ["Carnival games & rides", "Student performances", "Food stalls", "Family-friendly fun"],
+  },
+];
+
+function Hero() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+
+  return (
+    <section ref={ref} className="relative min-h-[70vh] flex items-center overflow-hidden pt-24">
+      <motion.div style={{ y, scale }} className="absolute inset-0 -z-10">
+        <img
+          src={hero}
+          alt="Children playing at Balo English School"
+          className="size-full object-cover"
+          width={1600}
+          height={1024}
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/85 via-primary/70 to-accent/70" />
+      </motion.div>
+      <div className="max-w-7xl mx-auto px-6 w-full text-white">
+        <motion.div initial="hidden" animate="show" variants={fadeUp}>
+          <div className="text-xs uppercase tracking-[0.25em] text-secondary font-bold mb-4">
+            Extracurricular
+          </div>
+          <h1 className="text-5xl md:text-7xl font-black text-balance leading-[0.95]">
+            Learning beyond the <span className="italic text-secondary">classroom.</span>
+          </h1>
+          <p className="mt-6 text-lg md:text-xl text-white/85 max-w-2xl">
+            At Balo English School, sports, camps, and celebrations are part of the curriculum. We believe happy, active children become confident, well-rounded adults.
+          </p>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function ActivitiesGrid() {
+  return (
+    <section className="py-28 px-6">
+      <div className="max-w-7xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          variants={fadeUp}
+          className="max-w-3xl mb-16"
+        >
+          <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">
+            Activities
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-balance">
+            Four events our students never forget.
+          </h2>
+          <p className="mt-4 text-lg text-muted-foreground">
+            From the thrill of Sports Day to the creativity of Summer Camp, these programs shape character, friendships, and lifelong memories.
+          </p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          {activities.map((a, i) => (
+            <motion.article
+              key={a.title}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              custom={i}
+              whileHover={{ y: -6 }}
+              className="group rounded-3xl bg-card border border-border shadow-soft overflow-hidden"
+            >
+              <div className="aspect-[16/10] overflow-hidden">
+                <img
+                  src={a.image}
+                  alt={a.title}
+                  width={1280}
+                  height={900}
+                  loading="lazy"
+                  className="size-full object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+              </div>
+              <div className="p-6 md:p-8">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="size-10 rounded-xl bg-primary/10 text-primary grid place-items-center">
+                      <a.icon className="size-5" />
+                    </div>
+                    <h3 className="font-display text-2xl font-bold">{a.title}</h3>
+                  </div>
+                  <span className="text-xs font-semibold text-accent bg-accent/10 px-3 py-1 rounded-full">
+                    {a.season}
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+                  {a.description}
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  {a.highlights.map((h) => (
+                    <div key={h} className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <Calendar className="size-3.5 text-accent shrink-0 mt-0.5" />
+                      <span>{h}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function JoinCTA() {
+  return (
+    <section className="py-28 px-6 bg-card">
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
+        variants={fadeUp}
+        className="max-w-5xl mx-auto rounded-[2rem] gradient-warm border border-border p-10 md:p-16 text-center shadow-card"
+      >
+        <div className="inline-flex items-center gap-2 rounded-full bg-accent/10 text-accent px-4 py-1.5 text-xs font-semibold mb-6">
+          <MapPin className="size-4" /> Salkia, Howrah
+        </div>
+        <h2 className="text-4xl md:text-6xl font-bold text-balance leading-tight">
+          Every child deserves a place to <span className="text-accent italic">play, grow, and shine.</span>
+        </h2>
+        <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
+          Enrol your child at Balo English School and give them access to academics, sports, arts, and community life — all free of cost.
+        </p>
+        <a
+          href="/#contact"
+          className="mt-10 inline-flex items-center gap-2 rounded-full bg-accent text-accent-foreground px-8 py-4 font-semibold shadow-soft hover:scale-105 transition-transform"
+        >
+          Enquire Now <ArrowRight className="size-4" />
+        </a>
+      </motion.div>
+    </section>
+  );
+}
+
+function ExtracurricularPage() {
+  return (
+    <main>
+      <Hero />
+      <ActivitiesGrid />
+      <JoinCTA />
+    </main>
+  );
+}
