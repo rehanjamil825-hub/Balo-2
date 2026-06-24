@@ -18,9 +18,9 @@ import books from "@/assets/books.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Balo English School — Free Education for Every Child in Howrah" },
-      { name: "description", content: "Balo English School is a community NGO in Salkia, Howrah delivering free English-medium education to underprivileged children since inception. Join us." },
-      { property: "og:title", content: "Balo English School — Educating Howrah's Brightest Futures" },
+      { title: "Balo English Medium School — Free Education for Every Child in Howrah" },
+      { name: "description", content: "Balo English Medium School is a community NGO in Salkia, Howrah delivering free English-medium education to underprivileged children since inception. Join us." },
+      { property: "og:title", content: "Balo English Medium School — Educating Howrah's Brightest Futures" },
       { property: "og:description", content: "A 4.4★ rated community school in Salkia, Howrah giving children free, quality English-medium learning." },
       { property: "og:image", content: hero },
       { property: "og:url", content: "/" },
@@ -32,7 +32,7 @@ export const Route = createFileRoute("/")({
       children: JSON.stringify({
         "@context": "https://schema.org",
         "@type": "School",
-        name: "Balo English School",
+        name: "Balo English Medium School",
         address: { "@type": "PostalAddress", streetAddress: "55, Madar Talla Ln, Babudanga, Pilkhana, Salkia", addressLocality: "Howrah", addressRegion: "West Bengal", postalCode: "711101", addressCountry: "IN" },
         aggregateRating: { "@type": "AggregateRating", ratingValue: "4.4", reviewCount: "15" },
       }),
@@ -56,7 +56,7 @@ function Hero() {
   return (
     <section ref={ref} id="top" className="relative min-h-screen flex items-center overflow-hidden pt-24">
       <motion.div style={{ y, scale }} className="absolute inset-0 -z-10">
-        <img src={hero} alt="Children at Balo English School" className="size-full object-cover" width={1600} height={1024} />
+        <img src={hero} alt="Children at Balo English Medium School" className="size-full object-cover" width={1600} height={1024} />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/85 via-primary/60 to-accent/70" />
       </motion.div>
 
@@ -69,7 +69,7 @@ function Hero() {
             Every child deserves <span className="italic text-secondary">a chance to dream.</span>
           </motion.h1>
           <motion.p initial="hidden" animate="show" variants={fadeUp} custom={2} className="mt-6 text-lg md:text-xl text-white/85 max-w-xl">
-            Balo English School is a community-run NGO delivering free, quality English-medium education to the children of Babudanga, Pilkhana — one classroom, one bright future at a time.
+            Balo English Medium School is a community-run NGO delivering free, quality English-medium education to the children of Babudanga, Pilkhana — one classroom, one bright future at a time.
           </motion.p>
           <motion.div initial="hidden" animate="show" variants={fadeUp} custom={3} className="mt-9 flex flex-wrap gap-4">
             <a href="#donate" className="group inline-flex items-center gap-2 rounded-full bg-white text-primary px-7 py-3.5 font-semibold shadow-soft hover:bg-secondary hover:text-secondary-foreground transition-all">
@@ -143,7 +143,7 @@ function About() {
       <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
         <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}
           className="relative">
-          <img src={teacher} alt="Teacher at Balo English" width={1200} height={900} loading="lazy"
+          <img src={teacher} alt="Teacher at Balo English Medium School" width={1200} height={900} loading="lazy"
             className="rounded-3xl shadow-card w-full aspect-[4/5] object-cover" />
           <motion.div animate={{ rotate: [0, 3, 0, -3, 0] }} transition={{ duration: 8, repeat: Infinity }}
             className="absolute -bottom-8 -right-4 md:-right-12 bg-card rounded-2xl p-6 shadow-card max-w-xs">
@@ -159,7 +159,7 @@ function About() {
             A neighborhood school built on love, run by hope.
           </h2>
           <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-            Tucked into a narrow lane in Salkia, Howrah, Balo English School began with a simple promise: no child in our community would be denied the right to learn because of poverty. Today, we welcome every child through our doors — free of cost — and walk with them from their first English alphabet to their first big dream.
+            Tucked into a narrow lane in Salkia, Howrah, Balo English Medium School began with a simple promise: no child in our community would be denied the right to learn because of poverty. Today, we welcome every child through our doors — free of cost — and walk with them from their first English alphabet to their first big dream.
           </p>
           <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
             We are parents, teachers, neighbours, and volunteers. We are the village it takes to raise a generation.
@@ -272,7 +272,7 @@ function Impact() {
           <div className="text-xs uppercase tracking-[0.25em] text-secondary font-bold mb-5">Voices from the Community</div>
           <Quote className="size-12 mx-auto opacity-60" />
           <p className="mt-6 text-2xl md:text-4xl font-display font-medium text-balance leading-snug">
-            "My daughter walks to Balo English every morning with her head held high. She speaks English now — and she believes she can become anything."
+            "My daughter walks to Balo English Medium School every morning with her head held high. She speaks English now — and she believes she can become anything."
           </p>
           <div className="mt-8 text-sm tracking-widest uppercase text-white/80">— A parent from Pilkhana</div>
         </motion.div>
@@ -336,7 +336,7 @@ function Contact() {
         <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
           className="rounded-3xl overflow-hidden shadow-card aspect-square lg:aspect-auto">
           <iframe
-            title="Balo English School location"
+            title="Balo English Medium School location"
             src="https://www.google.com/maps?q=55+Madar+Talla+Ln+Babudanga+Pilkhana+Salkia+Howrah+West+Bengal+711101&output=embed"
             className="size-full border-0"
             loading="lazy"

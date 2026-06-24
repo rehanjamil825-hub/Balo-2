@@ -8,6 +8,7 @@ const navItems = [
   { label: "About", href: "/about", hash: "about" },
   { label: "Facilities", href: "/facilities", hash: undefined },
   { label: "Extracurricular", href: "/extracurricular", hash: undefined },
+  { label: "Developers", href: "/developers", hash: undefined },
   { label: "Contact", href: "/", hash: "contact" },
 ];
 
@@ -32,7 +33,7 @@ export function Nav() {
             <GraduationCap className="size-5 text-white" />
           </div>
           <div className="leading-tight">
-            <div className="font-display font-bold text-lg">Balo English</div>
+            <div className="font-display font-bold text-lg">Balo India</div>
             <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
               School · Howrah
             </div>

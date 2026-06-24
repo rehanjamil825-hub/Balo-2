@@ -14,10 +14,10 @@ import hero from "@/assets/playground.jpg";
 export const Route = createFileRoute("/extracurricular")({
   head: () => ({
     meta: [
-      { title: "Extracurricular Activities — Balo English School, Howrah" },
-      { name: "description", content: "Discover sports day, summer camp, rugby, and fun fiesta at Balo English School — where learning extends beyond the classroom." },
-      { property: "og:title", content: "Extracurricular Activities — Balo English School" },
-      { property: "og:description", content: "Sports day, summer camp, rugby, and fun fiesta at Balo English School, Howrah." },
+      { title: "Extracurricular Activities — Balo English Medium School, Howrah" },
+      { name: "description", content: "Discover sports day, summer camp, rugby, and fun fiesta at Balo English Medium School — where learning extends beyond the classroom." },
+      { property: "og:title", content: "Extracurricular Activities — Balo English Medium School" },
+      { property: "og:description", content: "Sports day, summer camp, rugby, and fun fiesta at Balo English Medium School, Howrah." },
       { property: "og:image", content: sportsDay },
     ],
     links: [{ rel: "canonical", href: "/extracurricular" }],
@@ -80,7 +80,7 @@ function Hero() {
       <motion.div style={{ y, scale }} className="absolute inset-0 -z-10">
         <img
           src={hero}
-          alt="Children playing at Balo English School"
+          alt="Children playing at Balo English Medium School"
           className="size-full object-cover"
           width={1600}
           height={1024}
@@ -96,7 +96,7 @@ function Hero() {
             Learning beyond the <span className="italic text-secondary">classroom.</span>
           </h1>
           <p className="mt-6 text-lg md:text-xl text-white/85 max-w-2xl">
-            At Balo English School, sports, camps, and celebrations are part of the curriculum. We believe happy, active children become confident, well-rounded adults.
+            At Balo English Medium School, sports, camps, and celebrations are part of the curriculum. We believe happy, active children become confident, well-rounded adults.
           </p>
         </motion.div>
       </div>
@@ -197,7 +197,7 @@ function JoinCTA() {
           Every child deserves a place to <span className="text-accent italic">play, grow, and shine.</span>
         </h2>
         <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
-          Enrol your child at Balo English School and give them access to academics, sports, arts, and community life — all free of cost.
+          Enrol your child at Balo English Medium School and give them access to academics, sports, arts, and community life — all free of cost.
         </p>
         <a
           href="/#contact"
