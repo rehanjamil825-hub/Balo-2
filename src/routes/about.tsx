@@ -14,10 +14,10 @@ import group from "@/assets/group-students.jpg";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Us — Balo English Medium School Medium School, Howrah" },
-      { name: "description", content: "Meet the hearts behind Balo English Medium School Medium School: founder Mrs Elizabetta Ravoili, director Mrs Rehana Khatoon, and principal Mrs Roshan Ara." },
-      { property: "og:title", content: "About Us — Balo English Medium School Medium School" },
-      { property: "og:description", content: "Meet the hearts behind Balo English Medium School Medium School: founder Mrs Elizabetta Ravoili, director Mrs Rehana Khatoon, and principal Mrs Roshan Ara." },
+      { title: "About Us — Balo English Medium School, Howrah" },
+      { name: "description", content: "Meet the hearts behind Balo English Medium School: founder Mrs Elizabetta Ravoili, director Mrs Rehana Khatoon, and principal Mrs Roshan Ara." },
+      { property: "og:title", content: "About Us — Balo English Medium School" },
+      { property: "og:description", content: "Meet the hearts behind Balo English Medium School: founder Mrs Elizabetta Ravoili, director Mrs Rehana Khatoon, and principal Mrs Roshan Ara." },
       { property: "og:image", content: founder },
     ],
     links: [{ rel: "canonical", href: "/about" }],
@@ -40,7 +40,7 @@ const leaders = [
     role: "Founder",
     image: founder,
     quote: "One classroom can lift an entire lane out of poverty.",
-    bio: "A lifelong educator with a heart for the underserved, Mrs Ravoili founded Balo English Medium School Medium School to make sure no child in Babudanga or Pilkhana was turned away for lack of money. She believes that dignity begins with a good teacher and a welcoming classroom.",
+    bio: "A lifelong educator with a heart for the underserved, Mrs Ravoili founded Balo English Medium School to make sure no child in Babudanga or Pilkhana was turned away for lack of money. She believes that dignity begins with a good teacher and a welcoming classroom.",
   },
   {
     name: "Mrs Rehana Khatoon",
@@ -69,7 +69,7 @@ function Hero() {
       <motion.div style={{ y, scale }} className="absolute inset-0 -z-10">
         <img
           src={hero}
-          alt="Students at Balo English Medium School Medium School"
+          alt="Students at Balo English Medium School"
           className="size-full object-cover"
           width={1600}
           height={1024}
@@ -194,7 +194,7 @@ function Mission() {
             Building futures, one child at a time.
           </h2>
           <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-            Balo English Medium School Medium School exists to give the children of Salkia, Babudanga, and Pilkhana a school they can be proud of — free of charge, full of possibility, and rooted in the love of the community.
+            Balo English Medium School exists to give the children of Salkia, Babudanga, and Pilkhana a school they can be proud of — free of charge, full of possibility, and rooted in the love of the community.
           </p>
           <div className="mt-8 grid sm:grid-cols-2 gap-4">
             {values.map((v) => (

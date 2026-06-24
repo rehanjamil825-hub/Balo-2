@@ -15,10 +15,10 @@ import hero from "@/assets/classroom-reading.jpg";
 export const Route = createFileRoute("/facilities")({
   head: () => ({
     meta: [
-      { title: "Facilities — Balo English Medium School Medium School, Howrah" },
-      { name: "description", content: "Explore Balo English Medium School Medium School's modern facilities: library, computer lab, science laboratory, smart classes, and air-conditioned classrooms." },
-      { property: "og:title", content: "Facilities — Balo English Medium School Medium School" },
-      { property: "og:description", content: "Library, computer lab, science laboratory, smart classes, and AC classrooms at Balo English Medium School Medium School, Howrah." },
+      { title: "Facilities — Balo English Medium School, Howrah" },
+      { name: "description", content: "Explore Balo English Medium School's modern facilities: library, computer lab, science laboratory, smart classes, and air-conditioned classrooms." },
+      { property: "og:title", content: "Facilities — Balo English Medium School" },
+      { property: "og:description", content: "Library, computer lab, science laboratory, smart classes, and AC classrooms at Balo English Medium School, Howrah." },
       { property: "og:image", content: smartClass },
     ],
     links: [{ rel: "canonical", href: "/facilities" }],
@@ -84,7 +84,7 @@ function Hero() {
       <motion.div style={{ y, scale }} className="absolute inset-0 -z-10">
         <img
           src={hero}
-          alt="Balo English Medium School Medium School classroom"
+          alt="Balo English Medium School classroom"
           className="size-full object-cover"
           width={1600}
           height={1024}
@@ -100,7 +100,7 @@ function Hero() {
             Spaces that inspire <span className="italic text-secondary">modern learning.</span>
           </h1>
           <p className="mt-6 text-lg md:text-xl text-white/85 max-w-2xl">
-            From a cozy library to air-conditioned smart classrooms, every corner of Balo English Medium School Medium School is built to help children learn with comfort, curiosity, and confidence.
+            From a cozy library to air-conditioned smart classrooms, every corner of Balo English Medium School is built to help children learn with comfort, curiosity, and confidence.
           </p>
         </motion.div>
       </div>
@@ -193,7 +193,7 @@ function CTA() {
           Want to see our classrooms in person?
         </h2>
         <p className="mt-4 text-lg text-muted-foreground">
-          Families are welcome to visit Balo English Medium School Medium School and experience our facilities firsthand.
+          Families are welcome to visit Balo English Medium School and experience our facilities firsthand.
         </p>
         <a
           href="/#contact"
