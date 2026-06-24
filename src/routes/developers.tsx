@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Code2, Github, Heart, Sparkles } from "lucide-react";
+import { Code2, Code, Heart, Sparkles } from "lucide-react";
 
 import developers from "@/assets/developers.jpg";
 
@@ -128,7 +128,7 @@ function DevelopersPage() {
                     <div className="text-xs uppercase tracking-widest text-accent font-semibold mt-0.5">{m.role}</div>
                     <div className="text-sm text-muted-foreground mt-1">{m.note}</div>
                   </div>
-                  <Github className="size-5 text-muted-foreground/40" />
+                  <Code className="size-5 text-muted-foreground/40" />
                 </motion.div>
               ))}
             </div>
