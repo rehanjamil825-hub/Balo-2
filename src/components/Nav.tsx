@@ -8,6 +8,7 @@ const navItems = [
   { label: "About", href: "/about", hash: "about" },
   { label: "Facilities", href: "/facilities", hash: undefined },
   { label: "Extracurricular", href: "/extracurricular", hash: undefined },
+  { label: "Developers", href: "/developers", hash: undefined },
   { label: "Contact", href: "/", hash: "contact" },
 ];
 
