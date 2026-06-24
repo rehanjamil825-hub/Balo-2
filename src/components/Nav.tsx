@@ -30,8 +30,8 @@ export function Nav() {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
         <Link to="/" className="flex items-center gap-2">
-          <div className="size-9 rounded-xl gradient-hero grid place-items-center shadow-soft">
-            <GraduationCap className="size-5 text-white" />
+          <div className="size-10 rounded-full overflow-hidden shadow-soft ring-2 ring-accent/40">
+            <img src={baloLogo.url} alt="Balo India logo" className="w-full h-full object-cover" />
           </div>
           <div className="leading-tight">
             <div className="font-display font-bold text-lg">Balo India</div>
