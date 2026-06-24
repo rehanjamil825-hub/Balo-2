@@ -9,12 +9,12 @@ export function Footer() {
             <GraduationCap className="size-5 text-white" />
           </div>
           <div>
-            <div className="font-display font-bold">Balo English School</div>
+            <div className="font-display font-bold">Balo English Medium School Medium School</div>
             <div className="text-xs text-muted-foreground">Salkia, Howrah · A community NGO</div>
           </div>
         </div>
         <div className="text-muted-foreground text-xs">
-          © {new Date().getFullYear()} Balo English School. Built with love by our community.
+          © {new Date().getFullYear()} Balo English Medium School Medium School. Built with love by our community.
         </div>
       </div>
     </footer>
