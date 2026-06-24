@@ -33,7 +33,7 @@ export function Nav() {
             <GraduationCap className="size-5 text-white" />
           </div>
           <div className="leading-tight">
-            <div className="font-display font-bold text-lg">Balo English</div>
+            <div className="font-display font-bold text-lg">Balo India</div>
             <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
               School · Howrah
             </div>
