@@ -1,15 +1,17 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Menu, X } from "lucide-react";
 import { useState } from "react";
 import baloLogo from "@/assets/balo-logo.jpg.asset.json";
 
-const navItems = [
-  { label: "Home", href: "/", hash: undefined },
-  { label: "About", href: "/about", hash: undefined },
-  { label: "Facilities", href: "/facilities", hash: undefined },
-  { label: "Extracurricular", href: "/extracurricular", hash: undefined },
-  { label: "Developers", href: "/developers", hash: undefined },
+type NavItem = { label: string; href: string; hash?: string };
+
+const navItems: NavItem[] = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Facilities", href: "/facilities" },
+  { label: "Extracurricular", href: "/extracurricular" },
+  { label: "Developers", href: "/developers" },
   { label: "Contact", href: "/", hash: "contact" },
 ];
 
@@ -18,10 +20,54 @@ const DONATE_URL = "https://www.balousa.org/donation-confirmation/";
 export function Nav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const linkClasses =
-    "text-sm font-medium text-foreground/70 hover:text-foreground transition-colors";
+    "text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer";
+
+  const handleHashClick = (e: React.MouseEvent, hash: string) => {
+    e.preventDefault();
+    setMobileOpen(false);
+    if (isHome) {
+      const el = document.getElementById(hash);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.history.replaceState(null, "", `#${hash}`);
+    } else {
+      navigate({ to: "/", hash });
+    }
+  };
+
+  const renderItem = (item: NavItem, mobile = false) => {
+    const className = mobile
+      ? "block text-sm font-medium text-foreground/70 hover:text-foreground cursor-pointer"
+      : linkClasses;
+
+    if (item.hash) {
+      return (
+        <a
+          key={item.label}
+          href={`#${item.hash}`}
+          className={className}
+          onClick={(e) => handleHashClick(e, item.hash!)}
+        >
+          {item.label}
+        </a>
+      );
+    }
+    return (
+      <Link
+        key={item.label}
+        to={item.href}
+        className={className}
+        activeProps={{ className: `${className} text-foreground font-semibold` }}
+        activeOptions={{ exact: true }}
+        onClick={() => setMobileOpen(false)}
+      >
+        {item.label}
+      </Link>
+    );
+  };
 
   return (
     <motion.nav
@@ -44,26 +90,7 @@ export function Nav() {
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
-          {navItems.map((item) => {
-            if (isHome && item.hash) {
-              return (
-                <a key={item.label} href={`#${item.hash}`} className={linkClasses}>
-                  {item.label}
-                </a>
-              );
-            }
-            return (
-              <Link
-                key={item.label}
-                to={item.href}
-                className={linkClasses}
-                activeProps={{ className: "text-foreground font-semibold" }}
-                activeOptions={{ exact: true }}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
+          {navItems.map((item) => renderItem(item))}
         </div>
 
         <a
@@ -94,30 +121,7 @@ export function Nav() {
             className="md:hidden overflow-hidden border-t border-border/50"
           >
             <div className="px-6 py-4 space-y-3">
-              {navItems.map((item) => {
-                if (isHome && item.hash) {
-                  return (
-                    <a
-                      key={item.label}
-                      href={`#${item.hash}`}
-                      className="block text-sm font-medium text-foreground/70 hover:text-foreground"
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      {item.label}
-                    </a>
-                  );
-                }
-                return (
-                  <Link
-                    key={item.label}
-                    to={item.href}
-                    className="block text-sm font-medium text-foreground/70 hover:text-foreground"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
-                );
-              })}
+              {navItems.map((item) => renderItem(item, true))}
               <a
                 href={DONATE_URL}
                 target="_blank"
