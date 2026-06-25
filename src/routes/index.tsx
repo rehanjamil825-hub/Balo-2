@@ -319,7 +319,7 @@ function Contact() {
             {[
               { icon: MapPin, t: "Our Address", d: "55 Pilkhana 2nd Bye Lane, Howrah Salkia 711101" },
               { icon: Phone, t: "Call Us", d: "Reach out to schedule a visit or learn more." },
-              { icon: Mail, t: "Email", d: "hello@baloenglishschool.org" },
+              { icon: Mail, t: "Email", d: "baloindia2015@gmail.com" },
             ].map((c) => (
               <div key={c.t} className="flex gap-4">
                 <div className="size-12 rounded-2xl bg-primary/10 text-primary grid place-items-center shrink-0">
