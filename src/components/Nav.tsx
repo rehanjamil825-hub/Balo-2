@@ -30,8 +30,14 @@ export function Nav() {
     e.preventDefault();
     setMobileOpen(false);
     if (isHome) {
-      const el = document.getElementById(hash);
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      const scrollToTarget = () => {
+        const el = document.getElementById(hash);
+        if (!el) return;
+        const top = el.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top, behavior: "smooth" });
+      };
+      // Defer past the mobile-menu collapse animation so layout is stable on repeated clicks
+      window.setTimeout(scrollToTarget, 300);
       window.history.replaceState(null, "", `#${hash}`);
     } else {
       navigate({ to: "/", hash });
