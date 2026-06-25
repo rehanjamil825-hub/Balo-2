@@ -6,12 +6,14 @@ import baloLogo from "@/assets/balo-logo.jpg.asset.json";
 
 const navItems = [
   { label: "Home", href: "/", hash: undefined },
-  { label: "About", href: "/about", hash: "about" },
+  { label: "About", href: "/about", hash: undefined },
   { label: "Facilities", href: "/facilities", hash: undefined },
   { label: "Extracurricular", href: "/extracurricular", hash: undefined },
   { label: "Developers", href: "/developers", hash: undefined },
   { label: "Contact", href: "/", hash: "contact" },
 ];
+
+const DONATE_URL = "https://www.balousa.org/donation-confirmation/";
 
 export function Nav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -64,12 +66,14 @@ export function Nav() {
           })}
         </div>
 
-        <Link
-          to="/#donate"
+        <a
+          href={DONATE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
           className="hidden md:inline-flex items-center gap-2 rounded-full bg-accent text-accent-foreground px-5 py-2.5 text-sm font-semibold shadow-soft hover:scale-105 transition-transform"
         >
           <Heart className="size-4" /> Donate
-        </Link>
+        </a>
 
         <button
           className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
@@ -114,13 +118,15 @@ export function Nav() {
                   </Link>
                 );
               })}
-              <Link
-                to="/#donate"
+              <a
+                href={DONATE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-accent text-accent-foreground px-5 py-2 text-sm font-semibold"
                 onClick={() => setMobileOpen(false)}
               >
                 <Heart className="size-4" /> Donate
-              </Link>
+              </a>
             </div>
           </motion.div>
         )}
