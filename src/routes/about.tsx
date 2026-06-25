@@ -241,12 +241,45 @@ function ImpactQuote() {
   );
 }
 
+function SisterOrgs() {
+  return (
+    <section className="py-28 px-6 bg-card">
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
+        variants={fadeUp}
+        className="max-w-4xl mx-auto"
+      >
+        <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4 text-center">
+          Our Global Family
+        </div>
+        <h2 className="text-3xl md:text-4xl font-bold text-balance text-center mb-8">
+          Together with our sister organizations.
+        </h2>
+        <p className="text-lg text-muted-foreground leading-relaxed text-center">
+          Together with{" "}
+          <a href="https://www.balo.it/en/" target="_blank" rel="noopener noreferrer" className="text-accent font-semibold hover:underline">
+            Balo Italia
+          </a>
+          ,{" "}
+          <a href="https://www.balousa.org/" target="_blank" rel="noopener noreferrer" className="text-accent font-semibold hover:underline">
+            Balo USA
+          </a>
+          , Ireland, and Malaysia, we raise funds to meet the needs of our students and young women. This year Balo is aiming to raise money to support the annual cost of building costs, teacher salaries, two hot meals a day for 350 students and 20 staff members, school supplies, uniforms, a safe home for girls in danger, women's training programs, and micro loans.
+        </p>
+      </motion.div>
+    </section>
+  );
+}
+
 function AboutPage() {
   return (
     <main>
       <Hero />
       <Leadership />
       <Mission />
+      <SisterOrgs />
       <ImpactQuote />
     </main>
   );

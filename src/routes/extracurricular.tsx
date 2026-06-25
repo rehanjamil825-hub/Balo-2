@@ -2,14 +2,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import {
-  Trophy, Sun, Activity, PartyPopper, Calendar, MapPin, ArrowRight,
+  Trophy, Sun, Activity, PartyPopper, Music, Calendar, MapPin, ArrowRight,
 } from "lucide-react";
 
 import sportsDay from "@/assets/sports-day.jpg";
 import summerCamp from "@/assets/summer-camp.jpg";
 import rugby from "@/assets/rugby.jpg";
 import funFiesta from "@/assets/fun-fiesta.jpg";
+import musicAsset from "@/assets/music.jpg.asset.json";
 import hero from "@/assets/playground.jpg";
+
+const music = musicAsset.url;
 
 export const Route = createFileRoute("/extracurricular")({
   head: () => ({
@@ -66,6 +69,14 @@ const activities = [
     season: "Annual Carnival",
     description: "Fun Fiesta is our annual carnival filled with games, rides, food stalls, performances, and laughter. It brings students, families, and teachers together to celebrate community.",
     highlights: ["Carnival games & rides", "Student performances", "Food stalls", "Family-friendly fun"],
+  },
+  {
+    icon: Music,
+    title: "Music",
+    image: music,
+    season: "Weekly Sessions",
+    description: "Students learn vocals and harmonium under the guidance of our music teacher. Music classes nurture rhythm, confidence, and a lifelong love for the arts.",
+    highlights: ["Harmonium & vocal training", "Choir & group singing", "Cultural performances", "Festival celebrations"],
   },
 ];
 
