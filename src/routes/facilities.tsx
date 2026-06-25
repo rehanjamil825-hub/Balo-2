@@ -2,15 +2,19 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import {
-  BookOpen, Monitor, FlaskConical, Presentation, Wind, CheckCircle2,
+  BookOpen, Monitor, FlaskConical, Presentation, Wind, Stethoscope, CheckCircle2,
 } from "lucide-react";
 
 import library from "@/assets/library.jpg";
 import computerLab from "@/assets/computer-lab.jpg";
 import scienceLab from "@/assets/science-lab.jpg";
-import smartClass from "@/assets/smart-class.jpg";
+import smartClassAsset from "@/assets/smart-class-new.jpg.asset.json";
 import acClassroom from "@/assets/ac-classroom.jpg";
+import healthcareAsset from "@/assets/healthcare.jpg.asset.json";
 import hero from "@/assets/classroom-reading.jpg";
+
+const smartClass = smartClassAsset.url;
+const healthcare = healthcareAsset.url;
 
 export const Route = createFileRoute("/facilities")({
   head: () => ({
@@ -70,6 +74,13 @@ const facilities = [
     image: acClassroom,
     description: "Comfortable, climate-controlled classrooms help students stay focused and alert through Howrah's warmest months.",
     features: ["Ceiling & split AC units", "Bright LED lighting", "Spacious seating", "Clean, ventilated rooms"],
+  },
+  {
+    icon: Stethoscope,
+    title: "Free Health Care",
+    image: healthcare,
+    description: "Every student has access to free, on-campus health check-ups and basic medical care. Our visiting doctor monitors growth, treats minor illnesses, and ensures no child misses school for lack of care.",
+    features: ["Regular health check-ups", "First aid & basic medicines", "Vision & dental screening", "Doctor on call"],
   },
 ];
 

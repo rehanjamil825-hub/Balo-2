@@ -33,7 +33,7 @@ export const Route = createFileRoute("/")({
         "@context": "https://schema.org",
         "@type": "School",
         name: "Balo English Medium School",
-        address: { "@type": "PostalAddress", streetAddress: "55, Madar Talla Ln, Babudanga, Pilkhana, Salkia", addressLocality: "Howrah", addressRegion: "West Bengal", postalCode: "711101", addressCountry: "IN" },
+        address: { "@type": "PostalAddress", streetAddress: "55 Pilkhana 2nd Bye Lane", addressLocality: "Howrah Salkia", addressRegion: "West Bengal", postalCode: "711101", addressCountry: "IN" },
         aggregateRating: { "@type": "AggregateRating", ratingValue: "4.4", reviewCount: "15" },
       }),
     }],
@@ -118,7 +118,7 @@ function Hero() {
 function Stats() {
   const stats = [
     { n: "350+", l: "Children Educated" },
-    { n: "12", l: "Dedicated Teachers" },
+    { n: "20+", l: "Dedicated Staff" },
     { n: "100%", l: "Free of Cost" },
     { n: "15+", l: "Years of Service" },
   ];
@@ -296,7 +296,7 @@ function Donate() {
           Your gift funds books, uniforms, a warm meal, and a teacher who shows up every single day. 100% of your donation reaches our classrooms.
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-4">
-          <a href="#contact" className="inline-flex items-center gap-2 rounded-full bg-accent text-accent-foreground px-8 py-4 font-semibold shadow-soft hover:scale-105 transition-transform">
+          <a href="https://www.balousa.org/donation-confirmation/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-accent text-accent-foreground px-8 py-4 font-semibold shadow-soft hover:scale-105 transition-transform">
             Donate Now <Heart className="size-4" />
           </a>
           <a href="#contact" className="inline-flex items-center gap-2 rounded-full border-2 border-primary text-primary px-8 py-4 font-semibold hover:bg-primary hover:text-primary-foreground transition-colors">
@@ -317,7 +317,7 @@ function Contact() {
           <h2 className="text-4xl md:text-5xl font-bold mb-8 text-balance">Come see our school, anytime.</h2>
           <div className="space-y-6">
             {[
-              { icon: MapPin, t: "Our Address", d: "55, Madar Talla Lane, Babudanga, Pilkhana, Salkia, Howrah, West Bengal 711101" },
+              { icon: MapPin, t: "Our Address", d: "55 Pilkhana 2nd Bye Lane, Howrah Salkia 711101" },
               { icon: Phone, t: "Call Us", d: "Reach out to schedule a visit or learn more." },
               { icon: Mail, t: "Email", d: "hello@baloenglishschool.org" },
             ].map((c) => (
@@ -337,7 +337,7 @@ function Contact() {
           className="rounded-3xl overflow-hidden shadow-card aspect-square lg:aspect-auto">
           <iframe
             title="Balo English Medium School location"
-            src="https://www.google.com/maps?q=55+Madar+Talla+Ln+Babudanga+Pilkhana+Salkia+Howrah+West+Bengal+711101&output=embed"
+            src="https://www.google.com/maps?q=55+Pilkhana+2nd+Bye+Lane+Howrah+Salkia+711101&output=embed"
             className="size-full border-0"
             loading="lazy"
           />
