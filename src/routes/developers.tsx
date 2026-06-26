@@ -11,7 +11,7 @@ export const Route = createFileRoute("/developers")({
       { name: "description", content: "Meet the developers behind the Balo English Medium School website: Rehan Jamil, Shahil Sharma, and Shibran Khatoon." },
       { property: "og:title", content: "Developers — Balo English Medium School" },
       { property: "og:description", content: "The team that built this website with love for Balo English Medium School." },
-      { property: "og:image", content: developers },
+      { property: "og:image", content: developers.url },
     ],
     links: [{ rel: "canonical", href: "/developers" }],
   }),
