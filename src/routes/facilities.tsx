@@ -84,6 +84,13 @@ const facilities = [
     description: "Every student has access to free, on-campus health check-ups and basic medical care. Our visiting doctor monitors growth, treats minor illnesses, and ensures no child misses school for lack of care.",
     features: ["Regular health check-ups", "First aid & basic medicines", "Vision & dental screening", "Doctor on call"],
   },
+  {
+    icon: UtensilsCrossed,
+    title: "Meal after Classes",
+    image: meal,
+    description: "A nutritious, hot meal is served to every student after classes. For many children, this is their most important meal of the day — shared with friends in a warm, communal atmosphere.",
+    features: ["Two hot meals daily for 350+ students", "Balanced, locally sourced nutrition", "Clean, supervised dining space", "No child goes home hungry"],
+  },
 ];
 
 function Hero() {
