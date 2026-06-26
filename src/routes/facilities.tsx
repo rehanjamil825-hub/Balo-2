@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import {
-  BookOpen, Monitor, FlaskConical, Presentation, Wind, Stethoscope, CheckCircle2,
+  BookOpen, Monitor, FlaskConical, Presentation, Wind, Stethoscope, UtensilsCrossed, CheckCircle2,
 } from "lucide-react";
 
 import library from "@/assets/library.jpg";
