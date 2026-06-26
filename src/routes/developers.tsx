@@ -82,7 +82,7 @@ function DevelopersPage() {
           >
             <div className="absolute -inset-4 gradient-warm rounded-[2rem] -z-10 blur-2xl opacity-60" />
             <img
-              src={developers}
+              src={developers.url}
               alt="Rehan Jamil, Shahil Sharma, and Shibran Khatoon — the development team"
               width={1080}
               height={1440}
