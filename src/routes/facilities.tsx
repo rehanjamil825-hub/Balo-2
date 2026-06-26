@@ -11,10 +11,12 @@ import scienceLab from "@/assets/science-lab.jpg";
 import smartClassAsset from "@/assets/smart-class-new.jpg.asset.json";
 import acClassroom from "@/assets/ac-classroom.jpg";
 import healthcareAsset from "@/assets/healthcare.jpg.asset.json";
+import mealAsset from "@/assets/meal.jpg.asset.json";
 import hero from "@/assets/classroom-reading.jpg";
 
 const smartClass = smartClassAsset.url;
 const healthcare = healthcareAsset.url;
+const meal = mealAsset.url;
 
 export const Route = createFileRoute("/facilities")({
   head: () => ({
