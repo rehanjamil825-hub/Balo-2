@@ -37,7 +37,7 @@ const team = [
   {
     name: "Shahil Sharma",
     role: "Developer",
-    note: "The one in the grey jacket — engineering & integration.",
+    note: "The one in the white and brown shirt — engineering & integration.",
     color: "from-accent to-secondary",
   },
   {

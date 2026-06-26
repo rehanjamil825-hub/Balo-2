@@ -337,7 +337,7 @@ function Contact() {
           className="rounded-3xl overflow-hidden shadow-card aspect-square lg:aspect-auto">
           <iframe
             title="Balo English Medium School location"
-            src="https://www.google.com/maps?q=55+Pilkhana+2nd+Bye+Lane+Howrah+Salkia+711101&output=embed"
+            src="https://www.google.com/maps?q=22.594829,88.336977&output=embed"
             className="size-full border-0"
             loading="lazy"
           />

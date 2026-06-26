@@ -1,6 +1,7 @@
 import { GraduationCap } from "lucide-react";
 
 const INSTAGRAM_URL = "https://www.instagram.com/associazionebalo?igsh=MTIxYzNsazlteWZraQ==";
+const FACEBOOK_URL = "https://www.facebook.com/baloODV/";
 
 export function Footer() {
   return (
@@ -16,6 +17,18 @@ export function Footer() {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          <a
+            href={FACEBOOK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Balo on Facebook"
+          >
+            <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+            </svg>
+            <span className="text-xs font-medium">@baloODV</span>
+          </a>
           <a
             href={INSTAGRAM_URL}
             target="_blank"

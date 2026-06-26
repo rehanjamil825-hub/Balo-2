@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import {
-  BookOpen, Monitor, FlaskConical, Presentation, Wind, Stethoscope, CheckCircle2,
+  BookOpen, Monitor, FlaskConical, Presentation, Wind, Stethoscope, UtensilsCrossed, CheckCircle2,
 } from "lucide-react";
 
 import library from "@/assets/library.jpg";
@@ -11,10 +11,12 @@ import scienceLab from "@/assets/science-lab.jpg";
 import smartClassAsset from "@/assets/smart-class-new.jpg.asset.json";
 import acClassroom from "@/assets/ac-classroom.jpg";
 import healthcareAsset from "@/assets/healthcare.jpg.asset.json";
+import mealAsset from "@/assets/meal.jpg.asset.json";
 import hero from "@/assets/classroom-reading.jpg";
 
 const smartClass = smartClassAsset.url;
 const healthcare = healthcareAsset.url;
+const meal = mealAsset.url;
 
 export const Route = createFileRoute("/facilities")({
   head: () => ({
@@ -81,6 +83,13 @@ const facilities = [
     image: healthcare,
     description: "Every student has access to free, on-campus health check-ups and basic medical care. Our visiting doctor monitors growth, treats minor illnesses, and ensures no child misses school for lack of care.",
     features: ["Regular health check-ups", "First aid & basic medicines", "Vision & dental screening", "Doctor on call"],
+  },
+  {
+    icon: UtensilsCrossed,
+    title: "Meal after Classes",
+    image: meal,
+    description: "A nutritious, hot meal is served to every student after classes. For many children, this is their most important meal of the day — shared with friends in a warm, communal atmosphere.",
+    features: ["Two hot meals daily for 350+ students", "Balanced, locally sourced nutrition", "Clean, supervised dining space", "No child goes home hungry"],
   },
 ];
 
