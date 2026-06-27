@@ -399,6 +399,4 @@ function Index() {
   );
 }
 
-// keep `group` reference to avoid unused-import build warnings
-void group;
 
