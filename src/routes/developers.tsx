@@ -143,6 +143,51 @@ function DevelopersPage() {
           </motion.div>
         </div>
       </section>
+
+      <section className="py-24 px-6 bg-card">
+        <div className="max-w-5xl mx-auto">
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} className="max-w-2xl mb-12">
+            <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">
+              How We Learned
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-balance leading-tight">
+              From classrooms to code editors.
+            </h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <motion.div
+              initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}
+              className="p-8 rounded-3xl bg-background border border-border shadow-soft"
+            >
+              <div className="size-12 rounded-2xl bg-primary/10 text-primary grid place-items-center mb-4">
+                <Code2 className="size-6" />
+              </div>
+              <h3 className="font-display text-2xl font-bold mb-3">Workshops with Bosenet</h3>
+              <p className="text-muted-foreground leading-relaxed text-sm">
+                Our coding and web development journey began with hands-on workshops organised by{" "}
+                <a href="https://bosenet.com/index.html#service" target="_blank" rel="noopener noreferrer" className="text-accent font-semibold hover:underline">
+                  Bosenet
+                </a>
+                . Through their structured sessions on HTML, CSS, JavaScript, and modern frameworks, we moved from absolute beginners to building real, working websites — like the one you're reading right now.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} custom={1}
+              className="p-8 rounded-3xl bg-background border border-border shadow-soft"
+            >
+              <div className="size-12 rounded-2xl bg-accent/10 text-accent grid place-items-center mb-4">
+                <Sparkles className="size-6" />
+              </div>
+              <h3 className="font-display text-2xl font-bold mb-3">Weekly Sessions with Mr Samuel Clay</h3>
+              <p className="text-muted-foreground leading-relaxed text-sm">
+                We are also mentored by <strong>Mr Samuel Clay</strong>, a software engineer at Amazon based in the United Kingdom. Every week, he takes time out of his schedule to run live sessions with us — reviewing code, teaching engineering best practices, and patiently answering every question. His weekly guidance has shaped how we think, build, and ship software.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
