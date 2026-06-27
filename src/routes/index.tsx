@@ -14,6 +14,13 @@ import portrait from "@/assets/student-portrait.jpg";
 import playground from "@/assets/playground.jpg";
 import hands from "@/assets/raised-hands.jpg";
 import books from "@/assets/books.jpg";
+import classroom1Asset from "@/assets/classroom-1.jpg.asset.json";
+import classroom2Asset from "@/assets/classroom-2.jpg.asset.json";
+import bannerAsset from "@/assets/balo-banner.png.asset.json";
+
+const classroom1 = classroom1Asset.url;
+const classroom2 = classroom2Asset.url;
+const banner = bannerAsset.url;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -223,11 +230,11 @@ function Programs() {
 
 function Gallery() {
   const imgs = [
-    { src: group, span: "md:col-span-2 md:row-span-2", a: "Students gathered" },
+    { src: classroom1, span: "md:col-span-2 md:row-span-2", a: "Classroom at Balo" },
     { src: hands, span: "", a: "Raised hands" },
     { src: portrait, span: "", a: "Student portrait" },
     { src: playground, span: "", a: "Playground joy" },
-    { src: reading, span: "md:col-span-2", a: "Reading time" },
+    { src: classroom2, span: "md:col-span-2", a: "Students reading" },
     { src: teacher, span: "", a: "Teacher and class" },
     { src: books, span: "", a: "Books" },
   ];

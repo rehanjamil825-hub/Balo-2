@@ -89,7 +89,7 @@ const facilities = [
     title: "Meal after Classes",
     image: meal,
     description: "A nutritious, hot meal is served to every student after classes. For many children, this is their most important meal of the day — shared with friends in a warm, communal atmosphere.",
-    features: ["Two hot meals daily for 350+ students", "Balanced, locally sourced nutrition", "Clean, supervised dining space", "No child goes home hungry"],
+    features: ["Hot meal for 350+ students", "Balanced, locally sourced nutrition", "Clean, supervised dining space", "No child goes home hungry"],
   },
 ];
 
