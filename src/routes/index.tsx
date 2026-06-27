@@ -355,11 +355,40 @@ function Contact() {
 }
 
 
+function Banner() {
+  return (
+    <section className="py-16 px-6 bg-card">
+      <div className="max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-8"
+        >
+          <div className="text-xs uppercase tracking-[0.25em] text-accent font-bold mb-3">Glimpses of Balo</div>
+          <h2 className="text-3xl md:text-4xl font-bold text-balance">A few hundred faces, one shared family.</h2>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9 }}
+          className="rounded-3xl overflow-hidden shadow-card"
+        >
+          <img src={banner} alt="Collage of Balo English Medium School students, staff and moments" className="w-full h-auto object-cover" loading="lazy" />
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 function Index() {
   return (
     <main>
       <Hero />
       <Stats />
+      <Banner />
       <About />
       <Programs />
       <Gallery />
@@ -369,3 +398,7 @@ function Index() {
     </main>
   );
 }
+
+// keep `group` reference to avoid unused-import build warnings
+void group;
+
