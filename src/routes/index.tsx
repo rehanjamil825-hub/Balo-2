@@ -14,6 +14,13 @@ import portrait from "@/assets/student-portrait.jpg";
 import playground from "@/assets/playground.jpg";
 import hands from "@/assets/raised-hands.jpg";
 import books from "@/assets/books.jpg";
+import classroom1Asset from "@/assets/classroom-1.jpg.asset.json";
+import classroom2Asset from "@/assets/classroom-2.jpg.asset.json";
+import bannerAsset from "@/assets/balo-banner.png.asset.json";
+
+const classroom1 = classroom1Asset.url;
+const classroom2 = classroom2Asset.url;
+const banner = bannerAsset.url;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -223,11 +230,11 @@ function Programs() {
 
 function Gallery() {
   const imgs = [
-    { src: group, span: "md:col-span-2 md:row-span-2", a: "Students gathered" },
+    { src: classroom1, span: "md:col-span-2 md:row-span-2", a: "Classroom at Balo" },
     { src: hands, span: "", a: "Raised hands" },
     { src: portrait, span: "", a: "Student portrait" },
     { src: playground, span: "", a: "Playground joy" },
-    { src: reading, span: "md:col-span-2", a: "Reading time" },
+    { src: classroom2, span: "md:col-span-2", a: "Students reading" },
     { src: teacher, span: "", a: "Teacher and class" },
     { src: books, span: "", a: "Books" },
   ];
@@ -348,11 +355,40 @@ function Contact() {
 }
 
 
+function Banner() {
+  return (
+    <section className="py-16 px-6 bg-card">
+      <div className="max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-8"
+        >
+          <div className="text-xs uppercase tracking-[0.25em] text-accent font-bold mb-3">Glimpses of Balo</div>
+          <h2 className="text-3xl md:text-4xl font-bold text-balance">A few hundred faces, one shared family.</h2>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9 }}
+          className="rounded-3xl overflow-hidden shadow-card"
+        >
+          <img src={banner} alt="Collage of Balo English Medium School students, staff and moments" className="w-full h-auto object-cover" loading="lazy" />
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 function Index() {
   return (
     <main>
       <Hero />
       <Stats />
+      <Banner />
       <About />
       <Programs />
       <Gallery />
@@ -362,3 +398,5 @@ function Index() {
     </main>
   );
 }
+
+

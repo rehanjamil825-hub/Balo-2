@@ -10,6 +10,9 @@ import director from "@/assets/director.jpg";
 import principal from "@/assets/principal.jpg";
 import hero from "@/assets/hero-classroom.jpg";
 import group from "@/assets/group-students.jpg";
+import staffAsset from "@/assets/staff-group.jpg.asset.json";
+
+const staffGroup = staffAsset.url;
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -273,11 +276,55 @@ function SisterOrgs() {
   );
 }
 
+function Staff() {
+  return (
+    <section className="py-28 px-6">
+      <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+        <motion.div
+          initial={{ opacity: 0, x: -40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <img
+            src={staffGroup}
+            alt="Balo English Medium School staff at the Color Storm event"
+            width={1200}
+            height={1200}
+            loading="lazy"
+            className="rounded-3xl shadow-card w-full aspect-square object-cover"
+          />
+        </motion.div>
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          variants={fadeUp}
+        >
+          <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">
+            Our Staff
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-balance leading-tight">
+            The teachers and team who show up every day.
+          </h2>
+          <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+            Behind every smiling student at Balo English Medium School is a team of 20+ teachers, coordinators, helpers, and volunteers who treat the school like home. From early-morning prep and patient classroom hours to organising events like our annual <em>Color Storm</em>, our staff bring warmth, discipline, and creativity into every corner of the school.
+          </p>
+          <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
+            Many of our teachers grew up in the very same neighbourhoods our children come from. That shared story is what makes Balo more than a school — it's a community raising itself.
+          </p>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 function AboutPage() {
   return (
     <main>
       <Hero />
       <Leadership />
+      <Staff />
       <Mission />
       <SisterOrgs />
       <ImpactQuote />
