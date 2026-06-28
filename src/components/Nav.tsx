@@ -1,27 +1,80 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Menu, X } from "lucide-react";
+import { Heart, Menu, X, Globe } from "lucide-react";
 import { useState } from "react";
 import baloLogo from "@/assets/balo-logo.jpg.asset.json";
+import { useLang, type Lang } from "@/lib/i18n";
 
-type NavItem = { label: string; href: string; hash?: string };
+type NavItem = { key: string; href: string; hash?: string };
 
 const navItems: NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Facilities", href: "/facilities" },
-  { label: "Extracurricular", href: "/extracurricular" },
-  { label: "Developers", href: "/developers" },
-  { label: "Contact", href: "/", hash: "contact" },
+  { key: "nav.home", href: "/" },
+  { key: "nav.about", href: "/about" },
+  { key: "nav.facilities", href: "/facilities" },
+  { key: "nav.extracurricular", href: "/extracurricular" },
+  { key: "nav.events", href: "/events" },
+  { key: "nav.developers", href: "/developers" },
+  { key: "nav.contact", href: "/", hash: "contact" },
 ];
 
 const DONATE_URL = "https://www.balousa.org/donation-confirmation/";
+
+const langOptions: { code: Lang; label: string }[] = [
+  { code: "en", label: "EN" },
+  { code: "hi", label: "हिं" },
+  { code: "bn", label: "বাং" },
+];
+
+function LangSwitcher({ mobile = false }: { mobile?: boolean }) {
+  const { lang, setLang, t } = useLang();
+  const [open, setOpen] = useState(false);
+  return (
+    <div className={mobile ? "" : "relative"}>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/60 px-3 py-1.5 text-xs font-semibold hover:bg-muted transition-colors"
+        aria-label={t("lang.label")}
+      >
+        <Globe className="size-3.5" />
+        {langOptions.find((o) => o.code === lang)?.label}
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.15 }}
+            className={
+              mobile
+                ? "mt-2 flex gap-2"
+                : "absolute right-0 mt-2 rounded-xl border border-border bg-card shadow-card p-1 min-w-[8rem] z-50"
+            }
+          >
+            {langOptions.map((o) => (
+              <button
+                key={o.code}
+                onClick={() => { setLang(o.code); setOpen(false); }}
+                className={`${mobile ? "flex-1 rounded-full px-3 py-1.5 text-xs" : "block w-full text-left px-3 py-2 rounded-lg text-sm"} font-semibold transition-colors ${
+                  lang === o.code ? "bg-accent text-accent-foreground" : "hover:bg-muted"
+                }`}
+              >
+                {o.label}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export function Nav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { t } = useLang();
 
   const linkClasses =
     "text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer";
@@ -36,7 +89,6 @@ export function Nav() {
         const top = el.getBoundingClientRect().top + window.scrollY - 80;
         window.scrollTo({ top, behavior: "smooth" });
       };
-      // Defer past the mobile-menu collapse animation so layout is stable on repeated clicks
       window.setTimeout(scrollToTarget, 300);
       window.history.replaceState(null, "", `#${hash}`);
     } else {
@@ -52,25 +104,25 @@ export function Nav() {
     if (item.hash) {
       return (
         <a
-          key={item.label}
+          key={item.key}
           href={`#${item.hash}`}
           className={className}
           onClick={(e) => handleHashClick(e, item.hash!)}
         >
-          {item.label}
+          {t(item.key)}
         </a>
       );
     }
     return (
       <Link
-        key={item.label}
+        key={item.key}
         to={item.href}
         className={className}
         activeProps={{ className: `${className} text-foreground font-semibold` }}
         activeOptions={{ exact: true }}
         onClick={() => setMobileOpen(false)}
       >
-        {item.label}
+        {t(item.key)}
       </Link>
     );
   };
@@ -95,21 +147,24 @@ export function Nav() {
           </div>
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-7">
           {navItems.map((item) => renderItem(item))}
         </div>
 
-        <a
-          href={DONATE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden md:inline-flex items-center gap-2 rounded-full bg-accent text-accent-foreground px-5 py-2.5 text-sm font-semibold shadow-soft hover:scale-105 transition-transform"
-        >
-          <Heart className="size-4" /> Donate
-        </a>
+        <div className="hidden lg:flex items-center gap-3">
+          <LangSwitcher />
+          <a
+            href={DONATE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full bg-accent text-accent-foreground px-5 py-2.5 text-sm font-semibold shadow-soft hover:scale-105 transition-transform"
+          >
+            <Heart className="size-4" /> {t("nav.donate")}
+          </a>
+        </div>
 
         <button
-          className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+          className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
         >
@@ -124,10 +179,11 @@ export function Nav() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="md:hidden overflow-hidden border-t border-border/50"
+            className="lg:hidden overflow-hidden border-t border-border/50"
           >
             <div className="px-6 py-4 space-y-3">
               {navItems.map((item) => renderItem(item, true))}
+              <div className="pt-2"><LangSwitcher mobile /></div>
               <a
                 href={DONATE_URL}
                 target="_blank"
@@ -135,7 +191,7 @@ export function Nav() {
                 className="inline-flex items-center gap-2 rounded-full bg-accent text-accent-foreground px-5 py-2 text-sm font-semibold"
                 onClick={() => setMobileOpen(false)}
               >
-                <Heart className="size-4" /> Donate
+                <Heart className="size-4" /> {t("nav.donate")}
               </a>
             </div>
           </motion.div>

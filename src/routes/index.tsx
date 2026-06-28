@@ -17,6 +17,8 @@ import books from "@/assets/books.jpg";
 import classroom1Asset from "@/assets/classroom-1.jpg.asset.json";
 import classroom2Asset from "@/assets/classroom-2.jpg.asset.json";
 import bannerAsset from "@/assets/balo-banner.png.asset.json";
+import { AnimatedCounter } from "@/components/AnimatedCounter";
+import { LazyImage } from "@/components/LazyImage";
 
 const classroom1 = classroom1Asset.url;
 const classroom2 = classroom2Asset.url;
@@ -124,18 +126,28 @@ function Hero() {
 
 function Stats() {
   const stats = [
-    { n: "350+", l: "Children Educated" },
-    { n: "20+", l: "Dedicated Staff" },
-    { n: "100%", l: "Free of Cost" },
-    { n: "15+", l: "Years of Service" },
+    { to: 350, suffix: "+", l: "Children Educated" },
+    { to: 20, suffix: "+", l: "Dedicated Staff" },
+    { to: 100, suffix: "%", l: "Free of Cost" },
+    { to: 15, suffix: "+", l: "Years of Service" },
   ];
   return (
     <section className="py-20 gradient-warm">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
         {stats.map((s, i) => (
-          <motion.div key={s.l} initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} custom={i}
-            className="text-center">
-            <div className="font-display text-5xl md:text-6xl font-black text-primary">{s.n}</div>
+          <motion.div
+            key={s.l}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            custom={i}
+            whileHover={{ scale: 1.05 }}
+            className="text-center cursor-default"
+          >
+            <div className="font-display text-5xl md:text-6xl font-black text-primary">
+              <AnimatedCounter to={s.to} suffix={s.suffix} />
+            </div>
             <div className="mt-2 text-sm uppercase tracking-widest text-muted-foreground font-semibold">{s.l}</div>
           </motion.div>
         ))}
@@ -177,14 +189,22 @@ function About() {
               { icon: HandHeart, t: "Always Free", d: "No fees. No barriers. Ever." },
               { icon: Users, t: "Community-Run", d: "By the neighbourhood, for the neighbourhood." },
               { icon: Heart, t: "Whole-Child", d: "Books, meals, dignity, joy." },
-            ].map((f) => (
-              <div key={f.t} className="flex gap-3 p-4 rounded-2xl bg-card border border-border">
+            ].map((f, i) => (
+              <motion.div
+                key={f.t}
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.06 }}
+                whileHover={{ scale: 1.05, y: -4 }}
+                className="flex gap-3 p-4 rounded-2xl bg-card border border-border cursor-default shadow-soft"
+              >
                 <f.icon className="size-5 text-primary shrink-0 mt-1" />
                 <div>
                   <div className="font-semibold text-sm">{f.t}</div>
                   <div className="text-xs text-muted-foreground mt-1">{f.d}</div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
@@ -258,7 +278,7 @@ function Gallery() {
               transition={{ duration: 0.6, delay: i * 0.05 }}
               whileHover={{ scale: 1.02 }}
               className={`relative overflow-hidden rounded-2xl shadow-soft ${im.span}`}>
-              <img src={im.src} alt={im.a} loading="lazy" className="absolute inset-0 size-full object-cover hover:scale-110 transition-transform duration-700" />
+              <LazyImage src={im.src} alt={im.a} className="absolute inset-0 size-full object-cover hover:scale-110 transition-transform duration-700" />
             </motion.div>
           ))}
         </div>
