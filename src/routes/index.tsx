@@ -18,6 +18,7 @@ import classroom1Asset from "@/assets/classroom-1.jpg.asset.json";
 import classroom2Asset from "@/assets/classroom-2.jpg.asset.json";
 import bannerAsset from "@/assets/balo-banner.png.asset.json";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
+import { LazyImage } from "@/components/LazyImage";
 
 const classroom1 = classroom1Asset.url;
 const classroom2 = classroom2Asset.url;
