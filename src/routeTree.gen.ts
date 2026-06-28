@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as FacilitiesRouteImport } from './routes/facilities'
 import { Route as ExtracurricularRouteImport } from './routes/extracurricular'
+import { Route as EventsRouteImport } from './routes/events'
 import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -23,6 +24,11 @@ const FacilitiesRoute = FacilitiesRouteImport.update({
 const ExtracurricularRoute = ExtracurricularRouteImport.update({
   id: '/extracurricular',
   path: '/extracurricular',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevelopersRoute = DevelopersRouteImport.update({
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/developers': typeof DevelopersRoute
+  '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/developers': typeof DevelopersRoute
+  '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
 }
@@ -60,19 +68,33 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/developers': typeof DevelopersRoute
+  '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/developers' | '/extracurricular' | '/facilities'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/developers'
+    | '/events'
+    | '/extracurricular'
+    | '/facilities'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/developers' | '/extracurricular' | '/facilities'
+  to:
+    | '/'
+    | '/about'
+    | '/developers'
+    | '/events'
+    | '/extracurricular'
+    | '/facilities'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/developers'
+    | '/events'
     | '/extracurricular'
     | '/facilities'
   fileRoutesById: FileRoutesById
@@ -81,6 +103,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   DevelopersRoute: typeof DevelopersRoute
+  EventsRoute: typeof EventsRoute
   ExtracurricularRoute: typeof ExtracurricularRoute
   FacilitiesRoute: typeof FacilitiesRoute
 }
@@ -99,6 +122,13 @@ declare module '@tanstack/react-router' {
       path: '/extracurricular'
       fullPath: '/extracurricular'
       preLoaderRoute: typeof ExtracurricularRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/developers': {
@@ -129,6 +159,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   DevelopersRoute: DevelopersRoute,
+  EventsRoute: EventsRoute,
   ExtracurricularRoute: ExtracurricularRoute,
   FacilitiesRoute: FacilitiesRoute,
 }
