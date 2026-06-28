@@ -277,7 +277,7 @@ function Gallery() {
               transition={{ duration: 0.6, delay: i * 0.05 }}
               whileHover={{ scale: 1.02 }}
               className={`relative overflow-hidden rounded-2xl shadow-soft ${im.span}`}>
-              <img src={im.src} alt={im.a} loading="lazy" className="absolute inset-0 size-full object-cover hover:scale-110 transition-transform duration-700" />
+              <LazyImage src={im.src} alt={im.a} className="absolute inset-0 size-full object-cover hover:scale-110 transition-transform duration-700" />
             </motion.div>
           ))}
         </div>
