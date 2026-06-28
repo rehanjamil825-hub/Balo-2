@@ -200,17 +200,22 @@ function Mission() {
             Balo English Medium School exists to give the children of Salkia, Babudanga, and Pilkhana a school they can be proud of — free of charge, full of possibility, and rooted in the love of the community.
           </p>
           <div className="mt-8 grid sm:grid-cols-2 gap-4">
-            {values.map((v) => (
-              <div
+            {values.map((v, i) => (
+              <motion.div
                 key={v.title}
-                className="flex gap-3 p-4 rounded-2xl bg-background border border-border"
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.06 }}
+                whileHover={{ scale: 1.05, y: -4 }}
+                className="flex gap-3 p-4 rounded-2xl bg-background border border-border cursor-default shadow-soft"
               >
                 <v.icon className="size-5 text-primary shrink-0 mt-1" />
                 <div>
                   <div className="font-semibold text-sm">{v.title}</div>
                   <div className="text-xs text-muted-foreground mt-1">{v.desc}</div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
