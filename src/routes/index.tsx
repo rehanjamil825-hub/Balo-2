@@ -124,18 +124,28 @@ function Hero() {
 
 function Stats() {
   const stats = [
-    { n: "350+", l: "Children Educated" },
-    { n: "20+", l: "Dedicated Staff" },
-    { n: "100%", l: "Free of Cost" },
-    { n: "15+", l: "Years of Service" },
+    { to: 350, suffix: "+", l: "Children Educated" },
+    { to: 20, suffix: "+", l: "Dedicated Staff" },
+    { to: 100, suffix: "%", l: "Free of Cost" },
+    { to: 15, suffix: "+", l: "Years of Service" },
   ];
   return (
     <section className="py-20 gradient-warm">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
         {stats.map((s, i) => (
-          <motion.div key={s.l} initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} custom={i}
-            className="text-center">
-            <div className="font-display text-5xl md:text-6xl font-black text-primary">{s.n}</div>
+          <motion.div
+            key={s.l}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            custom={i}
+            whileHover={{ scale: 1.05 }}
+            className="text-center cursor-default"
+          >
+            <div className="font-display text-5xl md:text-6xl font-black text-primary">
+              <AnimatedCounter to={s.to} suffix={s.suffix} />
+            </div>
             <div className="mt-2 text-sm uppercase tracking-widest text-muted-foreground font-semibold">{s.l}</div>
           </motion.div>
         ))}
