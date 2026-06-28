@@ -188,14 +188,22 @@ function About() {
               { icon: HandHeart, t: "Always Free", d: "No fees. No barriers. Ever." },
               { icon: Users, t: "Community-Run", d: "By the neighbourhood, for the neighbourhood." },
               { icon: Heart, t: "Whole-Child", d: "Books, meals, dignity, joy." },
-            ].map((f) => (
-              <div key={f.t} className="flex gap-3 p-4 rounded-2xl bg-card border border-border">
+            ].map((f, i) => (
+              <motion.div
+                key={f.t}
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.06 }}
+                whileHover={{ scale: 1.05, y: -4 }}
+                className="flex gap-3 p-4 rounded-2xl bg-card border border-border cursor-default shadow-soft"
+              >
                 <f.icon className="size-5 text-primary shrink-0 mt-1" />
                 <div>
                   <div className="font-semibold text-sm">{f.t}</div>
                   <div className="text-xs text-muted-foreground mt-1">{f.d}</div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
