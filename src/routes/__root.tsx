@@ -138,10 +138,12 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Nav />
-      <ScrollManager />
-      <Outlet />
-      <Footer />
+      <LanguageProvider>
+        <Nav />
+        <ScrollManager />
+        <Outlet />
+        <Footer />
+      </LanguageProvider>
     </QueryClientProvider>
   );
 }
