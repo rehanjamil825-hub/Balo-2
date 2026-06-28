@@ -117,7 +117,7 @@ function DevelopersPage() {
                   viewport={{ once: true }}
                   variants={fadeUp}
                   custom={i}
-                  whileHover={{ x: 6 }}
+                  whileHover={{ scale: 1.05, y: -4 }}
                   className="flex items-center gap-4 p-5 rounded-2xl bg-card border border-border shadow-soft"
                 >
                   <div className={`size-14 shrink-0 rounded-2xl bg-gradient-to-br ${m.color} text-white grid place-items-center font-display font-black text-xl`}>
