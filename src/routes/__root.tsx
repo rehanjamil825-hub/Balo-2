@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/Footer";
+import { LanguageProvider } from "../lib/i18n";
 
 function NotFoundComponent() {
   return (
