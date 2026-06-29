@@ -339,15 +339,92 @@ function Staff() {
   );
 }
 
+const volunteers = [
+  {
+    name: "Giulia",
+    country: "Italy",
+    flag: "🇮🇹",
+    quote: "Walking into Balo for the first time felt like coming home. The children's joy is contagious — I left with more than I gave.",
+  },
+  {
+    name: "Aoife",
+    country: "Ireland",
+    flag: "🇮🇪",
+    quote: "What Balo achieves with so little is extraordinary. Every teacher here is a quiet revolution.",
+  },
+  {
+    name: "Michael",
+    country: "USA",
+    flag: "🇺🇸",
+    quote: "I've volunteered in many schools, but the warmth and discipline at Balo are unlike anywhere else. These children will change their world.",
+  },
+  {
+    name: "Sofia",
+    country: "Malaysia",
+    flag: "🇲🇾",
+    quote: "Balo is proof that love, more than money, is what builds great schools.",
+  },
+];
+
+function Volunteers() {
+  return (
+    <section className="py-28 px-6">
+      <div className="max-w-7xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          variants={fadeUp}
+          className="text-center max-w-3xl mx-auto mb-16"
+        >
+          <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">
+            Our Volunteers
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-balance">
+            A family that crosses borders.
+          </h2>
+          <p className="mt-4 text-lg text-muted-foreground">
+            Every year, volunteers from Italy, Ireland, the USA, Malaysia, and many more countries travel to Salkia to teach, mentor, and stand beside our children. They bring fresh ideas, languages, and an open heart — and they leave with stories that stay for a lifetime.
+          </p>
+        </motion.div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {volunteers.map((v, i) => (
+            <motion.div
+              key={v.name}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              custom={i}
+              whileHover={{ y: -6 }}
+              className="rounded-3xl bg-card border border-border shadow-soft p-6 flex flex-col"
+            >
+              <div className="text-4xl mb-3" aria-hidden>{v.flag}</div>
+              <p className="text-sm italic text-muted-foreground leading-relaxed flex-1">"{v.quote}"</p>
+              <div className="mt-5 pt-5 border-t border-border">
+                <div className="font-display font-bold">{v.name}</div>
+                <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mt-1">{v.country}</div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function AboutPage() {
   return (
     <main>
       <Hero />
       <Leadership />
       <Staff />
+      <Volunteers />
       <Mission />
       <SisterOrgs />
       <ImpactQuote />
     </main>
   );
 }
+
