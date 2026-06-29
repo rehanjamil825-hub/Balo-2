@@ -56,11 +56,11 @@ const activities = [
   },
   {
     icon: Activity,
-    title: "Rugby",
+    title: "Football",
     image: rugby,
     season: "Year-round Training",
-    description: "Rugby builds strength, teamwork, and resilience. Our students train regularly and participate in friendly matches, with a strong focus on inclusivity and fair play.",
-    highlights: ["Weekly practice sessions", "Mixed-team participation", "Fitness & coordination", "Inter-school matches"],
+    description: "Football builds strength, teamwork, and resilience. Our boys train regularly and play friendly matches, learning fair play and the joy of being part of a team.",
+    highlights: ["Weekly practice sessions", "Boys' team participation", "Fitness & coordination", "Inter-school matches"],
   },
   {
     icon: PartyPopper,
