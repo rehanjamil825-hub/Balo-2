@@ -18,9 +18,9 @@ export const Route = createFileRoute("/extracurricular")({
   head: () => ({
     meta: [
       { title: "Extracurricular Activities — Balo English Medium School, Howrah" },
-      { name: "description", content: "Discover sports day, summer camp, rugby, and fun fiesta at Balo English Medium School — where learning extends beyond the classroom." },
+      { name: "description", content: "Discover sports day, summer camp, football, and fun fiesta at Balo English Medium School — where learning extends beyond the classroom." },
       { property: "og:title", content: "Extracurricular Activities — Balo English Medium School" },
-      { property: "og:description", content: "Sports day, summer camp, rugby, and fun fiesta at Balo English Medium School, Howrah." },
+      { property: "og:description", content: "Sports day, summer camp, football, and fun fiesta at Balo English Medium School, Howrah." },
       { property: "og:image", content: sportsDay },
     ],
     links: [{ rel: "canonical", href: "/extracurricular" }],
