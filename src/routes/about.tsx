@@ -274,7 +274,7 @@ function SisterOrgs() {
           <a href="https://www.balousa.org/" target="_blank" rel="noopener noreferrer" className="text-accent font-semibold hover:underline">
             Balo USA
           </a>
-          , Ireland, and Malaysia, we raise funds to meet the needs of our students and young women. This year Balo is aiming to raise money to support the annual cost of building costs, teacher salaries, a hot meal daily for 350 students and 20+ staff members, school supplies, uniforms, a safe home for girls in danger, women’s training programs, and micro loans.
+          , Ireland, and Malaysia, we raise funds to meet the needs of our students and young women. This year Balo is aiming to raise money to support the annual cost of building costs, teacher salaries, a hot meal daily for 480 students and 20+ staff members, school supplies, uniforms, a safe home for girls in danger, women’s training programs, and micro loans.
         </p>
         <p className="mt-6 text-lg text-muted-foreground leading-relaxed text-center">
           Beyond the school, our safe and loving home,{" "}
