@@ -33,32 +33,26 @@ const fadeUp = {
 
 const posts = [
   {
+    img: sports,
+    date: "December 2026",
+    tag: "Upcoming",
+    title: "Sports Day 2026 — save the date",
+    excerpt: "Our next Annual Sports Day arrives this December. Expect races, team games, and the whole Balo family cheering from the sidelines.",
+    upcoming: true,
+  },
+  {
+    img: summer,
+    date: "June 2026",
+    tag: "Camp",
+    title: "Summer Camp 2026 — a week of pure imagination",
+    excerpt: "Held this June, our week-long Summer Camp filled the school with art, English conversation circles, science experiments, and outdoor games.",
+  },
+  {
     img: staffAsset.url,
     date: "March 2026",
     tag: "Celebration",
     title: "Color Storm 2026 — A festival of laughter and colour",
-    excerpt: "Our annual Color Storm brought together every student, teacher, and parent for a day of music, dance, and joyful mess. A reminder that joy is the best curriculum.",
-  },
-  {
-    img: sports,
-    date: "January 2026",
-    tag: "Sports",
-    title: "Sports Day: 350 children, 1 spirit",
-    excerpt: "From sack races to rugby finals, our Sports Day showcased the discipline, teamwork, and fearlessness our children carry into every classroom.",
-  },
-  {
-    img: summer,
-    date: "May 2025",
-    tag: "Camp",
-    title: "Summer Camp wraps up a record-breaking month",
-    excerpt: "Two weeks of art, English conversation circles, science experiments and outdoor games — a summer the children will not forget.",
-  },
-  {
-    img: music.url,
-    date: "Ongoing",
-    tag: "Music",
-    title: "Harmonium classes find a second home",
-    excerpt: "Our weekly music sessions are giving children a new language — one made of ragas, rhythm, and pure delight.",
+    excerpt: "Our annual Color Storm brought together every student, teacher, and parent for a day of drawing and painting competitions, colour, and joyful mess. A reminder that joy is the best curriculum.",
   },
   {
     img: funFiesta,
@@ -68,11 +62,32 @@ const posts = [
     excerpt: "Long tables, hundreds of plates, and a school that ate together as one big family — that's our Fun Fiesta in a sentence.",
   },
   {
+    img: summer,
+    date: "May 2025",
+    tag: "Camp",
+    title: "Summer Camp wraps up a record-breaking month",
+    excerpt: "A week of art, English conversation circles, science experiments and outdoor games — a summer the children will not forget.",
+  },
+  {
     img: rugby,
+    date: "March 2022",
+    tag: "Football",
+    title: "Boys take the field: Balo's football revolution",
+    excerpt: "Our football programme taught the boys that strength, courage, and grit grow every time they step onto the pitch.",
+  },
+  {
+    img: sports,
+    date: "January 2022",
+    tag: "Sports",
+    title: "Sports Day: 480 children, 1 spirit",
+    excerpt: "From sack races to football finals, our Sports Day showcased the discipline, teamwork, and fearlessness our children carry into every classroom.",
+  },
+  {
+    img: music.url,
     date: "Ongoing",
-    tag: "Rugby",
-    title: "Girls take the field: Balo's rugby revolution",
-    excerpt: "Our rugby programme is teaching girls and boys alike that strength, courage, and grit belong to every child.",
+    tag: "Music",
+    title: "Harmonium classes find a second home",
+    excerpt: "Our weekly music sessions are giving children a new language — one made of ragas, rhythm, and pure delight.",
   },
 ];
 
@@ -118,7 +133,7 @@ function EventsPage() {
               </div>
               <div className="p-6 flex-1 flex flex-col">
                 <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 text-accent px-2.5 py-1 font-semibold">
+                  <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-semibold ${p.upcoming ? "bg-secondary/20 text-secondary-foreground" : "bg-accent/10 text-accent"}`}>
                     {p.tag}
                   </span>
                   <span className="inline-flex items-center gap-1.5">
@@ -127,9 +142,6 @@ function EventsPage() {
                 </div>
                 <h3 className="font-display text-xl font-bold leading-snug">{p.title}</h3>
                 <p className="mt-3 text-sm text-muted-foreground leading-relaxed flex-1">{p.excerpt}</p>
-                <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                  Read more <ArrowRight className="size-4" />
-                </div>
               </div>
             </motion.article>
           ))}
