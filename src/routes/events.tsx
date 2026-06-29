@@ -133,7 +133,7 @@ function EventsPage() {
               </div>
               <div className="p-6 flex-1 flex flex-col">
                 <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 text-accent px-2.5 py-1 font-semibold">
+                  <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-semibold ${p.upcoming ? "bg-secondary/20 text-secondary-foreground" : "bg-accent/10 text-accent"}`}>
                     {p.tag}
                   </span>
                   <span className="inline-flex items-center gap-1.5">
@@ -142,9 +142,6 @@ function EventsPage() {
                 </div>
                 <h3 className="font-display text-xl font-bold leading-snug">{p.title}</h3>
                 <p className="mt-3 text-sm text-muted-foreground leading-relaxed flex-1">{p.excerpt}</p>
-                <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                  Read more <ArrowRight className="size-4" />
-                </div>
               </div>
             </motion.article>
           ))}
