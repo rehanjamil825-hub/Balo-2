@@ -10,9 +10,9 @@ import director from "@/assets/director.jpg";
 import principal from "@/assets/principal.jpg";
 import hero from "@/assets/hero-classroom.jpg";
 import group from "@/assets/group-students.jpg";
-import staffAsset from "@/assets/staff-group.jpg.asset.json";
+import staffAsset from "@/assets/staff-group.jpg";
 
-const staffGroup = staffAsset.url;
+const staffGroup = staffAsset;
 
 export const Route = createFileRoute("/about")({
   head: () => ({

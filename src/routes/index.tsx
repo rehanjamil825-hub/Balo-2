@@ -14,15 +14,15 @@ import portrait from "@/assets/student-portrait.jpg";
 import playground from "@/assets/playground.jpg";
 import hands from "@/assets/raised-hands.jpg";
 import books from "@/assets/books.jpg";
-import classroom1Asset from "@/assets/classroom-1.jpg.asset.json";
-import classroom2Asset from "@/assets/classroom-2.jpg.asset.json";
-import bannerAsset from "@/assets/balo-banner.png.asset.json";
+import classroom1Asset from "@/assets/classroom-1.jpg";
+import classroom2Asset from "@/assets/classroom-2.jpg";
+import bannerAsset from "@/assets/balo-banner.png";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { LazyImage } from "@/components/LazyImage";
 
-const classroom1 = classroom1Asset.url;
-const classroom2 = classroom2Asset.url;
-const banner = bannerAsset.url;
+const classroom1 = classroom1Asset;
+const classroom2 = classroom2Asset;
+const banner = bannerAsset;
 
 export const Route = createFileRoute("/")({
   head: () => ({
