@@ -8,15 +8,15 @@ import {
 import library from "@/assets/library.jpg";
 import computerLab from "@/assets/computer-lab.jpg";
 import scienceLab from "@/assets/science-lab.jpg";
-import smartClassAsset from "@/assets/smart-class-new.jpg.asset.json";
+import smartClassAsset from "@/assets/smart-class-new.jpg";
 import acClassroom from "@/assets/ac-classroom.jpg";
-import healthcareAsset from "@/assets/healthcare.jpg.asset.json";
-import mealAsset from "@/assets/meal.jpg.asset.json";
+import healthcareAsset from "@/assets/healthcare.jpg";
+import mealAsset from "@/assets/meal.jpg";
 import hero from "@/assets/classroom-reading.jpg";
 
-const smartClass = smartClassAsset.url;
-const healthcare = healthcareAsset.url;
-const meal = mealAsset.url;
+const smartClass = smartClassAsset;
+const healthcare = healthcareAsset;
+const meal = mealAsset;
 
 export const Route = createFileRoute("/facilities")({
   head: () => ({

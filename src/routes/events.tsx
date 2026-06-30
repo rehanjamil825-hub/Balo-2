@@ -4,10 +4,10 @@ import { Calendar, MapPin, ArrowRight, Sparkles } from "lucide-react";
 
 import sports from "@/assets/sports-day.jpg";
 import summer from "@/assets/summer-camp.jpg";
-import music from "@/assets/music.jpg.asset.json";
+import music from "@/assets/music.jpg";
 import funFiesta from "@/assets/fun-fiesta.jpg";
 import rugby from "@/assets/rugby.jpg";
-import staffAsset from "@/assets/staff-group.jpg.asset.json";
+import staffAsset from "@/assets/staff-group.jpg";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
@@ -48,7 +48,7 @@ const posts = [
     excerpt: "Held this June, our week-long Summer Camp filled the school with art, English conversation circles, science experiments, and outdoor games.",
   },
   {
-    img: staffAsset.url,
+    img: staffAsset,
     date: "March 2026",
     tag: "Celebration",
     title: "Color Storm 2026 — A festival of laughter and colour",
@@ -83,7 +83,7 @@ const posts = [
     excerpt: "From sack races to football finals, our Sports Day showcased the discipline, teamwork, and fearlessness our children carry into every classroom.",
   },
   {
-    img: music.url,
+    img: music,
     date: "Ongoing",
     tag: "Music",
     title: "Harmonium classes find a second home",

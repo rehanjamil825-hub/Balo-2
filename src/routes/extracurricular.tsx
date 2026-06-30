@@ -9,10 +9,10 @@ import sportsDay from "@/assets/sports-day.jpg";
 import summerCamp from "@/assets/summer-camp.jpg";
 import rugby from "@/assets/rugby.jpg";
 import funFiesta from "@/assets/fun-fiesta.jpg";
-import musicAsset from "@/assets/music.jpg.asset.json";
+import musicAsset from "@/assets/music.jpg";
 import hero from "@/assets/playground.jpg";
 
-const music = musicAsset.url;
+const music = musicAsset;
 
 export const Route = createFileRoute("/extracurricular")({
   head: () => ({

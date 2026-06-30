@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Code2, Code, Heart, Sparkles } from "lucide-react";
 
-import developers from "@/assets/developers-new.jpg.asset.json";
+import developers from "@/assets/developers-new.jpg";
 
 export const Route = createFileRoute("/developers")({
   head: () => ({
@@ -11,7 +11,7 @@ export const Route = createFileRoute("/developers")({
       { name: "description", content: "Meet the developers behind the Balo English Medium School website: Rehan Jamil, Shahil Sharma, and Shibran Khatoon." },
       { property: "og:title", content: "Developers — Balo English Medium School" },
       { property: "og:description", content: "The team that built this website with love for Balo English Medium School." },
-      { property: "og:image", content: developers.url },
+      { property: "og:image", content: developers },
     ],
     links: [{ rel: "canonical", href: "/developers" }],
   }),
@@ -82,7 +82,7 @@ function DevelopersPage() {
           >
             <div className="absolute -inset-4 gradient-warm rounded-[2rem] -z-10 blur-2xl opacity-60" />
             <img
-              src={developers.url}
+              src={developers}
               alt="Rehan Jamil, Shahil Sharma, and Shibran Khatoon — the development team"
               width={1080}
               height={1440}
