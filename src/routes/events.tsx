@@ -16,7 +16,6 @@ import picnicTrain from "@/assets/drive-gallery2-11.jpg";
 import presentationOne from "@/assets/drive-gallery2-16.jpg";
 import presentationTwo from "@/assets/drive-gallery2-17.jpg";
 import sportsPodium from "@/assets/drive-gallery2-04.jpg";
-import volunteerClass from "@/assets/drive-gallery2-12.jpg";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
