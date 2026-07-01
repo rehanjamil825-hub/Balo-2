@@ -1,13 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Calendar, MapPin, ArrowRight, Sparkles } from "lucide-react";
+import { Calendar, MapPin, ArrowRight, Sparkles, X } from "lucide-react";
+import { useState } from "react";
 
 import sports from "@/assets/sports-day.jpg";
 import summer from "@/assets/summer-camp.jpg";
-import music from "@/assets/music.jpg";
 import funFiesta from "@/assets/fun-fiesta.jpg";
-import rugby from "@/assets/rugby.jpg";
-import staffAsset from "@/assets/staff-group.jpg";
+import football from "@/assets/rugby.jpg";
+import colorStorm from "@/assets/staff-group.jpg";
+import music from "@/assets/music.jpg";
+import womensDay from "@/assets/drive-gallery2-03.jpg";
+import womensDayGroup from "@/assets/drive-gallery2-05.jpg";
+import picnic from "@/assets/drive-gallery2-13.jpg";
+import picnicTrain from "@/assets/drive-gallery2-11.jpg";
+import presentationOne from "@/assets/drive-gallery2-16.jpg";
+import presentationTwo from "@/assets/drive-gallery2-17.jpg";
+import sportsPodium from "@/assets/drive-gallery2-04.jpg";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
@@ -15,7 +23,7 @@ export const Route = createFileRoute("/events")({
       { title: "Events & Stories — Balo English Medium School" },
       { name: "description", content: "Latest events, celebrations, and stories from Balo English Medium School in Howrah." },
       { property: "og:title", content: "Events & Stories — Balo English Medium School" },
-      { property: "og:description", content: "Annual Sports Day, Summer Camp, Color Storm and more — see what's happening at Balo." },
+      { property: "og:description", content: "Annual Sports Day, Summer Camp, Color Storm, Picnic, Women's Day and more — see what's happening at Balo." },
       { property: "og:image", content: sports },
     ],
     links: [{ rel: "canonical", href: "/events" }],
@@ -23,75 +31,119 @@ export const Route = createFileRoute("/events")({
   component: EventsPage,
 });
 
+type EventPost = {
+  img: string;
+  gallery?: string[];
+  date: string;
+  tag: string;
+  title: string;
+  excerpt: string;
+  details: string;
+  upcoming?: boolean;
+};
+
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   show: (i = 0) => ({
-    opacity: 1, y: 0,
+    opacity: 1,
+    y: 0,
     transition: { duration: 0.7, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
 
-const posts = [
+const posts: EventPost[] = [
   {
     img: sports,
+    gallery: [sports, sportsPodium],
     date: "December 2026",
     tag: "Upcoming",
     title: "Sports Day 2026 — save the date",
-    excerpt: "Our next Annual Sports Day arrives this December. Expect races, team games, and the whole Balo family cheering from the sidelines.",
+    excerpt: "Our next Annual Sports Day arrives this December with races, games, music, guests, and the whole Balo family cheering together.",
     upcoming: true,
+    details: "Sports Day 2026 will bring the full Balo community together for one of the most joyful days of the school year. Students, teachers, parents, ex-students, guests, and volunteers from different countries will gather to celebrate confidence, teamwork, and healthy competition. The programme will include instrumental music, singing, dance, a mock drill, and energetic games such as 200m running, spoon racing, sack racing, catch the balloon, memory game, fill the bucket with sponge, and many more activities. It will also be a time to honour leaving students with a warm farewell, so they feel remembered as part of the Balo family. More than winning, the day is about courage, discipline, laughter, and every child feeling proud to stand before the community.",
   },
   {
     img: summer,
+    gallery: [summer, presentationOne, presentationTwo],
     date: "June 2026",
     tag: "Camp",
     title: "Summer Camp 2026 — a week of pure imagination",
-    excerpt: "Held this June, our week-long Summer Camp filled the school with art, English conversation circles, science experiments, and outdoor games.",
+    excerpt: "Held this June, our week-long Summer Camp filled the school with art, creative design, presentations, games, and confident student voices.",
+    details: "Summer Camp 2026 gave students a bright, structured week of learning beyond regular classes. The camp runs five days in a week, with a fresh topic and activity each day so children can discover new interests. Students explored drawing, art and craft, creative designs, and group projects that helped them work with imagination and patience. Talent show sessions gave children space to sing, speak, perform, and show skills that are not always visible in the classroom. Movie day brought fun and reflection, while non-fire cooking encouraged teamwork, hygiene, and practical life skills. The camp also included smart-class presentations where students watched and discussed ideas together. It was a week of confidence-building, friendship, and joyful learning.",
   },
   {
-    img: staffAsset,
+    img: colorStorm,
     date: "March 2026",
-    tag: "Celebration",
-    title: "Color Storm 2026 — A festival of laughter and colour",
-    excerpt: "Our annual Color Storm brought together every student, teacher, and parent for a day of drawing and painting competitions, colour, and joyful mess. A reminder that joy is the best curriculum.",
+    tag: "Art",
+    title: "Color Storm 2026 — creativity with purpose",
+    excerpt: "Our inter-school drawing and painting competition became a colourful exhibition of handmade work, student confidence, and community support.",
+    details: "Color Storm 2026 celebrated the artistic side of Balo through an inter-school drawing and painting competition. Students prepared with great care, using colour, imagination, and observation to express their ideas on paper. The event also included an art exhibition where children displayed creative handmade objects made with patience and teamwork. These objects were arranged for visitors to see and buy, helping students understand the value of effort, presentation, and creativity. Teachers guided the children, but the confidence came from the students themselves. Color Storm was not only about colourful walls and happy faces; it was about giving children a platform to be seen as artists, makers, and young people with original ideas worth celebrating.",
   },
   {
     img: funFiesta,
     date: "December 2025",
     tag: "Fun Fiesta",
-    title: "Fun Fiesta: a feast of food and friendship",
-    excerpt: "Long tables, hundreds of plates, and a school that ate together as one big family — that's our Fun Fiesta in a sentence.",
+    title: "Fun Fiesta: stalls, food, games and friendship",
+    excerpt: "Students organised stalls where they sold food, games, and handmade objects, turning the school into a joyful community fair.",
+    details: "Fun Fiesta is one of Balo's most lively student-led events. Children work in groups to plan and organise stalls where they sell food, games, small handmade objects, and fun activities for visitors. The event teaches responsibility in a natural way: students discuss ideas, arrange materials, speak to guests, handle simple counting, and learn how cooperation makes a stall successful. Teachers guide them, but the excitement belongs to the children. Families, staff, volunteers, and friends come together around long tables, shared plates, and cheerful noise. Fun Fiesta turns the school into a small festival where students learn confidence, communication, and teamwork while enjoying the happiness of serving others and celebrating as one Balo family.",
   },
   {
     img: summer,
+    gallery: [summer, presentationOne],
     date: "May 2025",
     tag: "Camp",
-    title: "Summer Camp wraps up a record-breaking month",
-    excerpt: "A week of art, English conversation circles, science experiments and outdoor games — a summer the children will not forget.",
+    title: "Summer Camp wraps up a week of discovery",
+    excerpt: "A week of drawing, art and craft, talent shows, movie day, non-fire cooking, conversation circles, and outdoor games.",
+    details: "The 2025 Summer Camp gave children a memorable week filled with activities that stretched their imagination and confidence. It happened five days in a week, with a different theme each day to keep the atmosphere fresh and exciting. Students spent time on drawing, art and craft, and creative designs, making colourful work with their own hands. Talent shows allowed them to sing, act, speak, dance, and share hidden abilities in front of friends. Movie day brought relaxation and discussion, while non-fire cooking helped them learn safety, cleanliness, and teamwork. Every activity was planned to make children feel capable, expressive, and happy. The camp proved that learning can be serious, useful, and full of joy at the same time.",
   },
   {
-    img: rugby,
+    img: picnic,
+    gallery: [picnic, picnicTrain],
+    date: "January 2024",
+    tag: "Picnic",
+    title: "Picnic 2024 — a day outside the classroom",
+    excerpt: "Students travelled, played, wore flower crowns, shared food, and enjoyed a day of friendship beyond the school walls.",
+    details: "The January 2024 picnic gave Balo students a beautiful chance to experience learning outside the classroom. For many children, travelling together by train and spending a full day with friends felt like a special adventure. Students wore flower head crowns, played games, shared snacks, laughed with teachers, and enjoyed the freedom of open space. Picnics are important because they create memories children carry for years; they also teach discipline, care for one another, and confidence in public places. Teachers and volunteers stayed close to every group, making sure the day remained safe and joyful. The picnic reminded everyone that education is not only books and exams. It is also friendship, wonder, movement, and discovering the world together.",
+  },
+  {
+    img: womensDay,
+    gallery: [womensDay, womensDayGroup],
+    date: "March 2023",
+    tag: "Celebration",
+    title: "Women's Day Celebration 2023",
+    excerpt: "Students honoured women with performances, posters, and a joyful celebration of courage, education, dignity, and leadership.",
+    details: "The Women's Day Celebration in March 2023 was a meaningful event for Balo because the school itself has grown through the leadership and care of strong women. Students prepared the space with a Happy Women's Day banner, posters, decorations, and performances that honoured mothers, teachers, girls, and women who guide the community. The celebration encouraged children to speak about respect, equality, safety, and education for every girl. Students stood together, performed with confidence, and learned that Women's Day is not only a calendar event; it is a reminder to value courage and dignity every day. The programme also connected with Balo's wider work for young women through safe shelter, training, and opportunities for an independent future.",
+  },
+  {
+    img: football,
     date: "March 2022",
     tag: "Football",
-    title: "Boys take the field: Balo's football revolution",
-    excerpt: "Our football programme taught the boys that strength, courage, and grit grow every time they step onto the pitch.",
+    title: "Boys take the field: Balo's football match",
+    excerpt: "Balo organised a boys' football game where students played with volunteers from other countries and learned teamwork on the field.",
+    details: "In March 2022, Balo organised a football game where the boys played with volunteers from other countries. The match gave students a chance to test their energy, coordination, and courage in a friendly setting. Football is powerful because it teaches lessons that fit both school and life: passing at the right time, trusting teammates, accepting mistakes, following rules, and continuing even when tired. The volunteers brought enthusiasm and encouragement, while the students brought speed, laughter, and determination. For the boys, the event was not only a game; it was a moment of pride and connection with people from beyond their neighbourhood. The football match showed how sport can build friendship without needing many words.",
   },
   {
     img: sports,
+    gallery: [sports, sportsPodium],
     date: "January 2022",
     tag: "Sports",
-    title: "Sports Day: 480 children, 1 spirit",
-    excerpt: "From sack races to football finals, our Sports Day showcased the discipline, teamwork, and fearlessness our children carry into every classroom.",
+    title: "Sports Day: 480 children, one spirit",
+    excerpt: "From races and games to dance, singing, mock drill, and farewells, Sports Day brought students, parents, teachers, and guests together.",
+    details: "Sports Day 2022 was a proud celebration of energy, discipline, and togetherness at Balo English Medium School. The day included instrumental music, singing, dance, a mock drill, and a wide range of games such as 200m running, spoon racing, sack racing, catch the balloon, memory game, fill the bucket with sponge, and many more. Students, teachers, and parents all participated, which made the event feel like a true community festival. Guests, volunteers from different countries, and ex-students were also invited, adding warmth and encouragement. The programme included a farewell for leaving students, reminding them that Balo remains part of their story. Sports Day showed that every child can learn courage, fairness, patience, and teamwork while having fun.",
   },
   {
     img: music,
     date: "Ongoing",
     tag: "Music",
     title: "Harmonium classes find a second home",
-    excerpt: "Our weekly music sessions are giving children a new language — one made of ragas, rhythm, and pure delight.",
+    excerpt: "Weekly music sessions give children a new language made of ragas, rhythm, listening, discipline, and pure delight.",
+    details: "Music at Balo gives children a gentle and joyful way to express themselves. Harmonium classes help students listen carefully, follow rhythm, remember patterns, and sing with confidence. For children who may be shy in regular lessons, music often becomes a doorway to participation. The sessions also teach discipline because every note needs patience and practice. Students learn to sit together, respect the instrument, follow the teacher, and encourage one another. Over time, music becomes part of school celebrations, assemblies, and cultural programmes, giving children a chance to perform for friends and family. These classes remind students that education includes the heart as well as the mind, and that beauty can be learned step by step.",
   },
 ];
 
 function EventsPage() {
+  const [selected, setSelected] = useState<EventPost | null>(null);
+
   return (
     <main className="pt-24">
       <section className="py-20 px-6 gradient-hero text-white">
@@ -142,6 +194,13 @@ function EventsPage() {
                 </div>
                 <h3 className="font-display text-xl font-bold leading-snug">{p.title}</h3>
                 <p className="mt-3 text-sm text-muted-foreground leading-relaxed flex-1">{p.excerpt}</p>
+                <button
+                  type="button"
+                  onClick={() => setSelected(p)}
+                  className="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-soft transition-transform hover:scale-105"
+                >
+                  Read more <ArrowRight className="size-4" />
+                </button>
               </div>
             </motion.article>
           ))}
@@ -166,6 +225,44 @@ function EventsPage() {
           </a>
         </motion.div>
       </section>
+
+      {selected && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/75 p-4 backdrop-blur-sm" onClick={() => setSelected(null)}>
+          <motion.div
+            initial={{ opacity: 0, y: 24, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            className="max-h-[88vh] w-full max-w-4xl overflow-y-auto rounded-3xl bg-card shadow-card"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="relative aspect-[16/9] overflow-hidden rounded-t-3xl">
+              <img src={selected.img} alt={selected.title} className="size-full object-cover" />
+              <button
+                type="button"
+                onClick={() => setSelected(null)}
+                aria-label="Close event details"
+                className="absolute right-4 top-4 rounded-full bg-card/90 p-2 text-foreground shadow-soft transition-transform hover:scale-105"
+              >
+                <X className="size-5" />
+              </button>
+            </div>
+            <div className="p-6 md:p-8">
+              <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                <span className="rounded-full bg-accent/10 px-3 py-1 font-semibold text-accent">{selected.tag}</span>
+                <span className="inline-flex items-center gap-1.5"><Calendar className="size-4" /> {selected.date}</span>
+              </div>
+              <h2 className="mt-4 text-3xl md:text-4xl font-bold text-balance">{selected.title}</h2>
+              <p className="mt-5 text-base md:text-lg leading-relaxed text-muted-foreground">{selected.details}</p>
+              {selected.gallery && selected.gallery.length > 1 && (
+                <div className="mt-7 grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {selected.gallery.map((img, index) => (
+                    <img key={`${selected.title}-${index}`} src={img} alt={`${selected.title} moment ${index + 1}`} className="aspect-[4/3] rounded-2xl object-cover" loading="lazy" />
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      )}
     </main>
   );
 }

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BookOpen, Heart, Users, Star, MapPin, Phone, Mail, ArrowRight,
   Sparkles, HandHeart, Quote,
@@ -17,6 +17,16 @@ import books from "@/assets/books.jpg";
 import classroom1Asset from "@/assets/classroom-1.jpg";
 import classroom2Asset from "@/assets/classroom-2.jpg";
 import bannerAsset from "@/assets/balo-banner.png";
+import smartPresentation from "@/assets/drive-gallery2-16.jpg";
+import sportsPodium from "@/assets/drive-gallery2-04.jpg";
+import picnicFlower from "@/assets/drive-gallery2-13.jpg";
+import picnicTrain from "@/assets/drive-gallery2-11.jpg";
+import womensDayBanner from "@/assets/drive-gallery2-03.jpg";
+import womensDayGroup from "@/assets/drive-gallery2-05.jpg";
+import happySeason from "@/assets/drive-gallery2-02.jpg";
+import studentAssembly from "@/assets/drive-gallery2-07.jpg";
+import nonFireCooking from "@/assets/drive-gallery2-10.jpg";
+import studentProfileNew from "@/assets/drive-gallery2-18.png";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { LazyImage } from "@/components/LazyImage";
 
@@ -54,6 +64,67 @@ const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.7, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] as const } }),
 };
+
+const heroSlides = [
+  { src: smartPresentation, title: "Smart Classes", desc: "Students learning through projector presentations." },
+  { src: sportsPodium, title: "Sports Day", desc: "Play, ranking ladders, awards, and wellbeing." },
+  { src: picnicFlower, title: "Picnic", desc: "Flower crowns, travel, games, and friendship." },
+  { src: picnicTrain, title: "Picnic Journey", desc: "Students discovering the world together by train." },
+  { src: womensDayBanner, title: "Women's Day", desc: "Celebrating dignity, courage, and education." },
+  { src: womensDayGroup, title: "Celebration", desc: "Students standing together for Women's Day." },
+];
+
+function HeroCarousel() {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActive((current) => (current + 1) % heroSlides.length);
+    }, 3500);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="relative overflow-hidden rounded-[2rem] border border-white/20 bg-white/10 p-3 shadow-card backdrop-blur">
+      <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem]">
+        {heroSlides.map((slide, index) => (
+          <motion.img
+            key={slide.title}
+            src={slide.src}
+            alt={`${slide.title} at Balo English Medium School`}
+            className="absolute inset-0 size-full object-cover"
+            initial={false}
+            animate={{ opacity: active === index ? 1 : 0, scale: active === index ? 1 : 1.06 }}
+            transition={{ duration: 0.9 }}
+          />
+        ))}
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent" />
+        <motion.div
+          key={heroSlides[active].title}
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="absolute bottom-0 left-0 right-0 p-6 text-white"
+        >
+          <div className="text-xs uppercase tracking-[0.25em] text-secondary font-bold">Photo Highlights</div>
+          <h3 className="mt-2 font-display text-3xl font-bold">{heroSlides[active].title}</h3>
+          <p className="mt-1 text-sm text-white/85">{heroSlides[active].desc}</p>
+        </motion.div>
+      </div>
+      <div className="mt-3 flex justify-center gap-2">
+        {heroSlides.map((slide, index) => (
+          <button
+            key={slide.title}
+            type="button"
+            aria-label={`Show ${slide.title}`}
+            onClick={() => setActive(index)}
+            className={`h-2 rounded-full transition-all ${active === index ? "w-8 bg-secondary" : "w-2 bg-white/50"}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 
 function Hero() {
@@ -99,19 +170,7 @@ function Hero() {
         <div className="lg:col-span-5 relative hidden lg:block">
           <motion.div initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.9, delay: 0.3 }}
             className="relative">
-            <div className="grid grid-cols-2 gap-4">
-              <motion.img animate={{ y: [0, -12, 0] }} transition={{ duration: 6, repeat: Infinity }}
-                src={portrait} alt="" width={900} height={1100} loading="lazy"
-                className="rounded-3xl shadow-card aspect-[3/4] object-cover" />
-              <div className="space-y-4 pt-12">
-                <motion.img animate={{ y: [0, 12, 0] }} transition={{ duration: 7, repeat: Infinity }}
-                  src={reading} alt="" width={1200} height={900} loading="lazy"
-                  className="rounded-3xl shadow-card aspect-square object-cover" />
-                <motion.img animate={{ y: [0, -8, 0] }} transition={{ duration: 5, repeat: Infinity }}
-                  src={books} alt="" width={1200} height={900} loading="lazy"
-                  className="rounded-3xl shadow-card aspect-square object-cover" />
-              </div>
-            </div>
+            <HeroCarousel />
           </motion.div>
         </div>
       </div>
@@ -257,6 +316,10 @@ function Gallery() {
     { src: classroom2, span: "md:col-span-2", a: "Students reading" },
     { src: teacher, span: "", a: "Teacher and class" },
     { src: books, span: "", a: "Books" },
+    { src: happySeason, span: "md:col-span-2", a: "Seasonal celebration" },
+    { src: studentAssembly, span: "", a: "Students gathered for a school activity" },
+    { src: nonFireCooking, span: "", a: "Non-fire cooking activity" },
+    { src: studentProfileNew, span: "", a: "Balo student portrait" },
   ];
   return (
     <section id="gallery" className="py-28 px-6">

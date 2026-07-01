@@ -11,6 +11,13 @@ import principal from "@/assets/principal.jpg";
 import hero from "@/assets/hero-classroom.jpg";
 import group from "@/assets/group-students.jpg";
 import staffAsset from "@/assets/staff-group.jpg";
+import volunteerCertificate from "@/assets/drive-gallery2-01.jpg";
+import volunteerLaptop from "@/assets/drive-gallery2-06.jpg";
+import volunteerTeaching from "@/assets/drive-gallery2-12.jpg";
+import volunteerCircleOne from "@/assets/drive-gallery2-09.jpg";
+import volunteerCircleTwo from "@/assets/drive-gallery2-15.jpg";
+import volunteerGift from "@/assets/drive-gallery2-14.jpg";
+import volunteerCurly from "@/assets/drive-gallery2-08.jpg";
 
 const staffGroup = staffAsset;
 
@@ -341,29 +348,46 @@ function Staff() {
 
 const volunteers = [
   {
-    name: "Giulia",
+    name: "Amanda",
     country: "Italy",
     flag: "🇮🇹",
+    image: volunteerCertificate,
     quote: "Walking into Balo for the first time felt like coming home. The children's joy is contagious — I left with more than I gave.",
   },
   {
-    name: "Aoife",
+    name: "Liam",
     country: "Ireland",
     flag: "🇮🇪",
+    image: volunteerTeaching,
     quote: "What Balo achieves with so little is extraordinary. Every teacher here is a quiet revolution.",
   },
   {
-    name: "Michael",
-    country: "USA",
-    flag: "🇺🇸",
+    name: "Albi",
+    country: "Italy",
+    flag: "🇮🇹",
+    image: volunteerCircleOne,
     quote: "I've volunteered in many schools, but the warmth and discipline at Balo are unlike anywhere else. These children will change their world.",
   },
   {
     name: "Sofia",
-    country: "Malaysia",
-    flag: "🇲🇾",
+    country: "Italy",
+    flag: "🇮🇹",
+    image: volunteerGift,
     quote: "Balo is proof that love, more than money, is what builds great schools.",
   },
+  {
+    name: "Julie",
+    country: "Malaysia",
+    flag: "🇲🇾",
+    image: volunteerCurly,
+    quote: "The students welcomed me with so much affection. Balo shows how education, safety, and kindness can grow together.",
+  },
+];
+
+const volunteerMoments = [
+  { image: volunteerLaptop, caption: "Mentoring students through laptop-based activities" },
+  { image: volunteerCircleTwo, caption: "Circle games and confidence-building sessions" },
+  { image: volunteerTeaching, caption: "Classroom workshops led by international volunteers" },
 ];
 
 function Volunteers() {
@@ -388,7 +412,7 @@ function Volunteers() {
           </p>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
           {volunteers.map((v, i) => (
             <motion.div
               key={v.name}
@@ -398,15 +422,36 @@ function Volunteers() {
               variants={fadeUp}
               custom={i}
               whileHover={{ y: -6 }}
-              className="rounded-3xl bg-card border border-border shadow-soft p-6 flex flex-col"
+              className="rounded-3xl bg-card border border-border shadow-soft overflow-hidden flex flex-col"
             >
-              <div className="text-4xl mb-3" aria-hidden>{v.flag}</div>
-              <p className="text-sm italic text-muted-foreground leading-relaxed flex-1">"{v.quote}"</p>
-              <div className="mt-5 pt-5 border-t border-border">
-                <div className="font-display font-bold">{v.name}</div>
-                <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mt-1">{v.country}</div>
+              <img src={v.image} alt={`${v.name}, volunteer from ${v.country}`} className="aspect-[4/3] w-full object-cover" loading="lazy" />
+              <div className="p-5 flex flex-1 flex-col">
+                <div className="text-4xl mb-3" aria-hidden>{v.flag}</div>
+                <p className="text-sm italic text-muted-foreground leading-relaxed flex-1">"{v.quote}"</p>
+                <div className="mt-5 pt-5 border-t border-border">
+                  <div className="font-display font-bold">{v.name}</div>
+                  <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mt-1">{v.country}</div>
+                </div>
               </div>
             </motion.div>
+          ))}
+        </div>
+
+        <div className="mt-10 grid md:grid-cols-3 gap-6">
+          {volunteerMoments.map((moment, i) => (
+            <motion.figure
+              key={moment.caption}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              custom={i}
+              whileHover={{ y: -6, scale: 1.02 }}
+              className="rounded-3xl overflow-hidden bg-card border border-border shadow-soft"
+            >
+              <img src={moment.image} alt={moment.caption} className="aspect-[4/3] w-full object-cover" loading="lazy" />
+              <figcaption className="p-5 text-sm font-semibold text-muted-foreground">{moment.caption}</figcaption>
+            </motion.figure>
           ))}
         </div>
       </div>
