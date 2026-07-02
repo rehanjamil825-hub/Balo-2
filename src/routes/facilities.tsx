@@ -130,6 +130,41 @@ function Hero() {
   );
 }
 
+function FacilityCarousel({ images, title }: { images: string[]; title: string }) {
+  const [active, setActive] = useState(0);
+  useEffect(() => {
+    const t = window.setInterval(() => setActive((i) => (i + 1) % images.length), 3200);
+    return () => window.clearInterval(t);
+  }, [images.length]);
+  return (
+    <div className="relative size-full">
+      {images.map((src, i) => (
+        <motion.img
+          key={src}
+          src={src}
+          alt={`${title} ${i + 1}`}
+          loading="lazy"
+          initial={false}
+          animate={{ opacity: active === i ? 1 : 0, scale: active === i ? 1 : 1.04 }}
+          transition={{ duration: 0.9 }}
+          className="absolute inset-0 size-full object-cover"
+        />
+      ))}
+      <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
+        {images.map((src, i) => (
+          <button
+            key={src}
+            type="button"
+            aria-label={`Show ${title} image ${i + 1}`}
+            onClick={() => setActive(i)}
+            className={`h-1.5 rounded-full transition-all ${active === i ? "w-6 bg-white" : "w-1.5 bg-white/60"}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function FacilitiesGrid() {
   return (
     <section className="py-28 px-6">
