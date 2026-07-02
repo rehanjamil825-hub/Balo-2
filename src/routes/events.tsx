@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Calendar, MapPin, ArrowRight, Sparkles, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import sports from "@/assets/sports-day.jpg";
 import summer from "@/assets/summer-camp.jpg";
@@ -16,6 +16,7 @@ import picnicTrain from "@/assets/drive-gallery2-11.jpg";
 import presentationOne from "@/assets/drive-gallery2-16.jpg";
 import presentationTwo from "@/assets/drive-gallery2-17.jpg";
 import sportsPodium from "@/assets/drive-gallery2-04.jpg";
+import trophiesBg from "@/assets/trophies-bg.jpg";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
