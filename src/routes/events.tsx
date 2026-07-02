@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Calendar, MapPin, ArrowRight, Sparkles, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import sports from "@/assets/sports-day.jpg";
 import summer from "@/assets/summer-camp.jpg";
@@ -16,6 +16,7 @@ import picnicTrain from "@/assets/drive-gallery2-11.jpg";
 import presentationOne from "@/assets/drive-gallery2-16.jpg";
 import presentationTwo from "@/assets/drive-gallery2-17.jpg";
 import sportsPodium from "@/assets/drive-gallery2-04.jpg";
+import trophiesBg from "@/assets/trophies-bg.jpg";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
@@ -144,10 +145,26 @@ const posts: EventPost[] = [
 function EventsPage() {
   const [selected, setSelected] = useState<EventPost | null>(null);
 
+  // Lock background page scroll while the read-more modal is open so wheel/touch scrolling
+  // stays inside the modal instead of moving the events list beneath it.
+  useEffect(() => {
+    if (!selected) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [selected]);
+
   return (
     <main className="pt-24">
-      <section className="py-20 px-6 gradient-hero text-white">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative py-20 px-6 overflow-hidden text-white">
+        <img
+          src={trophiesBg}
+          alt=""
+          aria-hidden
+          className="absolute inset-0 size-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/75 to-accent/80" />
+        <div className="relative max-w-7xl mx-auto">
           <motion.div initial="hidden" animate="show" variants={fadeUp}>
             <div className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur px-4 py-1.5 text-xs font-semibold mb-6">
               <Sparkles className="size-3.5" /> News from Salkia

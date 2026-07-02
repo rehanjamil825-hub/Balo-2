@@ -27,6 +27,7 @@ import happySeason from "@/assets/drive-gallery2-02.jpg";
 import studentAssembly from "@/assets/drive-gallery2-07.jpg";
 import nonFireCooking from "@/assets/drive-gallery2-10.jpg";
 import studentProfileNew from "@/assets/drive-gallery2-18.png";
+import communityVoiceBg from "@/assets/community-voice.png";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { LazyImage } from "@/components/LazyImage";
 
@@ -185,7 +186,7 @@ function Hero() {
 
 function Stats() {
   const stats = [
-    { to: 480, suffix: "+", l: "Children Educated" },
+    { to: 480, suffix: "+", l: "Students" },
     { to: 20, suffix: "+", l: "Dedicated Staff" },
     { to: 100, suffix: "%", l: "Free of Cost" },
     { to: 15, suffix: "+", l: "Years of Service" },
@@ -352,7 +353,15 @@ function Gallery() {
 
 function Impact() {
   return (
-    <section id="impact" className="py-28 px-6 relative overflow-hidden gradient-hero text-white">
+    <section id="impact" className="py-28 px-6 relative overflow-hidden text-white">
+      <img
+        src={communityVoiceBg}
+        alt=""
+        aria-hidden
+        className="absolute inset-0 size-full object-cover"
+        loading="lazy"
+      />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/80 to-accent/85" />
       <div className="absolute inset-0 opacity-20" style={{
         backgroundImage: "radial-gradient(circle at 20% 20%, white 1px, transparent 1px), radial-gradient(circle at 80% 60%, white 1px, transparent 1px)",
         backgroundSize: "40px 40px, 60px 60px",

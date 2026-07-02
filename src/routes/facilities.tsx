@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BookOpen, Monitor, FlaskConical, Presentation, Wind, Stethoscope, UtensilsCrossed, CheckCircle2,
 } from "lucide-react";
@@ -12,11 +12,12 @@ import smartClassAsset from "@/assets/smart-class-new.jpg";
 import acClassroom from "@/assets/ac-classroom.jpg";
 import healthcareAsset from "@/assets/healthcare.jpg";
 import mealAsset from "@/assets/meal.jpg";
+import lunchMeal from "@/assets/lunch-meal.jpg";
 import hero from "@/assets/classroom-reading.jpg";
 
 const smartClass = smartClassAsset;
 const healthcare = healthcareAsset;
-const meal = mealAsset;
+const mealSlides = [mealAsset, lunchMeal];
 
 export const Route = createFileRoute("/facilities")({
   head: () => ({
@@ -87,7 +88,8 @@ const facilities = [
   {
     icon: UtensilsCrossed,
     title: "Meal after Classes",
-    image: meal,
+    image: mealAsset,
+    carousel: mealSlides,
     description: "A nutritious, hot meal is served to every student after classes. For many children, this is their most important meal of the day — shared with friends in a warm, communal atmosphere.",
     features: ["Hot meal for 480+ students", "Balanced, locally sourced nutrition", "Clean, supervised dining space", "No child goes home hungry"],
   },
@@ -128,6 +130,41 @@ function Hero() {
   );
 }
 
+function FacilityCarousel({ images, title }: { images: string[]; title: string }) {
+  const [active, setActive] = useState(0);
+  useEffect(() => {
+    const t = window.setInterval(() => setActive((i) => (i + 1) % images.length), 3200);
+    return () => window.clearInterval(t);
+  }, [images.length]);
+  return (
+    <div className="relative size-full">
+      {images.map((src, i) => (
+        <motion.img
+          key={src}
+          src={src}
+          alt={`${title} ${i + 1}`}
+          loading="lazy"
+          initial={false}
+          animate={{ opacity: active === i ? 1 : 0, scale: active === i ? 1 : 1.04 }}
+          transition={{ duration: 0.9 }}
+          className="absolute inset-0 size-full object-cover"
+        />
+      ))}
+      <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
+        {images.map((src, i) => (
+          <button
+            key={src}
+            type="button"
+            aria-label={`Show ${title} image ${i + 1}`}
+            onClick={() => setActive(i)}
+            className={`h-1.5 rounded-full transition-all ${active === i ? "w-6 bg-white" : "w-1.5 bg-white/60"}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function FacilitiesGrid() {
   return (
     <section className="py-28 px-6">
@@ -163,14 +200,18 @@ function FacilitiesGrid() {
               className="group rounded-3xl bg-card border border-border shadow-soft overflow-hidden flex flex-col"
             >
               <div className="aspect-[4/3] overflow-hidden">
-                <img
-                  src={f.image}
-                  alt={f.title}
-                  width={1280}
-                  height={900}
-                  loading="lazy"
-                  className="size-full object-cover group-hover:scale-110 transition-transform duration-700"
-                />
+                {f.carousel ? (
+                  <FacilityCarousel images={f.carousel} title={f.title} />
+                ) : (
+                  <img
+                    src={f.image}
+                    alt={f.title}
+                    width={1280}
+                    height={900}
+                    loading="lazy"
+                    className="size-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                )}
               </div>
               <div className="p-6 flex-1 flex flex-col">
                 <div className="flex items-center gap-3 mb-3">
