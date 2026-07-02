@@ -12,11 +12,12 @@ import smartClassAsset from "@/assets/smart-class-new.jpg";
 import acClassroom from "@/assets/ac-classroom.jpg";
 import healthcareAsset from "@/assets/healthcare.jpg";
 import mealAsset from "@/assets/meal.jpg";
+import lunchMeal from "@/assets/lunch-meal.jpg";
 import hero from "@/assets/classroom-reading.jpg";
 
 const smartClass = smartClassAsset;
 const healthcare = healthcareAsset;
-const meal = mealAsset;
+const mealSlides = [mealAsset, lunchMeal];
 
 export const Route = createFileRoute("/facilities")({
   head: () => ({
