@@ -112,22 +112,23 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-function ScrollManager() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+function HashScroller() {
   const hash = useRouterState({ select: (s) => s.location.hash });
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
-    if (hash) {
-      // Defer to allow the destination page to mount
-      const id = hash.replace(/^#/, "");
+    if (!hash) return;
+    const id = hash.replace(/^#/, "");
+    // Wait two frames so the target section has mounted before scrolling
+    const raf = requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         const el = document.getElementById(id);
-        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-        else window.scrollTo({ top: 0, behavior: "auto" });
+        if (!el) return;
+        const top = el.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top, behavior: "smooth" });
       });
-    } else {
-      window.scrollTo({ top: 0, behavior: "auto" });
-    }
+    });
+    return () => cancelAnimationFrame(raf);
   }, [pathname, hash]);
 
   return null;
@@ -140,7 +141,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
         <Nav />
-        <ScrollManager />
+        <HashScroller />
         <Outlet />
         <Footer />
       </LanguageProvider>
