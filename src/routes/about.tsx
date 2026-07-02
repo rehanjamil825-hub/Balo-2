@@ -385,9 +385,13 @@ const volunteers = [
 ];
 
 const volunteerMoments = [
+  { image: volunteerCertificate, caption: "Recognising a volunteer's contribution with a certificate" },
   { image: volunteerLaptop, caption: "Mentoring students through laptop-based activities" },
-  { image: volunteerCircleTwo, caption: "Circle games and confidence-building sessions" },
   { image: volunteerTeaching, caption: "Classroom workshops led by international volunteers" },
+  { image: volunteerCircleOne, caption: "Circle games building trust and teamwork" },
+  { image: volunteerCircleTwo, caption: "Group activities and confidence-building sessions" },
+  { image: volunteerGift, caption: "Students thanking a volunteer with a heartfelt gift" },
+  { image: volunteerCurly, caption: "One-to-one reading time with a visiting volunteer" },
 ];
 
 function Volunteers() {
@@ -422,37 +426,39 @@ function Volunteers() {
               variants={fadeUp}
               custom={i}
               whileHover={{ y: -6 }}
-              className="rounded-3xl bg-card border border-border shadow-soft overflow-hidden flex flex-col"
+              className="rounded-3xl bg-card border border-border shadow-soft p-6 flex flex-col"
             >
-              <img src={v.image} alt={`${v.name}, volunteer from ${v.country}`} className="aspect-[4/3] w-full object-cover" loading="lazy" />
-              <div className="p-5 flex flex-1 flex-col">
-                <div className="text-4xl mb-3" aria-hidden>{v.flag}</div>
-                <p className="text-sm italic text-muted-foreground leading-relaxed flex-1">"{v.quote}"</p>
-                <div className="mt-5 pt-5 border-t border-border">
-                  <div className="font-display font-bold">{v.name}</div>
-                  <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mt-1">{v.country}</div>
-                </div>
+              <div className="text-5xl mb-4" aria-hidden>{v.flag}</div>
+              <p className="text-sm italic text-muted-foreground leading-relaxed flex-1">"{v.quote}"</p>
+              <div className="mt-5 pt-5 border-t border-border">
+                <div className="font-display font-bold">{v.name}</div>
+                <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mt-1">{v.country}</div>
               </div>
             </motion.div>
           ))}
         </div>
 
-        <div className="mt-10 grid md:grid-cols-3 gap-6">
-          {volunteerMoments.map((moment, i) => (
-            <motion.figure
-              key={moment.caption}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              variants={fadeUp}
-              custom={i}
-              whileHover={{ y: -6, scale: 1.02 }}
-              className="rounded-3xl overflow-hidden bg-card border border-border shadow-soft"
-            >
-              <img src={moment.image} alt={moment.caption} className="aspect-[4/3] w-full object-cover" loading="lazy" />
-              <figcaption className="p-5 text-sm font-semibold text-muted-foreground">{moment.caption}</figcaption>
-            </motion.figure>
-          ))}
+        <div className="mt-12">
+          <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4 text-center">
+            Volunteer Moments
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {volunteerMoments.map((moment, i) => (
+              <motion.figure
+                key={moment.caption}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true }}
+                variants={fadeUp}
+                custom={i}
+                whileHover={{ y: -6, scale: 1.02 }}
+                className="rounded-3xl overflow-hidden bg-card border border-border shadow-soft"
+              >
+                <img src={moment.image} alt={moment.caption} className="aspect-[4/3] w-full object-cover" loading="lazy" />
+                <figcaption className="p-5 text-sm font-semibold text-muted-foreground">{moment.caption}</figcaption>
+              </motion.figure>
+            ))}
+          </div>
         </div>
       </div>
     </section>
