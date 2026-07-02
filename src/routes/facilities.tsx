@@ -88,7 +88,8 @@ const facilities = [
   {
     icon: UtensilsCrossed,
     title: "Meal after Classes",
-    image: meal,
+    image: mealAsset,
+    carousel: mealSlides,
     description: "A nutritious, hot meal is served to every student after classes. For many children, this is their most important meal of the day — shared with friends in a warm, communal atmosphere.",
     features: ["Hot meal for 480+ students", "Balanced, locally sourced nutrition", "Clean, supervised dining space", "No child goes home hungry"],
   },
