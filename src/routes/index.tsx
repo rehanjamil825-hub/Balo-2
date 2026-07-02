@@ -185,7 +185,7 @@ function Hero() {
 
 function Stats() {
   const stats = [
-    { to: 480, suffix: "+", l: "Children Educated" },
+    { to: 480, suffix: "+", l: "Students" },
     { to: 20, suffix: "+", l: "Dedicated Staff" },
     { to: 100, suffix: "%", l: "Free of Cost" },
     { to: 15, suffix: "+", l: "Years of Service" },
