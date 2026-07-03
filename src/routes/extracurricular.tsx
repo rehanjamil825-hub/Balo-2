@@ -2,15 +2,22 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import {
-  Trophy, Sun, Activity, PartyPopper, Music, Calendar, MapPin, ArrowRight,
+  Trophy, Sun, Activity, PartyPopper, Music, Sparkles, Calendar, MapPin, ArrowRight,
 } from "lucide-react";
 
 import sportsDay from "@/assets/sports-day.jpg";
 import summerCamp from "@/assets/summer-camp.jpg";
+import summerCamp2 from "@/assets/drive3-23.jpg";
+import summerCamp3 from "@/assets/drive3-24.jpg";
 import rugby from "@/assets/rugby.jpg";
+import footballNew from "@/assets/football-new.jpg";
 import funFiesta from "@/assets/fun-fiesta.jpg";
 import musicAsset from "@/assets/music.jpg";
+import musicTeacher from "@/assets/music-teacher.jpg";
+import dance1 from "@/assets/dance-1.jpg";
+import dance2 from "@/assets/drive3-25.jpg";
 import hero from "@/assets/playground.jpg";
+import { MediaCarousel } from "@/components/MediaCarousel";
 
 const music = musicAsset;
 
@@ -18,9 +25,9 @@ export const Route = createFileRoute("/extracurricular")({
   head: () => ({
     meta: [
       { title: "Extracurricular Activities — Balo English Medium School, Howrah" },
-      { name: "description", content: "Discover sports day, summer camp, football, and fun fiesta at Balo English Medium School — where learning extends beyond the classroom." },
+      { name: "description", content: "Discover sports day, summer camp, football, dance, music, and fun fiesta at Balo English Medium School — where learning extends beyond the classroom." },
       { property: "og:title", content: "Extracurricular Activities — Balo English Medium School" },
-      { property: "og:description", content: "Sports day, summer camp, football, and fun fiesta at Balo English Medium School, Howrah." },
+      { property: "og:description", content: "Sports day, summer camp, football, dance, music, and fun fiesta at Balo English Medium School, Howrah." },
       { property: "og:image", content: sportsDay },
     ],
     links: [{ rel: "canonical", href: "/extracurricular" }],
@@ -37,7 +44,17 @@ const fadeUp = {
   }),
 };
 
-const activities = [
+type Activity = {
+  icon: typeof Trophy;
+  title: string;
+  image: string;
+  carousel?: string[];
+  season: string;
+  description: string;
+  highlights: string[];
+};
+
+const activities: Activity[] = [
   {
     icon: Trophy,
     title: "Sports Day",
@@ -50,6 +67,7 @@ const activities = [
     icon: Sun,
     title: "Summer Camp",
     image: summerCamp,
+    carousel: [summerCamp, summerCamp2, summerCamp3],
     season: "Summer Break",
     description: "During summer break, our campus transforms into a creative playground. Students enjoy art, crafts, storytelling, music, dance, and outdoor adventures in a safe, supervised environment.",
     highlights: ["Arts & crafts", "Music & dance", "Storytelling sessions", "Outdoor exploration"],
@@ -58,6 +76,7 @@ const activities = [
     icon: Activity,
     title: "Football",
     image: rugby,
+    carousel: [rugby, footballNew],
     season: "Year-round Training",
     description: "Football builds strength, teamwork, and resilience. Our boys train regularly and play friendly matches, learning fair play and the joy of being part of a team.",
     highlights: ["Weekly practice sessions", "Boys' team participation", "Fitness & coordination", "Inter-school matches"],
@@ -74,9 +93,19 @@ const activities = [
     icon: Music,
     title: "Music",
     image: music,
+    carousel: [music, musicTeacher],
     season: "Weekly Sessions",
     description: "Students learn vocals and harmonium under the guidance of our music teacher. Music classes nurture rhythm, confidence, and a lifelong love for the arts.",
     highlights: ["Harmonium & vocal training", "Choir & group singing", "Cultural performances", "Festival celebrations"],
+  },
+  {
+    icon: Sparkles,
+    title: "Dance",
+    image: dance1,
+    carousel: [dance1, dance2],
+    season: "Cultural Programme",
+    description: "Dance at Balo helps children move with confidence, express feelings without words, and celebrate every festival together. Students learn choreography for annual events, cultural days, and school celebrations.",
+    highlights: ["Group choreography", "Festival performances", "Confidence & stage presence", "Team coordination"],
   },
 ];
 
