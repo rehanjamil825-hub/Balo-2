@@ -173,11 +173,14 @@ export function Nav() {
         </div>
 
         <button
-          className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+          className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors relative"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
         >
           {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+          {hasUnreadNotices && !mobileOpen && (
+            <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-red-500 animate-pulse" />
+          )}
         </button>
       </div>
 
