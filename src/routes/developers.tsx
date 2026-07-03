@@ -76,11 +76,13 @@ const team = [
 function DevelopersPage() {
   return (
     <main className="pt-24">
-      <section className="relative py-20 px-6 gradient-hero text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-15" style={{
-          backgroundImage: "radial-gradient(circle at 20% 20%, white 1px, transparent 1px), radial-gradient(circle at 80% 60%, white 1px, transparent 1px)",
-          backgroundSize: "40px 40px, 60px 60px",
-        }} />
+      <section className="relative min-h-[55vh] flex items-center py-20 px-6 text-white overflow-hidden">
+        <img
+          src={banner}
+          alt="Developer workstation with code on screen"
+          className="absolute inset-0 size-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/75 to-accent/80" />
         <div className="relative max-w-5xl mx-auto text-center">
           <motion.div initial="hidden" animate="show" variants={fadeUp}>
             <div className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur px-4 py-1.5 text-xs font-semibold mb-6">
@@ -90,7 +92,7 @@ function DevelopersPage() {
               Meet the <span className="italic text-secondary">developers.</span>
             </h1>
             <p className="mt-6 text-lg md:text-xl text-white/85 max-w-2xl mx-auto">
-              Three young minds who designed and built this website to share Balo English Medium School's story with the world.
+              Students and contributors from India and Italy who designed and built this website to share Balo English Medium School's story with the world.
             </p>
           </motion.div>
         </div>
