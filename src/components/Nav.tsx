@@ -4,15 +4,17 @@ import { Heart, Menu, X, Globe } from "lucide-react";
 import { useState } from "react";
 import baloLogo from "@/assets/balo-logo.jpg";
 import { useLang, type Lang } from "@/lib/i18n";
+import { useUnreadNotices } from "@/lib/notices";
 
-type NavItem = { key: string; href: string; hash?: string };
+type NavItem = { key: string; href: string; hash?: string; notice?: boolean };
 
 const navItems: NavItem[] = [
   { key: "nav.home", href: "/" },
   { key: "nav.about", href: "/about" },
   { key: "nav.facilities", href: "/facilities" },
+  { key: "nav.subjects", href: "/subjects" },
   { key: "nav.extracurricular", href: "/extracurricular" },
-  { key: "nav.events", href: "/events" },
+  { key: "nav.events", href: "/events", notice: true },
   { key: "nav.developers", href: "/developers" },
   { key: "nav.contact", href: "/", hash: "contact" },
 ];
