@@ -4,15 +4,17 @@ import { Heart, Menu, X, Globe } from "lucide-react";
 import { useState } from "react";
 import baloLogo from "@/assets/balo-logo.jpg";
 import { useLang, type Lang } from "@/lib/i18n";
+import { useUnreadNotices } from "@/lib/notices";
 
-type NavItem = { key: string; href: string; hash?: string };
+type NavItem = { key: string; href: string; hash?: string; notice?: boolean };
 
 const navItems: NavItem[] = [
   { key: "nav.home", href: "/" },
   { key: "nav.about", href: "/about" },
   { key: "nav.facilities", href: "/facilities" },
+  { key: "nav.subjects", href: "/subjects" },
   { key: "nav.extracurricular", href: "/extracurricular" },
-  { key: "nav.events", href: "/events" },
+  { key: "nav.events", href: "/events", notice: true },
   { key: "nav.developers", href: "/developers" },
   { key: "nav.contact", href: "/", hash: "contact" },
 ];
@@ -75,6 +77,7 @@ export function Nav() {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { t } = useLang();
+  const hasUnreadNotices = useUnreadNotices();
 
   const linkClasses =
     "text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer";
@@ -100,16 +103,21 @@ export function Nav() {
     const className = mobile
       ? "block text-sm font-medium text-foreground/70 hover:text-foreground cursor-pointer"
       : linkClasses;
+    const showDot = item.notice && hasUnreadNotices;
+    const dot = showDot ? (
+      <span className="ml-1 inline-block size-1.5 rounded-full bg-red-500 align-middle animate-pulse" />
+    ) : null;
 
     if (item.hash) {
       return (
         <a
           key={item.key}
           href={`#${item.hash}`}
-          className={className}
+          className={`${className} relative`}
           onClick={(e) => handleHashClick(e, item.hash!)}
         >
           {t(item.key)}
+          {dot}
         </a>
       );
     }
@@ -117,12 +125,13 @@ export function Nav() {
       <Link
         key={item.key}
         to={item.href}
-        className={className}
-        activeProps={{ className: `${className} text-foreground font-semibold` }}
+        className={`${className} relative`}
+        activeProps={{ className: `${className} relative text-foreground font-semibold` }}
         activeOptions={{ exact: true }}
         onClick={() => setMobileOpen(false)}
       >
         {t(item.key)}
+        {dot}
       </Link>
     );
   };
@@ -164,11 +173,14 @@ export function Nav() {
         </div>
 
         <button
-          className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+          className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors relative"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
         >
           {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+          {hasUnreadNotices && !mobileOpen && (
+            <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-red-500 animate-pulse" />
+          )}
         </button>
       </div>
 

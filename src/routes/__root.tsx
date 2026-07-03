@@ -8,11 +8,13 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Nav } from "../components/Nav";
+import { AnnouncementBanner } from "../components/AnnouncementBanner";
+import { LoadingScreen } from "../components/LoadingScreen";
 import { Footer } from "../components/Footer";
 import { LanguageProvider } from "../lib/i18n";
 
@@ -115,20 +117,35 @@ function RootShell({ children }: { children: ReactNode }) {
 function HashScroller() {
   const hash = useRouterState({ select: (s) => s.location.hash });
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const prevPath = useRef(pathname);
 
   useEffect(() => {
-    if (!hash) return;
-    const id = hash.replace(/^#/, "");
-    // Wait two frames so the target section has mounted before scrolling
-    const raf = requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        const top = el.getBoundingClientRect().top + window.scrollY - 80;
-        window.scrollTo({ top, behavior: "smooth" });
+    // Hash: smooth-scroll to the anchor once the target has mounted.
+    if (hash) {
+      const id = hash.replace(/^#/, "");
+      const raf = requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          const top = el.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top, behavior: "smooth" });
+        });
       });
-    });
-    return () => cancelAnimationFrame(raf);
+      return () => cancelAnimationFrame(raf);
+    }
+
+    // Real page change (not just search-param updates): scroll to top AFTER
+    // the page-entry animation has had time to play (~450ms) so animations
+    // trigger from a static top position instead of immediately during nav.
+    // Browser back/forward is handled by the router's built-in
+    // scrollRestoration, which fires before this effect runs.
+    if (prevPath.current !== pathname) {
+      prevPath.current = pathname;
+      const t = window.setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "auto" });
+      }, 450);
+      return () => window.clearTimeout(t);
+    }
   }, [pathname, hash]);
 
   return null;
@@ -140,9 +157,13 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
+        <LoadingScreen />
         <Nav />
+        <AnnouncementBanner />
         <HashScroller />
-        <Outlet />
+        <div className="pt-9">
+          <Outlet />
+        </div>
         <Footer />
       </LanguageProvider>
     </QueryClientProvider>

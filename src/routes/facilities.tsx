@@ -6,11 +6,18 @@ import {
 } from "lucide-react";
 
 import library from "@/assets/library.jpg";
+import libraryTree from "@/assets/library-tree.jpg";
 import computerLab from "@/assets/computer-lab.jpg";
-import scienceLab from "@/assets/science-lab.jpg";
+import computerLab2 from "@/assets/drive3-02.jpg";
+import scienceExp1 from "@/assets/science-exp-1.jpg";
+import scienceExp2 from "@/assets/science-exp-2.jpg";
+import scienceExp3 from "@/assets/drive3-19.jpg";
 import smartClassAsset from "@/assets/smart-class-new.jpg";
+import smartClass2 from "@/assets/drive3-20.jpg";
 import acClassroom from "@/assets/ac-classroom.jpg";
+import acClassroom2 from "@/assets/drive3-21.jpg";
 import healthcareAsset from "@/assets/healthcare.jpg";
+import healthcare2 from "@/assets/drive3-22.jpg";
 import mealAsset from "@/assets/meal.jpg";
 import lunchMeal from "@/assets/lunch-meal.jpg";
 import hero from "@/assets/classroom-reading.jpg";
@@ -18,6 +25,12 @@ import hero from "@/assets/classroom-reading.jpg";
 const smartClass = smartClassAsset;
 const healthcare = healthcareAsset;
 const mealSlides = [mealAsset, lunchMeal];
+const librarySlides = [library, libraryTree];
+const computerSlides = [computerLab, computerLab2];
+const scienceSlides = [scienceExp1, scienceExp2, scienceExp3];
+const smartSlides = [smartClassAsset, smartClass2];
+const acSlides = [acClassroom, acClassroom2];
+const healthcareSlides = [healthcareAsset, healthcare2];
 
 export const Route = createFileRoute("/facilities")({
   head: () => ({
@@ -47,6 +60,7 @@ const facilities = [
     icon: BookOpen,
     title: "Library",
     image: library,
+    carousel: librarySlides,
     description: "A warm, inviting space filled with storybooks, reference materials, and periodicals. Our library encourages every child to read for joy and discovery.",
     features: ["Age-graded reading corners", "Bengali & English collections", "Daily reading periods", "Librarian-guided sessions"],
   },
@@ -54,13 +68,15 @@ const facilities = [
     icon: Monitor,
     title: "Computer Lab",
     image: computerLab,
+    carousel: computerSlides,
     description: "A modern computer lab where students learn typing, coding basics, digital literacy, and safe internet practices from an early age.",
     features: ["Updated desktop computers", "Coding & typing programs", "Project-based learning", "Teacher-supervised browsing"],
   },
   {
     icon: FlaskConical,
     title: "Science Laboratory",
-    image: scienceLab,
+    image: scienceExp1,
+    carousel: scienceSlides,
     description: "Our science lab turns textbooks into hands-on experiments. Students observe, measure, mix, and discover the principles of physics, chemistry, and biology.",
     features: ["Lab tables & safety equipment", "Microscopes & specimens", "Experiment kits", "Guided practical classes"],
   },
@@ -68,6 +84,7 @@ const facilities = [
     icon: Presentation,
     title: "Smart Classes",
     image: smartClass,
+    carousel: smartSlides,
     description: "Interactive whiteboards, projectors, and multimedia lessons bring concepts to life. Smart classes make learning visual, engaging, and memorable.",
     features: ["Interactive digital boards", "Projector & audio systems", "Animated lesson modules", "Tablet-assisted activities"],
   },
@@ -75,6 +92,7 @@ const facilities = [
     icon: Wind,
     title: "Air-Conditioned Classrooms",
     image: acClassroom,
+    carousel: acSlides,
     description: "Comfortable, climate-controlled classrooms help students stay focused and alert through Howrah's warmest months.",
     features: ["Ceiling & split AC units", "Bright LED lighting", "Spacious seating", "Clean, ventilated rooms"],
   },
@@ -82,6 +100,7 @@ const facilities = [
     icon: Stethoscope,
     title: "Free Health Care",
     image: healthcare,
+    carousel: healthcareSlides,
     description: "Every student has access to free, on-campus health check-ups and basic medical care. Our visiting doctor monitors growth, treats minor illnesses, and ensures no child misses school for lack of care.",
     features: ["Regular health check-ups", "First aid & basic medicines", "Vision & dental screening", "Doctor on call"],
   },
