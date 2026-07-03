@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Calendar, MapPin, ArrowRight, Sparkles, X } from "lucide-react";
+import { Calendar, MapPin, ArrowRight, Sparkles, X, Bell, BellRing } from "lucide-react";
 import { useEffect, useState } from "react";
+import { NOTICES, markAllNoticesSeen, useNotifyPreference } from "@/lib/notices";
 
 import sports from "@/assets/sports-day.jpg";
 import summer from "@/assets/summer-camp.jpg";
