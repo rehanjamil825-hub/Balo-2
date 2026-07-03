@@ -179,14 +179,18 @@ function ActivitiesGrid() {
               className="group rounded-3xl bg-card border border-border shadow-soft overflow-hidden"
             >
               <div className="aspect-[16/10] overflow-hidden">
-                <img
-                  src={a.image}
-                  alt={a.title}
-                  width={1280}
-                  height={900}
-                  loading="lazy"
-                  className="size-full object-cover group-hover:scale-110 transition-transform duration-700"
-                />
+                {a.carousel ? (
+                  <MediaCarousel images={a.carousel} title={a.title} aspect="aspect-[16/10]" />
+                ) : (
+                  <img
+                    src={a.image}
+                    alt={a.title}
+                    width={1280}
+                    height={900}
+                    loading="lazy"
+                    className="size-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                )}
               </div>
               <div className="p-6 md:p-8">
                 <div className="flex items-center justify-between mb-3">
