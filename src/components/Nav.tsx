@@ -103,16 +103,21 @@ export function Nav() {
     const className = mobile
       ? "block text-sm font-medium text-foreground/70 hover:text-foreground cursor-pointer"
       : linkClasses;
+    const showDot = item.notice && hasUnreadNotices;
+    const dot = showDot ? (
+      <span className="ml-1 inline-block size-1.5 rounded-full bg-red-500 align-middle animate-pulse" />
+    ) : null;
 
     if (item.hash) {
       return (
         <a
           key={item.key}
           href={`#${item.hash}`}
-          className={className}
+          className={`${className} relative`}
           onClick={(e) => handleHashClick(e, item.hash!)}
         >
           {t(item.key)}
+          {dot}
         </a>
       );
     }
@@ -120,12 +125,13 @@ export function Nav() {
       <Link
         key={item.key}
         to={item.href}
-        className={className}
-        activeProps={{ className: `${className} text-foreground font-semibold` }}
+        className={`${className} relative`}
+        activeProps={{ className: `${className} relative text-foreground font-semibold` }}
         activeOptions={{ exact: true }}
         onClick={() => setMobileOpen(false)}
       >
         {t(item.key)}
+        {dot}
       </Link>
     );
   };
