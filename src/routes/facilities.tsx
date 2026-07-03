@@ -6,11 +6,18 @@ import {
 } from "lucide-react";
 
 import library from "@/assets/library.jpg";
+import libraryTree from "@/assets/library-tree.jpg";
 import computerLab from "@/assets/computer-lab.jpg";
-import scienceLab from "@/assets/science-lab.jpg";
+import computerLab2 from "@/assets/drive3-02.jpg";
+import scienceExp1 from "@/assets/science-exp-1.jpg";
+import scienceExp2 from "@/assets/science-exp-2.jpg";
+import scienceExp3 from "@/assets/drive3-19.jpg";
 import smartClassAsset from "@/assets/smart-class-new.jpg";
+import smartClass2 from "@/assets/drive3-20.jpg";
 import acClassroom from "@/assets/ac-classroom.jpg";
+import acClassroom2 from "@/assets/drive3-21.jpg";
 import healthcareAsset from "@/assets/healthcare.jpg";
+import healthcare2 from "@/assets/drive3-22.jpg";
 import mealAsset from "@/assets/meal.jpg";
 import lunchMeal from "@/assets/lunch-meal.jpg";
 import hero from "@/assets/classroom-reading.jpg";
@@ -18,6 +25,12 @@ import hero from "@/assets/classroom-reading.jpg";
 const smartClass = smartClassAsset;
 const healthcare = healthcareAsset;
 const mealSlides = [mealAsset, lunchMeal];
+const librarySlides = [library, libraryTree];
+const computerSlides = [computerLab, computerLab2];
+const scienceSlides = [scienceExp1, scienceExp2, scienceExp3];
+const smartSlides = [smartClassAsset, smartClass2];
+const acSlides = [acClassroom, acClassroom2];
+const healthcareSlides = [healthcareAsset, healthcare2];
 
 export const Route = createFileRoute("/facilities")({
   head: () => ({
