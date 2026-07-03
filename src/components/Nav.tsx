@@ -77,6 +77,7 @@ export function Nav() {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { t } = useLang();
+  const hasUnreadNotices = useUnreadNotices();
 
   const linkClasses =
     "text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer";
