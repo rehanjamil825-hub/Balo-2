@@ -143,11 +143,55 @@ const posts: EventPost[] = [
   },
 ];
 
+function NoticeBoard() {
+  const [notifyEnabled, setNotifyEnabled] = useNotifyPreference();
+  useEffect(() => { markAllNoticesSeen(); }, []);
+  return (
+    <section className="py-16 px-6 bg-card">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-2">
+              Notice Board
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-balance">Latest notices</h2>
+          </div>
+          <label className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm cursor-pointer hover:bg-muted transition-colors">
+            <input
+              type="checkbox"
+              checked={notifyEnabled}
+              onChange={(e) => setNotifyEnabled(e.target.checked)}
+              className="size-4 accent-accent"
+            />
+            {notifyEnabled ? <BellRing className="size-4 text-accent" /> : <Bell className="size-4" />}
+            Notify me of new notices
+          </label>
+        </div>
+        {NOTICES.length === 0 ? (
+          <div className="rounded-3xl border border-dashed border-border bg-background p-10 text-center text-muted-foreground">
+            <Bell className="size-8 mx-auto mb-3 opacity-50" />
+            <p className="text-sm">Empty — no notices right now. Check back soon.</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {NOTICES.map((n) => (
+              <article key={n.id} className="relative p-5 rounded-2xl bg-background border border-border shadow-soft">
+                <span className="absolute top-4 right-4 size-2 rounded-full bg-red-500 animate-pulse" />
+                <div className="text-xs text-muted-foreground mb-1">{n.date}</div>
+                <h3 className="font-display text-xl font-bold">{n.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{n.body}</p>
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 function EventsPage() {
   const [selected, setSelected] = useState<EventPost | null>(null);
 
-  // Lock background page scroll while the read-more modal is open so wheel/touch scrolling
-  // stays inside the modal instead of moving the events list beneath it.
   useEffect(() => {
     if (!selected) return;
     const prev = document.body.style.overflow;
@@ -158,11 +202,20 @@ function EventsPage() {
   return (
     <main className="pt-24">
       <section className="relative py-20 px-6 overflow-hidden text-white">
+        <video
+          src="/video/events-banner.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 size-full object-cover"
+          aria-hidden
+        />
         <img
           src={trophiesBg}
           alt=""
           aria-hidden
-          className="absolute inset-0 size-full object-cover"
+          className="absolute inset-0 size-full object-cover opacity-0"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/75 to-accent/80" />
         <div className="relative max-w-7xl mx-auto">
@@ -171,7 +224,7 @@ function EventsPage() {
               <Sparkles className="size-3.5" /> News from Salkia
             </div>
             <h1 className="text-5xl md:text-7xl font-black text-balance leading-[0.95]">
-              Events & <span className="italic text-secondary">Stories.</span>
+              Notice & <span className="italic text-secondary">Events.</span>
             </h1>
             <p className="mt-6 text-lg md:text-xl text-white/85 max-w-2xl">
               Every month at Balo English Medium School brings something to celebrate. Here are a few moments we love sharing.
@@ -179,6 +232,8 @@ function EventsPage() {
           </motion.div>
         </div>
       </section>
+
+      <NoticeBoard />
 
       <section className="py-24 px-6">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-8">
