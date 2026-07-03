@@ -47,6 +47,30 @@ const team = [
     note: "The one in the brown dress — content & UX.",
     color: "from-secondary to-primary",
   },
+  {
+    name: "Giovanna",
+    role: "Developer · Italy 🇮🇹",
+    note: "Contributor from Italy — collaboration & review.",
+    color: "from-primary to-secondary",
+  },
+  {
+    name: "Daniel",
+    role: "Developer · Italy 🇮🇹",
+    note: "Contributor from Italy — engineering support.",
+    color: "from-accent to-primary",
+  },
+  {
+    name: "Barbara",
+    role: "Developer · Italy 🇮🇹",
+    note: "Contributor from Italy — content coordination.",
+    color: "from-secondary to-accent",
+  },
+  {
+    name: "Andrew",
+    role: "Developer · Italy 🇮🇹",
+    note: "Contributor from Italy — engineering & testing.",
+    color: "from-primary to-accent",
+  },
 ];
 
 function DevelopersPage() {
