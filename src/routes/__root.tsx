@@ -8,11 +8,13 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Nav } from "../components/Nav";
+import { AnnouncementBanner } from "../components/AnnouncementBanner";
+import { LoadingScreen } from "../components/LoadingScreen";
 import { Footer } from "../components/Footer";
 import { LanguageProvider } from "../lib/i18n";
 
