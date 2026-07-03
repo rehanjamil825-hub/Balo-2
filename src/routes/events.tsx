@@ -22,10 +22,10 @@ import trophiesBg from "@/assets/trophies-bg.jpg";
 export const Route = createFileRoute("/events")({
   head: () => ({
     meta: [
-      { title: "Events & Stories — Balo English Medium School" },
-      { name: "description", content: "Latest events, celebrations, and stories from Balo English Medium School in Howrah." },
-      { property: "og:title", content: "Events & Stories — Balo English Medium School" },
-      { property: "og:description", content: "Annual Sports Day, Summer Camp, Color Storm, Picnic, Women's Day and more — see what's happening at Balo." },
+      { title: "Notice & Events — Balo English Medium School" },
+      { name: "description", content: "Notice board, latest events, celebrations, and stories from Balo English Medium School in Howrah." },
+      { property: "og:title", content: "Notice & Events — Balo English Medium School" },
+      { property: "og:description", content: "Notices, Annual Sports Day, Summer Camp, Color Storm, Picnic, Women's Day and more — see what's happening at Balo." },
       { property: "og:image", content: sports },
     ],
     links: [{ rel: "canonical", href: "/events" }],
