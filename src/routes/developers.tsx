@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Code2, Code, Heart, Sparkles } from "lucide-react";
 
 import developers from "@/assets/developers-new.jpg";
-import banner from "@/assets/developers-new.jpg";
+import banner from "@/assets/developers-banner-code.jpg";
 
 export const Route = createFileRoute("/developers")({
   head: () => ({
@@ -46,30 +46,6 @@ const team = [
     role: "Developer",
     note: "The one in the brown dress — content & UX.",
     color: "from-secondary to-primary",
-  },
-  {
-    name: "Giovanna",
-    role: "Developer · Italy 🇮🇹",
-    note: "Contributor from Italy — collaboration & review.",
-    color: "from-primary to-secondary",
-  },
-  {
-    name: "Daniel",
-    role: "Developer · Italy 🇮🇹",
-    note: "Contributor from Italy — engineering support.",
-    color: "from-accent to-primary",
-  },
-  {
-    name: "Barbara",
-    role: "Developer · Italy 🇮🇹",
-    note: "Contributor from Italy — content coordination.",
-    color: "from-secondary to-accent",
-  },
-  {
-    name: "Andrew",
-    role: "Developer · Italy 🇮🇹",
-    note: "Contributor from Italy — engineering & testing.",
-    color: "from-primary to-accent",
   },
 ];
 
