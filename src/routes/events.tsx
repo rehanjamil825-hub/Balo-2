@@ -75,8 +75,8 @@ const posts: EventPost[] = [
     details: "Sports Day 2026 will bring the full Balo community together for one of the most joyful days of the school year. Students, teachers, parents, ex-students, guests, and volunteers from different countries will gather to celebrate confidence, teamwork, and healthy competition. The programme will include instrumental music, singing, dance, a mock drill, and energetic games such as 200m running, spoon racing, sack racing, catch the balloon, memory game, fill the bucket with sponge, and many more activities. It will also be a time to honour leaving students with a warm farewell, so they feel remembered as part of the Balo family. More than winning, the day is about courage, discipline, laughter, and every child feeling proud to stand before the community.",
   },
   {
-    img: summer,
-    gallery: [summer, presentationOne, presentationTwo],
+    img: summer26a,
+    gallery: [summer26a, summer26b, summer26c, summer, presentationOne, presentationTwo],
     date: "June 2026",
     tag: "Camp",
     title: "Summer Camp 2026 — a week of pure imagination",
