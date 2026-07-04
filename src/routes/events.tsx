@@ -24,8 +24,6 @@ import womensDay from "@/assets/drive-gallery2-03.jpg";
 import womensDayGroup from "@/assets/drive-gallery2-05.jpg";
 import picnic from "@/assets/drive-gallery2-13.jpg";
 import picnicTrain from "@/assets/drive-gallery2-11.jpg";
-import presentationOne from "@/assets/drive-gallery2-16.jpg";
-import presentationTwo from "@/assets/drive-gallery2-17.jpg";
 import sportsPodium from "@/assets/drive-gallery2-04.jpg";
 import trophiesBg from "@/assets/trophies-bg.jpg";
 
