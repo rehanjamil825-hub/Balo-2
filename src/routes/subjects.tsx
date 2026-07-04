@@ -6,7 +6,7 @@ import {
   Coins, GraduationCap, PenLine, MapPin, ArrowRight,
 } from "lucide-react";
 
-import hero from "@/assets/drive3-01.jpg"; // banner fallback — students holding subject cards
+import hero from "@/assets/subjects-banner-new.jpg";
 
 export const Route = createFileRoute("/subjects")({
   head: () => ({
