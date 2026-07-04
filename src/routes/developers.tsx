@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Code2, Code, Heart, Sparkles } from "lucide-react";
 
 import developers from "@/assets/developers-new.jpg";
-import banner from "@/assets/developers-banner.jpg";
+import banner from "@/assets/developers-new.jpg";
 
 export const Route = createFileRoute("/developers")({
   head: () => ({
