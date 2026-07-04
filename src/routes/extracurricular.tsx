@@ -6,8 +6,6 @@ import {
 } from "lucide-react";
 
 import sportsDay from "@/assets/sports-day.jpg";
-import summerCamp from "@/assets/summer-camp.jpg";
-import summerCamp2 from "@/assets/drive3-23.jpg";
 import summerCamp3 from "@/assets/drive3-24.jpg";
 import summer25a from "@/assets/summer25-new-01.jpg";
 import summer25b from "@/assets/summer25-new-02.jpg";
@@ -15,15 +13,15 @@ import summer26a from "@/assets/summer26-new-01.jpg";
 import summer26b from "@/assets/summer26-new-02.jpg";
 import summer26c from "@/assets/summer26-new-03.jpg";
 import rugby from "@/assets/rugby.jpg";
-import footballNew from "@/assets/rugby.jpg";
+import footballNew from "@/assets/sports-football.jpg";
 import funFiesta from "@/assets/fun-fiesta.jpg";
 import funFiestaA from "@/assets/funfiesta-new-01.jpg";
 import funFiestaB from "@/assets/funfiesta-new-02.jpg";
 import musicAsset from "@/assets/music.jpg";
-import musicTeacher from "@/assets/music.jpg";
 import musicNew from "@/assets/music-new.jpg";
-import dance1 from "@/assets/drive3-25.jpg";
-import dance2 from "@/assets/drive3-25.jpg";
+import dance1 from "@/assets/dance-new-1.jpg";
+import dance2 from "@/assets/dance-new-2.jpg";
+import dance3 from "@/assets/dance-new-3.jpg";
 import hero from "@/assets/playground.jpg";
 import { MediaCarousel } from "@/components/MediaCarousel";
 
