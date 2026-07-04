@@ -84,7 +84,8 @@ const posts: EventPost[] = [
     details: "Summer Camp 2026 gave students a bright, structured week of learning beyond regular classes. The camp runs five days in a week, with a fresh topic and activity each day so children can discover new interests. Students explored drawing, art and craft, creative designs, and group projects that helped them work with imagination and patience. Talent show sessions gave children space to sing, speak, perform, and show skills that are not always visible in the classroom. Movie day brought fun and reflection, while non-fire cooking encouraged teamwork, hygiene, and practical life skills. The camp also included smart-class presentations where students watched and discussed ideas together. It was a week of confidence-building, friendship, and joyful learning.",
   },
   {
-    img: colorStorm,
+    img: colorStormA,
+    gallery: [colorStormA, colorStormB, colorStorm],
     date: "March 2026",
     tag: "Art",
     title: "Color Storm 2026 — creativity with purpose",
