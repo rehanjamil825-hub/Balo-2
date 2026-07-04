@@ -76,7 +76,7 @@ const posts: EventPost[] = [
   },
   {
     img: summer26a,
-    gallery: [summer26a, summer26b, summer26c, summer, presentationOne, presentationTwo],
+    gallery: [summer26a, summer26b, summer26c],
     date: "June 2026",
     tag: "Camp",
     title: "Summer Camp 2026 — a week of pure imagination",
@@ -103,7 +103,7 @@ const posts: EventPost[] = [
   },
   {
     img: summer25a,
-    gallery: [summer25a, summer25b, summer, presentationOne],
+    gallery: [summer25a, summer25b, summer],
     date: "May 2025",
     tag: "Camp",
     title: "Summer Camp wraps up a week of discovery",
