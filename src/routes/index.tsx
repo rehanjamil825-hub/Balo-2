@@ -320,7 +320,6 @@ function Gallery() {
     { src: happySeason, span: "md:col-span-2", a: "Seasonal celebration" },
     { src: studentAssembly, span: "", a: "Students gathered for a school activity" },
     { src: nonFireCooking, span: "", a: "Non-fire cooking activity" },
-    { src: studentProfileNew, span: "", a: "Balo student portrait" },
   ];
   return (
     <section id="gallery" className="py-28 px-6">
