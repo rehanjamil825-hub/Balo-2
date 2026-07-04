@@ -383,6 +383,7 @@ const volunteers = [
     flag: "🇲🇾",
     image: volunteerCurly,
     quote: "The students welcomed me with so much affection. Balo shows how education, safety, and kindness can grow together.",
+  },
   {
     name: "Giovanna",
     country: "Italy",
