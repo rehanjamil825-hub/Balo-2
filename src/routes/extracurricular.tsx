@@ -93,6 +93,7 @@ const activities: Activity[] = [
     icon: PartyPopper,
     title: "Fun Fiesta",
     image: funFiesta,
+    carousel: [funFiesta, funFiestaA, funFiestaB],
     season: "Annual Carnival",
     description: "Fun Fiesta is our annual carnival filled with games, rides, food stalls, performances, and laughter. It brings students, families, and teachers together to celebrate community.",
     highlights: ["Carnival games & rides", "Student performances", "Food stalls", "Family-friendly fun"],
