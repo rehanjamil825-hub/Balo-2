@@ -75,7 +75,7 @@ const activities: Activity[] = [
     icon: Sun,
     title: "Summer Camp",
     image: summerCamp,
-    carousel: [summerCamp, summerCamp2, summerCamp3],
+    carousel: [summerCamp, summer26a, summer26b, summer26c, summerCamp2, summer25a, summer25b, summerCamp3],
     season: "Summer Break",
     description: "During summer break, our campus transforms into a creative playground. Students enjoy art, crafts, storytelling, music, dance, and outdoor adventures in a safe, supervised environment.",
     highlights: ["Arts & crafts", "Music & dance", "Storytelling sessions", "Outdoor exploration"],
