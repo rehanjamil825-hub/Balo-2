@@ -26,7 +26,7 @@ import womensDayGroup from "@/assets/drive-gallery2-05.jpg";
 import happySeason from "@/assets/drive-gallery2-02.jpg";
 import studentAssembly from "@/assets/drive-gallery2-07.jpg";
 import nonFireCooking from "@/assets/drive-gallery2-10.jpg";
-import studentProfileNew from "@/assets/drive-gallery2-18.png";
+
 import communityVoiceBg from "@/assets/community-voice.png";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { LazyImage } from "@/components/LazyImage";
