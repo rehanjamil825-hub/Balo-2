@@ -101,7 +101,7 @@ const activities: Activity[] = [
     icon: Music,
     title: "Music",
     image: music,
-    carousel: [music, musicTeacher],
+    carousel: [music, musicNew, musicTeacher],
     season: "Weekly Sessions",
     description: "Students learn vocals and harmonium under the guidance of our music teacher. Music classes nurture rhythm, confidence, and a lifelong love for the arts.",
     highlights: ["Harmonium & vocal training", "Choir & group singing", "Cultural performances", "Festival celebrations"],
