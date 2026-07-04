@@ -102,8 +102,8 @@ const posts: EventPost[] = [
     details: "Fun Fiesta is one of Balo's most lively student-led events. Children work in groups to plan and organise stalls where they sell food, games, small handmade objects, and fun activities for visitors. The event teaches responsibility in a natural way: students discuss ideas, arrange materials, speak to guests, handle simple counting, and learn how cooperation makes a stall successful. Teachers guide them, but the excitement belongs to the children. Families, staff, volunteers, and friends come together around long tables, shared plates, and cheerful noise. Fun Fiesta turns the school into a small festival where students learn confidence, communication, and teamwork while enjoying the happiness of serving others and celebrating as one Balo family.",
   },
   {
-    img: summer,
-    gallery: [summer, presentationOne],
+    img: summer25a,
+    gallery: [summer25a, summer25b, summer, presentationOne],
     date: "May 2025",
     tag: "Camp",
     title: "Summer Camp wraps up a week of discovery",
