@@ -93,7 +93,8 @@ const posts: EventPost[] = [
     details: "Color Storm 2026 celebrated the artistic side of Balo through an inter-school drawing and painting competition. Students prepared with great care, using colour, imagination, and observation to express their ideas on paper. The event also included an art exhibition where children displayed creative handmade objects made with patience and teamwork. These objects were arranged for visitors to see and buy, helping students understand the value of effort, presentation, and creativity. Teachers guided the children, but the confidence came from the students themselves. Color Storm was not only about colourful walls and happy faces; it was about giving children a platform to be seen as artists, makers, and young people with original ideas worth celebrating.",
   },
   {
-    img: funFiesta,
+    img: funFiestaA,
+    gallery: [funFiestaA, funFiestaB, funFiesta],
     date: "December 2025",
     tag: "Fun Fiesta",
     title: "Fun Fiesta: stalls, food, games and friendship",
