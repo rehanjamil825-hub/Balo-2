@@ -6,8 +6,6 @@ import {
 } from "lucide-react";
 
 import sportsDay from "@/assets/sports-day.jpg";
-import summerCamp from "@/assets/summer-camp.jpg";
-import summerCamp2 from "@/assets/drive3-23.jpg";
 import summerCamp3 from "@/assets/drive3-24.jpg";
 import summer25a from "@/assets/summer25-new-01.jpg";
 import summer25b from "@/assets/summer25-new-02.jpg";
@@ -15,15 +13,15 @@ import summer26a from "@/assets/summer26-new-01.jpg";
 import summer26b from "@/assets/summer26-new-02.jpg";
 import summer26c from "@/assets/summer26-new-03.jpg";
 import rugby from "@/assets/rugby.jpg";
-import footballNew from "@/assets/rugby.jpg";
+import footballNew from "@/assets/sports-football.jpg";
 import funFiesta from "@/assets/fun-fiesta.jpg";
 import funFiestaA from "@/assets/funfiesta-new-01.jpg";
 import funFiestaB from "@/assets/funfiesta-new-02.jpg";
 import musicAsset from "@/assets/music.jpg";
-import musicTeacher from "@/assets/music.jpg";
 import musicNew from "@/assets/music-new.jpg";
-import dance1 from "@/assets/drive3-25.jpg";
-import dance2 from "@/assets/drive3-25.jpg";
+import dance1 from "@/assets/dance-new-1.jpg";
+import dance2 from "@/assets/dance-new-2.jpg";
+import dance3 from "@/assets/dance-new-3.jpg";
 import hero from "@/assets/playground.jpg";
 import { MediaCarousel } from "@/components/MediaCarousel";
 
@@ -74,8 +72,8 @@ const activities: Activity[] = [
   {
     icon: Sun,
     title: "Summer Camp",
-    image: summerCamp,
-    carousel: [summerCamp, summer26a, summer26b, summer26c, summerCamp2, summer25a, summer25b, summerCamp3],
+    image: summer26a,
+    carousel: [summer26a, summer26b, summer26c, summer25a, summer25b, summerCamp3],
     season: "Summer Break",
     description: "During summer break, our campus transforms into a creative playground. Students enjoy art, crafts, storytelling, music, dance, and outdoor adventures in a safe, supervised environment.",
     highlights: ["Arts & crafts", "Music & dance", "Storytelling sessions", "Outdoor exploration"],
@@ -102,7 +100,7 @@ const activities: Activity[] = [
     icon: Music,
     title: "Music",
     image: music,
-    carousel: [music, musicNew, musicTeacher],
+    carousel: [musicNew, music],
     season: "Weekly Sessions",
     description: "Students learn vocals and harmonium under the guidance of our music teacher. Music classes nurture rhythm, confidence, and a lifelong love for the arts.",
     highlights: ["Harmonium & vocal training", "Choir & group singing", "Cultural performances", "Festival celebrations"],
@@ -111,7 +109,7 @@ const activities: Activity[] = [
     icon: Sparkles,
     title: "Dance",
     image: dance1,
-    carousel: [dance1, dance2],
+    carousel: [dance1, dance2, dance3],
     season: "Cultural Programme",
     description: "Dance at Balo helps children move with confidence, express feelings without words, and celebrate every festival together. Students learn choreography for annual events, cultural days, and school celebrations.",
     highlights: ["Group choreography", "Festival performances", "Confidence & stage presence", "Team coordination"],

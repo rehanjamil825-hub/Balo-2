@@ -24,8 +24,6 @@ import womensDay from "@/assets/drive-gallery2-03.jpg";
 import womensDayGroup from "@/assets/drive-gallery2-05.jpg";
 import picnic from "@/assets/drive-gallery2-13.jpg";
 import picnicTrain from "@/assets/drive-gallery2-11.jpg";
-import presentationOne from "@/assets/drive-gallery2-16.jpg";
-import presentationTwo from "@/assets/drive-gallery2-17.jpg";
 import sportsPodium from "@/assets/drive-gallery2-04.jpg";
 import trophiesBg from "@/assets/trophies-bg.jpg";
 
@@ -76,7 +74,7 @@ const posts: EventPost[] = [
   },
   {
     img: summer26a,
-    gallery: [summer26a, summer26b, summer26c, summer, presentationOne, presentationTwo],
+    gallery: [summer26a, summer26b, summer26c],
     date: "June 2026",
     tag: "Camp",
     title: "Summer Camp 2026 — a week of pure imagination",
@@ -103,7 +101,7 @@ const posts: EventPost[] = [
   },
   {
     img: summer25a,
-    gallery: [summer25a, summer25b, summer, presentationOne],
+    gallery: [summer25a, summer25b, summer],
     date: "May 2025",
     tag: "Camp",
     title: "Summer Camp wraps up a week of discovery",

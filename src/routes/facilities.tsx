@@ -6,18 +6,18 @@ import {
 } from "lucide-react";
 
 import library from "@/assets/library.jpg";
-import libraryTree from "@/assets/drive3-03.jpg";
+import libraryTree from "@/assets/img-library-tree.jpg";
 import computerLab from "@/assets/computer-lab.jpg";
-import computerLab2 from "@/assets/drive3-02.jpg";
-import scienceExp1 from "@/assets/drive3-19.jpg";
-import scienceExp2 from "@/assets/drive3-04.jpg";
-import scienceExp3 from "@/assets/drive3-05.jpg";
+import computerLab2 from "@/assets/drive3-05.jpg";
+import scienceExp1 from "@/assets/img-science-exp-a.jpg";
+import scienceExp2 from "@/assets/drive3-20-1.jpg";
+import scienceExp3 from "@/assets/img-science-exp-b.jpg";
 import smartClassAsset from "@/assets/smart-class-new.jpg";
-import smartClass2 from "@/assets/drive3-20.jpg";
+import smartClass2 from "@/assets/drive3-04.jpg";
 import acClassroom from "@/assets/ac-classroom.jpg";
 import acClassroom2 from "@/assets/drive3-21.jpg";
 import healthcareAsset from "@/assets/healthcare.jpg";
-import healthcare2 from "@/assets/drive3-22.jpg";
+import healthcare2 from "@/assets/drive3-12.jpg";
 import mealAsset from "@/assets/meal.jpg";
 import lunchMeal from "@/assets/lunch-meal.jpg";
 import hero from "@/assets/classroom-reading.jpg";

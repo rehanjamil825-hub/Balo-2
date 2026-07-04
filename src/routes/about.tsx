@@ -384,6 +384,34 @@ const volunteers = [
     image: volunteerCurly,
     quote: "The students welcomed me with so much affection. Balo shows how education, safety, and kindness can grow together.",
   },
+  {
+    name: "Giovanna",
+    country: "Italy",
+    flag: "🇮🇹",
+    image: volunteerNewOne,
+    quote: "Balo's students inspired me every single day — their curiosity and warmth are unforgettable.",
+  },
+  {
+    name: "Daniel",
+    country: "Italy",
+    flag: "🇮🇹",
+    image: volunteerLaptop,
+    quote: "Teaching alongside the Balo team taught me as much as it taught the children.",
+  },
+  {
+    name: "Barbara",
+    country: "Italy",
+    flag: "🇮🇹",
+    image: volunteerCircleTwo,
+    quote: "The joy in these classrooms reminded me why education matters most.",
+  },
+  {
+    name: "Andrew",
+    country: "Italy",
+    flag: "🇮🇹",
+    image: volunteerNewTwo,
+    quote: "Balo is a school built on kindness. Being part of it, even briefly, changed me.",
+  },
 ];
 
 const volunteerMoments = [

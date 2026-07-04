@@ -23,7 +23,7 @@ export function AnnouncementBanner() {
           <motion.div
             className="flex gap-12 whitespace-nowrap text-sm"
             animate={{ x: ["0%", "-50%"] }}
-            transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
           >
             {track.map((m, i) => (
               <span key={i} className="shrink-0">{m}</span>
