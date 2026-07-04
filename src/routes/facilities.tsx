@@ -6,12 +6,12 @@ import {
 } from "lucide-react";
 
 import library from "@/assets/library.jpg";
-import libraryTree from "@/assets/library-tree.jpg";
+import libraryTree from "@/assets/drive3-03.jpg";
 import computerLab from "@/assets/computer-lab.jpg";
 import computerLab2 from "@/assets/drive3-02.jpg";
-import scienceExp1 from "@/assets/science-exp-1.jpg";
-import scienceExp2 from "@/assets/science-exp-2.jpg";
-import scienceExp3 from "@/assets/drive3-19.jpg";
+import scienceExp1 from "@/assets/drive3-19.jpg";
+import scienceExp2 from "@/assets/drive3-04.jpg";
+import scienceExp3 from "@/assets/drive3-05.jpg";
 import smartClassAsset from "@/assets/smart-class-new.jpg";
 import smartClass2 from "@/assets/drive3-20.jpg";
 import acClassroom from "@/assets/ac-classroom.jpg";
