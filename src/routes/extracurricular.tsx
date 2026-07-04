@@ -109,7 +109,7 @@ const activities: Activity[] = [
     icon: Sparkles,
     title: "Dance",
     image: dance1,
-    carousel: [dance1, dance2],
+    carousel: [dance1, dance2, dance3],
     season: "Cultural Programme",
     description: "Dance at Balo helps children move with confidence, express feelings without words, and celebrate every festival together. Students learn choreography for annual events, cultural days, and school celebrations.",
     highlights: ["Group choreography", "Festival performances", "Confidence & stage presence", "Team coordination"],
