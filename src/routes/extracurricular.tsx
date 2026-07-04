@@ -9,11 +9,19 @@ import sportsDay from "@/assets/sports-day.jpg";
 import summerCamp from "@/assets/summer-camp.jpg";
 import summerCamp2 from "@/assets/drive3-23.jpg";
 import summerCamp3 from "@/assets/drive3-24.jpg";
+import summer25a from "@/assets/summer25-new-01.jpg";
+import summer25b from "@/assets/summer25-new-02.jpg";
+import summer26a from "@/assets/summer26-new-01.jpg";
+import summer26b from "@/assets/summer26-new-02.jpg";
+import summer26c from "@/assets/summer26-new-03.jpg";
 import rugby from "@/assets/rugby.jpg";
 import footballNew from "@/assets/football-new.jpg";
 import funFiesta from "@/assets/fun-fiesta.jpg";
+import funFiestaA from "@/assets/funfiesta-new-01.jpg";
+import funFiestaB from "@/assets/funfiesta-new-02.jpg";
 import musicAsset from "@/assets/music.jpg";
 import musicTeacher from "@/assets/music-teacher.jpg";
+import musicNew from "@/assets/music-new.jpg";
 import dance1 from "@/assets/dance-1.jpg";
 import dance2 from "@/assets/drive3-25.jpg";
 import hero from "@/assets/playground.jpg";
@@ -67,7 +75,7 @@ const activities: Activity[] = [
     icon: Sun,
     title: "Summer Camp",
     image: summerCamp,
-    carousel: [summerCamp, summerCamp2, summerCamp3],
+    carousel: [summerCamp, summer26a, summer26b, summer26c, summerCamp2, summer25a, summer25b, summerCamp3],
     season: "Summer Break",
     description: "During summer break, our campus transforms into a creative playground. Students enjoy art, crafts, storytelling, music, dance, and outdoor adventures in a safe, supervised environment.",
     highlights: ["Arts & crafts", "Music & dance", "Storytelling sessions", "Outdoor exploration"],
@@ -85,6 +93,7 @@ const activities: Activity[] = [
     icon: PartyPopper,
     title: "Fun Fiesta",
     image: funFiesta,
+    carousel: [funFiesta, funFiestaA, funFiestaB],
     season: "Annual Carnival",
     description: "Fun Fiesta is our annual carnival filled with games, rides, food stalls, performances, and laughter. It brings students, families, and teachers together to celebrate community.",
     highlights: ["Carnival games & rides", "Student performances", "Food stalls", "Family-friendly fun"],
@@ -93,7 +102,7 @@ const activities: Activity[] = [
     icon: Music,
     title: "Music",
     image: music,
-    carousel: [music, musicTeacher],
+    carousel: [music, musicNew, musicTeacher],
     season: "Weekly Sessions",
     description: "Students learn vocals and harmonium under the guidance of our music teacher. Music classes nurture rhythm, confidence, and a lifelong love for the arts.",
     highlights: ["Harmonium & vocal training", "Choir & group singing", "Cultural performances", "Festival celebrations"],

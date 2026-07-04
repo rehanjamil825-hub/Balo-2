@@ -26,7 +26,7 @@ import womensDayGroup from "@/assets/drive-gallery2-05.jpg";
 import happySeason from "@/assets/drive-gallery2-02.jpg";
 import studentAssembly from "@/assets/drive-gallery2-07.jpg";
 import nonFireCooking from "@/assets/drive-gallery2-10.jpg";
-import studentProfileNew from "@/assets/drive-gallery2-18.png";
+
 import communityVoiceBg from "@/assets/community-voice.png";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { LazyImage } from "@/components/LazyImage";
@@ -320,7 +320,6 @@ function Gallery() {
     { src: happySeason, span: "md:col-span-2", a: "Seasonal celebration" },
     { src: studentAssembly, span: "", a: "Students gathered for a school activity" },
     { src: nonFireCooking, span: "", a: "Non-fire cooking activity" },
-    { src: studentProfileNew, span: "", a: "Balo student portrait" },
   ];
   return (
     <section id="gallery" className="py-28 px-6">

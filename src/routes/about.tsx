@@ -10,7 +10,7 @@ import director from "@/assets/director.jpg";
 import principal from "@/assets/principal.jpg";
 import hero from "@/assets/hero-classroom.jpg";
 import group from "@/assets/group-students.jpg";
-import staffAsset from "@/assets/staff-group.jpg";
+import staffAsset from "@/assets/staff-new.jpg";
 import volunteerCertificate from "@/assets/drive-gallery2-01.jpg";
 import volunteerLaptop from "@/assets/drive-gallery2-06.jpg";
 import volunteerTeaching from "@/assets/drive-gallery2-12.jpg";
@@ -18,6 +18,8 @@ import volunteerCircleOne from "@/assets/drive-gallery2-09.jpg";
 import volunteerCircleTwo from "@/assets/drive-gallery2-15.jpg";
 import volunteerGift from "@/assets/drive-gallery2-14.jpg";
 import volunteerCurly from "@/assets/drive-gallery2-08.jpg";
+import volunteerNewOne from "@/assets/volunteer-new-01.jpg";
+import volunteerNewTwo from "@/assets/volunteer-new-02.jpg";
 
 const staffGroup = staffAsset;
 
@@ -392,6 +394,8 @@ const volunteerMoments = [
   { image: volunteerCircleTwo, caption: "Group activities and confidence-building sessions" },
   { image: volunteerGift, caption: "Students thanking a volunteer with a heartfelt gift" },
   { image: volunteerCurly, caption: "One-to-one reading time with a visiting volunteer" },
+  { image: volunteerNewOne, caption: "A visiting volunteer with our students" },
+  { image: volunteerNewTwo, caption: "Volunteer sharing a moment with the Balo family" },
 ];
 
 function Volunteers() {

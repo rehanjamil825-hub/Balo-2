@@ -7,9 +7,19 @@ import { NOTICES, markAllNoticesSeen, useNotifyPreference } from "@/lib/notices"
 import sports from "@/assets/sports-day.jpg";
 import summer from "@/assets/summer-camp.jpg";
 import funFiesta from "@/assets/fun-fiesta.jpg";
+import funFiestaA from "@/assets/funfiesta-new-01.jpg";
+import funFiestaB from "@/assets/funfiesta-new-02.jpg";
 import football from "@/assets/rugby.jpg";
 import colorStorm from "@/assets/staff-group.jpg";
+import colorStormA from "@/assets/colorstorm-new-01.jpg";
+import colorStormB from "@/assets/colorstorm-new-02.jpg";
 import music from "@/assets/music.jpg";
+import musicNew from "@/assets/music-new.jpg";
+import summer25a from "@/assets/summer25-new-01.jpg";
+import summer25b from "@/assets/summer25-new-02.jpg";
+import summer26a from "@/assets/summer26-new-01.jpg";
+import summer26b from "@/assets/summer26-new-02.jpg";
+import summer26c from "@/assets/summer26-new-03.jpg";
 import womensDay from "@/assets/drive-gallery2-03.jpg";
 import womensDayGroup from "@/assets/drive-gallery2-05.jpg";
 import picnic from "@/assets/drive-gallery2-13.jpg";
@@ -65,8 +75,8 @@ const posts: EventPost[] = [
     details: "Sports Day 2026 will bring the full Balo community together for one of the most joyful days of the school year. Students, teachers, parents, ex-students, guests, and volunteers from different countries will gather to celebrate confidence, teamwork, and healthy competition. The programme will include instrumental music, singing, dance, a mock drill, and energetic games such as 200m running, spoon racing, sack racing, catch the balloon, memory game, fill the bucket with sponge, and many more activities. It will also be a time to honour leaving students with a warm farewell, so they feel remembered as part of the Balo family. More than winning, the day is about courage, discipline, laughter, and every child feeling proud to stand before the community.",
   },
   {
-    img: summer,
-    gallery: [summer, presentationOne, presentationTwo],
+    img: summer26a,
+    gallery: [summer26a, summer26b, summer26c, summer, presentationOne, presentationTwo],
     date: "June 2026",
     tag: "Camp",
     title: "Summer Camp 2026 — a week of pure imagination",
@@ -74,7 +84,8 @@ const posts: EventPost[] = [
     details: "Summer Camp 2026 gave students a bright, structured week of learning beyond regular classes. The camp runs five days in a week, with a fresh topic and activity each day so children can discover new interests. Students explored drawing, art and craft, creative designs, and group projects that helped them work with imagination and patience. Talent show sessions gave children space to sing, speak, perform, and show skills that are not always visible in the classroom. Movie day brought fun and reflection, while non-fire cooking encouraged teamwork, hygiene, and practical life skills. The camp also included smart-class presentations where students watched and discussed ideas together. It was a week of confidence-building, friendship, and joyful learning.",
   },
   {
-    img: colorStorm,
+    img: colorStormA,
+    gallery: [colorStormA, colorStormB, colorStorm],
     date: "March 2026",
     tag: "Art",
     title: "Color Storm 2026 — creativity with purpose",
@@ -82,7 +93,8 @@ const posts: EventPost[] = [
     details: "Color Storm 2026 celebrated the artistic side of Balo through an inter-school drawing and painting competition. Students prepared with great care, using colour, imagination, and observation to express their ideas on paper. The event also included an art exhibition where children displayed creative handmade objects made with patience and teamwork. These objects were arranged for visitors to see and buy, helping students understand the value of effort, presentation, and creativity. Teachers guided the children, but the confidence came from the students themselves. Color Storm was not only about colourful walls and happy faces; it was about giving children a platform to be seen as artists, makers, and young people with original ideas worth celebrating.",
   },
   {
-    img: funFiesta,
+    img: funFiestaA,
+    gallery: [funFiestaA, funFiestaB, funFiesta],
     date: "December 2025",
     tag: "Fun Fiesta",
     title: "Fun Fiesta: stalls, food, games and friendship",
@@ -90,8 +102,8 @@ const posts: EventPost[] = [
     details: "Fun Fiesta is one of Balo's most lively student-led events. Children work in groups to plan and organise stalls where they sell food, games, small handmade objects, and fun activities for visitors. The event teaches responsibility in a natural way: students discuss ideas, arrange materials, speak to guests, handle simple counting, and learn how cooperation makes a stall successful. Teachers guide them, but the excitement belongs to the children. Families, staff, volunteers, and friends come together around long tables, shared plates, and cheerful noise. Fun Fiesta turns the school into a small festival where students learn confidence, communication, and teamwork while enjoying the happiness of serving others and celebrating as one Balo family.",
   },
   {
-    img: summer,
-    gallery: [summer, presentationOne],
+    img: summer25a,
+    gallery: [summer25a, summer25b, summer, presentationOne],
     date: "May 2025",
     tag: "Camp",
     title: "Summer Camp wraps up a week of discovery",
@@ -134,7 +146,8 @@ const posts: EventPost[] = [
     details: "Sports Day 2022 was a proud celebration of energy, discipline, and togetherness at Balo English Medium School. The day included instrumental music, singing, dance, a mock drill, and a wide range of games such as 200m running, spoon racing, sack racing, catch the balloon, memory game, fill the bucket with sponge, and many more. Students, teachers, and parents all participated, which made the event feel like a true community festival. Guests, volunteers from different countries, and ex-students were also invited, adding warmth and encouragement. The programme included a farewell for leaving students, reminding them that Balo remains part of their story. Sports Day showed that every child can learn courage, fairness, patience, and teamwork while having fun.",
   },
   {
-    img: music,
+    img: musicNew,
+    gallery: [musicNew, music],
     date: "Ongoing",
     tag: "Music",
     title: "Harmonium classes find a second home",
