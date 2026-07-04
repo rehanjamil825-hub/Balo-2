@@ -146,7 +146,8 @@ const posts: EventPost[] = [
     details: "Sports Day 2022 was a proud celebration of energy, discipline, and togetherness at Balo English Medium School. The day included instrumental music, singing, dance, a mock drill, and a wide range of games such as 200m running, spoon racing, sack racing, catch the balloon, memory game, fill the bucket with sponge, and many more. Students, teachers, and parents all participated, which made the event feel like a true community festival. Guests, volunteers from different countries, and ex-students were also invited, adding warmth and encouragement. The programme included a farewell for leaving students, reminding them that Balo remains part of their story. Sports Day showed that every child can learn courage, fairness, patience, and teamwork while having fun.",
   },
   {
-    img: music,
+    img: musicNew,
+    gallery: [musicNew, music],
     date: "Ongoing",
     tag: "Music",
     title: "Harmonium classes find a second home",
