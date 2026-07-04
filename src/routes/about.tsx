@@ -394,6 +394,8 @@ const volunteerMoments = [
   { image: volunteerCircleTwo, caption: "Group activities and confidence-building sessions" },
   { image: volunteerGift, caption: "Students thanking a volunteer with a heartfelt gift" },
   { image: volunteerCurly, caption: "One-to-one reading time with a visiting volunteer" },
+  { image: volunteerNewOne, caption: "A visiting volunteer with our students" },
+  { image: volunteerNewTwo, caption: "Volunteer sharing a moment with the Balo family" },
 ];
 
 function Volunteers() {
