@@ -3,7 +3,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Lock, Mail, KeyRound } from "lucide-react";
 
-export const Route = createFileRoute("/admin/login")({
+export const Route = createFileRoute("/admin-login")({
   ssr: false,
   component: AdminLoginPage,
 });

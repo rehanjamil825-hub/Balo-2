@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/admin/reset-password")({
+export const Route = createFileRoute("/admin-reset-password")({
   ssr: false,
   component: ResetPasswordPage,
 });

@@ -14,12 +14,12 @@ import { Route as FacilitiesRouteImport } from './routes/facilities'
 import { Route as ExtracurricularRouteImport } from './routes/extracurricular'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DevelopersRouteImport } from './routes/developers'
+import { Route as AdminResetPasswordRouteImport } from './routes/admin-reset-password'
+import { Route as AdminLoginRouteImport } from './routes/admin-login'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as AdminResetPasswordRouteImport } from './routes/admin.reset-password'
-import { Route as AdminLoginRouteImport } from './routes/admin.login'
 
 const SubjectsRoute = SubjectsRouteImport.update({
   id: '/subjects',
@@ -46,6 +46,16 @@ const DevelopersRoute = DevelopersRouteImport.update({
   path: '/developers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminResetPasswordRoute = AdminResetPasswordRouteImport.update({
+  id: '/admin-reset-password',
+  path: '/admin-reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin-login',
+  path: '/admin-login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -66,40 +76,30 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminResetPasswordRoute = AdminResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminLoginRoute = AdminLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => AdminRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/admin-login': typeof AdminLoginRoute
+  '/admin-reset-password': typeof AdminResetPasswordRoute
   '/developers': typeof DevelopersRoute
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
   '/subjects': typeof SubjectsRoute
-  '/admin/login': typeof AdminLoginRoute
-  '/admin/reset-password': typeof AdminResetPasswordRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin-login': typeof AdminLoginRoute
+  '/admin-reset-password': typeof AdminResetPasswordRoute
   '/developers': typeof DevelopersRoute
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
   '/subjects': typeof SubjectsRoute
-  '/admin/login': typeof AdminLoginRoute
-  '/admin/reset-password': typeof AdminResetPasswordRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
@@ -107,13 +107,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/admin-login': typeof AdminLoginRoute
+  '/admin-reset-password': typeof AdminResetPasswordRoute
   '/developers': typeof DevelopersRoute
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
   '/subjects': typeof SubjectsRoute
-  '/admin/login': typeof AdminLoginRoute
-  '/admin/reset-password': typeof AdminResetPasswordRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -122,38 +122,38 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
+    | '/admin-login'
+    | '/admin-reset-password'
     | '/developers'
     | '/events'
     | '/extracurricular'
     | '/facilities'
     | '/subjects'
-    | '/admin/login'
-    | '/admin/reset-password'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/admin-login'
+    | '/admin-reset-password'
     | '/developers'
     | '/events'
     | '/extracurricular'
     | '/facilities'
     | '/subjects'
-    | '/admin/login'
-    | '/admin/reset-password'
     | '/admin'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/admin'
+    | '/admin-login'
+    | '/admin-reset-password'
     | '/developers'
     | '/events'
     | '/extracurricular'
     | '/facilities'
     | '/subjects'
-    | '/admin/login'
-    | '/admin/reset-password'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -161,6 +161,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminResetPasswordRoute: typeof AdminResetPasswordRoute
   DevelopersRoute: typeof DevelopersRoute
   EventsRoute: typeof EventsRoute
   ExtracurricularRoute: typeof ExtracurricularRoute
@@ -205,6 +207,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DevelopersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin-reset-password': {
+      id: '/admin-reset-password'
+      path: '/admin-reset-password'
+      fullPath: '/admin-reset-password'
+      preLoaderRoute: typeof AdminResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin-login': {
+      id: '/admin-login'
+      path: '/admin-login'
+      fullPath: '/admin-login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -233,32 +249,14 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/reset-password': {
-      id: '/admin/reset-password'
-      path: '/reset-password'
-      fullPath: '/admin/reset-password'
-      preLoaderRoute: typeof AdminResetPasswordRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/login': {
-      id: '/admin/login'
-      path: '/login'
-      fullPath: '/admin/login'
-      preLoaderRoute: typeof AdminLoginRouteImport
-      parentRoute: typeof AdminRoute
-    }
   }
 }
 
 interface AdminRouteChildren {
-  AdminLoginRoute: typeof AdminLoginRoute
-  AdminResetPasswordRoute: typeof AdminResetPasswordRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminLoginRoute: AdminLoginRoute,
-  AdminResetPasswordRoute: AdminResetPasswordRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -268,6 +266,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
+  AdminLoginRoute: AdminLoginRoute,
+  AdminResetPasswordRoute: AdminResetPasswordRoute,
   DevelopersRoute: DevelopersRoute,
   EventsRoute: EventsRoute,
   ExtracurricularRoute: ExtracurricularRoute,
