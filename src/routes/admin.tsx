@@ -42,7 +42,7 @@ function AdminLayout() {
     return <div className="min-h-screen grid place-items-center bg-background text-muted-foreground">Checking access…</div>;
   }
   if (state.kind === "signed-out") {
-    throw redirect({ to: "/admin/login" });
+    throw redirect({ to: "/admin-login" });
   }
   if (state.kind === "not-admin") {
     return (
@@ -54,7 +54,7 @@ function AdminLayout() {
             {state.email ?? "This account"} is not an admin. Sign in with the admin email.
           </p>
           <button
-            onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/admin/login" }); }}
+            onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/admin-login" }); }}
             className="mt-6 inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium"
           >
             Sign out
@@ -76,7 +76,7 @@ function AdminLayout() {
             <Link to="/" className="text-muted-foreground hover:text-foreground">View site</Link>
             <span className="text-muted-foreground hidden sm:inline">{state.email}</span>
             <button
-              onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/admin/login" }); }}
+              onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/admin-login" }); }}
               className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 hover:bg-muted"
             >
               <LogOut className="size-4" /> Sign out

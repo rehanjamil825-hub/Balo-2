@@ -34,7 +34,7 @@ function AdminLoginPage() {
         setMode("signin");
       } else {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/admin/reset-password`,
+          redirectTo: `${window.location.origin}/admin-reset-password`,
         });
         if (error) throw error;
         setMsg({ kind: "ok", text: "Password reset email sent." });
