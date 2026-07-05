@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Calendar, MapPin, ArrowRight, Sparkles, X, Bell, BellRing } from "lucide-react";
 import { useEffect, useState } from "react";
-import { NOTICES, markAllNoticesSeen, useNotifyPreference } from "@/lib/notices";
+import { useNotices, markAllNoticesSeen, useNotifyPreference } from "@/lib/notices";
 
 import sports from "@/assets/sports-day.jpg";
 import summer from "@/assets/summer-camp.jpg";
@@ -156,7 +156,8 @@ const posts: EventPost[] = [
 
 function NoticeBoard() {
   const [notifyEnabled, setNotifyEnabled] = useNotifyPreference();
-  useEffect(() => { markAllNoticesSeen(); }, []);
+  const notices = useNotices();
+  useEffect(() => { markAllNoticesSeen(notices.map((n) => n.id)); }, [notices]);
   return (
     <section className="py-16 px-6 bg-card">
       <div className="max-w-5xl mx-auto">
@@ -178,17 +179,17 @@ function NoticeBoard() {
             Notify me of new notices
           </label>
         </div>
-        {NOTICES.length === 0 ? (
+        {notices.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-border bg-background p-10 text-center text-muted-foreground">
             <Bell className="size-8 mx-auto mb-3 opacity-50" />
             <p className="text-sm">Empty — no notices right now. Check back soon.</p>
           </div>
         ) : (
           <div className="space-y-3">
-            {NOTICES.map((n) => (
+            {notices.map((n) => (
               <article key={n.id} className="relative p-5 rounded-2xl bg-background border border-border shadow-soft">
                 <span className="absolute top-4 right-4 size-2 rounded-full bg-red-500 animate-pulse" />
-                <div className="text-xs text-muted-foreground mb-1">{n.date}</div>
+                <div className="text-xs text-muted-foreground mb-1">{new Date(n.publish_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}</div>
                 <h3 className="font-display text-xl font-bold">{n.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{n.body}</p>
               </article>
