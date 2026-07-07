@@ -38,13 +38,13 @@ const team = [
   {
     name: "Shahil Sharma",
     role: "Developer",
-    note: "The one in the white and brown shirt — engineering & integration.",
+    note: "The one in the white and brown shirt —Designing and developement.",
     color: "from-accent to-secondary",
   },
   {
     name: "Shibran Khatoon",
     role: "Developer",
-    note: "The one in the brown dress — content & UX.",
+    note: "The one in the brown dress — Designing and gallery Management.",
     color: "from-secondary to-primary",
   },
 ];
@@ -68,7 +68,7 @@ function DevelopersPage() {
               Meet the <span className="italic text-secondary">developers.</span>
             </h1>
             <p className="mt-6 text-lg md:text-xl text-white/85 max-w-2xl mx-auto">
-              Students and contributors from India and Italy who designed and built this website to share Balo English Medium School's story with the world.
+              Students and contributors from India who designed and built this website to share Balo English Medium School's story with the world.
             </p>
           </motion.div>
         </div>

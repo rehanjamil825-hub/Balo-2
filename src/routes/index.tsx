@@ -8,7 +8,8 @@ import {
 
 import hero from "@/assets/hero-classroom.jpg";
 import reading from "@/assets/classroom-reading.jpg";
-import teacher from "@/assets/teacher-board.jpg";
+import teacher from "@/assets/activities7.jpeg";
+import story from "@/assets/teacher-board.jpg";
 import group from "@/assets/group-students.jpg";
 import portrait from "@/assets/student-portrait.jpg";
 import playground from "@/assets/playground.jpg";
@@ -150,7 +151,7 @@ function Hero() {
             Every child deserves <span className="italic text-secondary">a chance to dream.</span>
           </motion.h1>
           <motion.p initial="hidden" animate="show" variants={fadeUp} custom={2} className="mt-6 text-lg md:text-xl text-white/85 max-w-xl">
-            Balo English Medium School is a community-run NGO delivering free, quality English-medium education to the children of Babudanga, Pilkhana — one classroom, one bright future at a time.
+            Balo English Medium School is a worldwide community-run NGO delivering free, quality English-medium education to the children of Babudanga, Pilkhana — one classroom, one bright future at a time.
           </motion.p>
           <motion.div initial="hidden" animate="show" variants={fadeUp} custom={3} className="mt-9 flex flex-wrap gap-4">
             <a href="#donate" className="group inline-flex items-center gap-2 rounded-full bg-white text-primary px-7 py-3.5 font-semibold shadow-soft hover:bg-secondary hover:text-secondary-foreground transition-all">
@@ -222,7 +223,7 @@ function About() {
       <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
         <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}
           className="relative">
-          <img src={teacher} alt="Teacher at Balo English Medium School" width={1200} height={900} loading="lazy"
+          <img src={story} alt="Teacher at Balo English Medium School" width={1200} height={900} loading="lazy"
             className="rounded-3xl shadow-card w-full aspect-[4/5] object-cover" />
           <motion.div animate={{ rotate: [0, 3, 0, -3, 0] }} transition={{ duration: 8, repeat: Infinity }}
             className="absolute -bottom-8 -right-4 md:-right-12 bg-card rounded-2xl p-6 shadow-card max-w-xs">
@@ -247,7 +248,7 @@ function About() {
             {[
               { icon: BookOpen, t: "English-Medium", d: "Foundations that open every door." },
               { icon: HandHeart, t: "Always Free", d: "No fees. No barriers. Ever." },
-              { icon: Users, t: "Community-Run", d: "By the neighbourhood, for the neighbourhood." },
+              { icon: Users, t: "Community-Run", d: "By the people, for the neighbourhood." },
               { icon: Heart, t: "Whole-Child", d: "Books, meals, dignity, joy." },
             ].map((f, i) => (
               <motion.div
@@ -276,7 +277,7 @@ function About() {
 function Programs() {
   const items = [
     { img: reading, t: "Primary Learning", d: "Foundational reading, writing & arithmetic in English and Bengali." },
-    { img: teacher, t: "Spoken English", d: "Daily conversation circles to build confidence and fluency." },
+    { img: teacher, t: "Activities", d: "Daily activities circles to build confidence and joy." },
     { img: playground, t: "Play & Wellbeing", d: "Sports, art, and emotional learning — every afternoon." },
     { img: hands, t: "Tutoring & Mentorship", d: "After-school support for older students preparing for boards." },
   ];

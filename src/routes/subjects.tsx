@@ -109,7 +109,7 @@ function SubjectsPage() {
       <Hero />
       <SubjectSection title="Elementary School" subtitle="Grades I – V" items={elementary} />
       <div className="bg-card">
-        <SubjectSection title="High School" subtitle="Grades VI – X" items={highSchool} />
+        <SubjectSection title="High School" subtitle="Grades VI – XII" items={highSchool} />
       </div>
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">

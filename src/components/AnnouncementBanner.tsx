@@ -3,7 +3,7 @@ import { Megaphone } from "lucide-react";
 import { useLiveAnnouncements } from "@/lib/public-content";
 
 const FALLBACK = [
-  "🎉 Admissions open for 2026-27 — visit us at 55 Pilkhana 2nd Bye Lane, Salkia",
+  "🇮🇳 Visit us at 55 Pilkhana 2nd Bye Lane, Salkia",
   "📅 Sports Day 2026 arrives this December — save the date",
   "💛 Support a child today — ₹500 sends one student to school for a full month",
 ];
@@ -26,7 +26,7 @@ export function AnnouncementBanner() {
           <motion.div
             className="flex gap-12 whitespace-nowrap text-sm"
             animate={{ x: ["0%", "-50%"] }}
-            transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
           >
             {track.map((m, i) => (
               <span key={i} className="shrink-0">{m}</span>
