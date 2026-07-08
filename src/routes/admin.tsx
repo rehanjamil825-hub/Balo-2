@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
 import { getAdminStatus } from "@/lib/admin.functions";
-import { LogOut, LayoutDashboard, ShieldAlert } from "lucide-react";
+import { LogOut, LayoutDashboard, ShieldAlert, UserCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
