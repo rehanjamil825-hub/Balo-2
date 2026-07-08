@@ -74,7 +74,14 @@ function AdminLayout() {
           </div>
           <div className="flex items-center gap-3 text-sm">
             <Link to="/" className="text-muted-foreground hover:text-foreground">View site</Link>
-            <span className="text-muted-foreground hidden sm:inline">{state.email}</span>
+            <div className="flex items-center gap-2 rounded-full border border-border bg-background pl-1.5 pr-3 py-1">
+              <span className="grid place-items-center size-7 rounded-full bg-primary/10 text-primary">
+                <UserCircle2 className="size-5" />
+              </span>
+              <span className="hidden sm:inline text-xs font-medium text-foreground/80 max-w-[160px] truncate">
+                {state.email ?? "Admin"}
+              </span>
+            </div>
             <button
               onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/admin-login" }); }}
               className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 hover:bg-muted"
