@@ -11,9 +11,9 @@ import hero from "@/assets/subjects-banner-new.jpg";
 export const Route = createFileRoute("/subjects")({
   head: () => ({
     meta: [
-      { title: "Subjects — Balo English Medium School, Howrah" },
-      { name: "description", content: "Explore the subjects taught at Balo English Medium School: English, Hindi, Bengali, Mathematics, Science, Social Studies, Computer, Economics and more." },
-      { property: "og:title", content: "Subjects — Balo English Medium School" },
+      { title: "Academics — Balo English Medium School, Howrah" },
+      { name: "description", content: "Explore the academic subjects taught at Balo English Medium School: English, Hindi, Bengali, Mathematics, Science, Social Studies, Computer, Economics and more." },
+      { property: "og:title", content: "Academics — Balo English Medium School" },
       { property: "og:description", content: "From elementary spelling dictations to high-school physics, chemistry, biology and economics — see the full curriculum." },
       { property: "og:image", content: hero },
     ],
