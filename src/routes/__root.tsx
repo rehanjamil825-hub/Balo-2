@@ -153,18 +153,28 @@ function HashScroller() {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isAdminRoute = pathname.startsWith("/admin");
+  const [ready, setReady] = useState(false);
+
+  // Keep initial content mounted OFF-DOM while the splash is up so page
+  // entry animations begin AFTER the splash fades — not underneath it.
+  useEffect(() => {
+    const t = window.setTimeout(() => setReady(true), 1650);
+    return () => window.clearTimeout(t);
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
         <LoadingScreen />
-        <Nav />
-        <AnnouncementBanner />
+        {!isAdminRoute && <Nav />}
+        {!isAdminRoute && <AnnouncementBanner />}
         <HashScroller />
-        <div className="pt-9">
-          <Outlet />
+        <div className={isAdminRoute ? "" : "pt-9"}>
+          {ready ? <Outlet /> : <div style={{ minHeight: "100vh" }} aria-hidden />}
         </div>
-        <Footer />
+        {!isAdminRoute && <Footer />}
       </LanguageProvider>
     </QueryClientProvider>
   );
