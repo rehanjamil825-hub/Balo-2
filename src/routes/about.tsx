@@ -112,7 +112,7 @@ function Leadership() {
         <motion.div
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
+          viewport={{ once: false, amount: 0.2 }}
           variants={fadeUp}
           className="text-center max-w-3xl mx-auto mb-16"
         >
@@ -133,7 +133,7 @@ function Leadership() {
               key={leader.name}
               initial="hidden"
               whileInView="show"
-              viewport={{ once: true }}
+              viewport={{ once: false, amount: 0.2 }}
               variants={fadeUp}
               custom={i}
               whileHover={{ y: -8 }}
@@ -181,7 +181,7 @@ function Mission() {
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.8 }}
         >
           <img
@@ -196,7 +196,7 @@ function Mission() {
         <motion.div
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
+          viewport={{ once: false, amount: 0.2 }}
           variants={fadeUp}
         >
           <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">
@@ -214,7 +214,7 @@ function Mission() {
                 key={v.title}
                 initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: false, amount: 0.2 }}
                 transition={{ duration: 0.5, delay: i * 0.06 }}
                 whileHover={{ scale: 1.05, y: -4 }}
                 className="flex gap-3 p-4 rounded-2xl bg-background border border-border cursor-default shadow-soft"
@@ -244,7 +244,7 @@ function ImpactQuote() {
         <motion.div
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
+          viewport={{ once: false, amount: 0.2 }}
           variants={fadeUp}
         >
           <Quote className="size-12 mx-auto opacity-60" />
@@ -264,7 +264,7 @@ function SisterOrgs() {
       <motion.div
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true }}
+        viewport={{ once: false, amount: 0.2 }}
         variants={fadeUp}
         className="max-w-4xl mx-auto"
       >
@@ -312,7 +312,7 @@ function Staff() {
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.8 }}
         >
           <img
@@ -327,7 +327,7 @@ function Staff() {
         <motion.div
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
+          viewport={{ once: false, amount: 0.2 }}
           variants={fadeUp}
         >
           <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">
@@ -433,7 +433,7 @@ function Volunteers() {
         <motion.div
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
+          viewport={{ once: false, amount: 0.2 }}
           variants={fadeUp}
           className="text-center max-w-3xl mx-auto mb-16"
         >
@@ -454,7 +454,7 @@ function Volunteers() {
               key={v.name}
               initial="hidden"
               whileInView="show"
-              viewport={{ once: true }}
+              viewport={{ once: false, amount: 0.2 }}
               variants={fadeUp}
               custom={i}
               whileHover={{ y: -6 }}
@@ -480,7 +480,7 @@ function Volunteers() {
                 key={moment.caption}
                 initial="hidden"
                 whileInView="show"
-                viewport={{ once: true }}
+                viewport={{ once: false, amount: 0.2 }}
                 variants={fadeUp}
                 custom={i}
                 whileHover={{ y: -6, scale: 1.02 }}

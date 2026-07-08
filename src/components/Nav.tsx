@@ -12,7 +12,7 @@ const navItems: NavItem[] = [
   { key: "nav.home", href: "/" },
   { key: "nav.about", href: "/about" },
   { key: "nav.facilities", href: "/facilities" },
-  { key: "Academics", href: "/subjects" },
+  { key: "nav.subjects", href: "/subjects" },
   { key: "nav.extracurricular", href: "/extracurricular" },
   { key: "nav.events", href: "/events", notice: true },
   { key: "nav.developers", href: "/developers" },

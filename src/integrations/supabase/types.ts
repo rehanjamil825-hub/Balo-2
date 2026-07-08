@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_approval_requests: {
+        Row: {
+          code_hash: string
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          updated_at: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          code_hash: string
+          created_at?: string
+          email: string
+          expires_at: string
+          id?: string
+          updated_at?: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          code_hash?: string
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          updated_at?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       admin_emails: {
         Row: {
           created_at: string

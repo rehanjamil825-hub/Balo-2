@@ -11,9 +11,9 @@ import hero from "@/assets/subjects-banner-new.jpg";
 export const Route = createFileRoute("/subjects")({
   head: () => ({
     meta: [
-      { title: "Subjects — Balo English Medium School, Howrah" },
-      { name: "description", content: "Explore the subjects taught at Balo English Medium School: English, Hindi, Bengali, Mathematics, Science, Social Studies, Computer, Economics and more." },
-      { property: "og:title", content: "Subjects — Balo English Medium School" },
+      { title: "Academics — Balo English Medium School, Howrah" },
+      { name: "description", content: "Explore the academic subjects taught at Balo English Medium School: English, Hindi, Bengali, Mathematics, Science, Social Studies, Computer, Economics and more." },
+      { property: "og:title", content: "Academics — Balo English Medium School" },
       { property: "og:description", content: "From elementary spelling dictations to high-school physics, chemistry, biology and economics — see the full curriculum." },
       { property: "og:image", content: hero },
     ],
@@ -80,14 +80,14 @@ function SubjectSection({ title, subtitle, items }: { title: string; subtitle: s
   return (
     <section className="py-20 px-6">
       <div className="max-w-7xl mx-auto">
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} className="max-w-3xl mb-12">
+        <motion.div initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp} className="max-w-3xl mb-12">
           <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">{subtitle}</div>
           <h2 className="text-4xl md:text-5xl font-bold text-balance">{title}</h2>
         </motion.div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {items.map((s, i) => (
             <motion.article key={s.title}
-              initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} custom={i}
+              initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp} custom={i}
               whileHover={{ y: -6 }}
               className="p-6 rounded-3xl bg-card border border-border shadow-soft">
               <div className="size-11 rounded-2xl bg-primary/10 text-primary grid place-items-center mb-4">
