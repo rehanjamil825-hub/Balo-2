@@ -191,7 +191,7 @@ function FacilitiesGrid() {
         <motion.div
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
+          viewport={{ once: false, amount: 0.2 }}
           variants={fadeUp}
           className="max-w-3xl mb-16"
         >
@@ -212,7 +212,7 @@ function FacilitiesGrid() {
               key={f.title}
               initial="hidden"
               whileInView="show"
-              viewport={{ once: true }}
+              viewport={{ once: false, amount: 0.2 }}
               variants={fadeUp}
               custom={i}
               whileHover={{ y: -8 }}
@@ -265,7 +265,7 @@ function CTA() {
       <motion.div
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true }}
+        viewport={{ once: false, amount: 0.2 }}
         variants={fadeUp}
         className="max-w-4xl mx-auto text-center"
       >

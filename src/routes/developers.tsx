@@ -79,7 +79,7 @@ function DevelopersPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+            viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.9 }}
             className="relative"
           >
@@ -100,7 +100,7 @@ function DevelopersPage() {
             </motion.div>
           </motion.div>
 
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp}>
             <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">
               The Team
             </div>
@@ -117,7 +117,7 @@ function DevelopersPage() {
                   key={m.name}
                   initial="hidden"
                   whileInView="show"
-                  viewport={{ once: true }}
+                  viewport={{ once: false, amount: 0.2 }}
                   variants={fadeUp}
                   custom={i}
                   whileHover={{ scale: 1.05, y: -4 }}
@@ -149,7 +149,7 @@ function DevelopersPage() {
 
       <section className="py-24 px-6 bg-card">
         <div className="max-w-5xl mx-auto">
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp} className="max-w-2xl mb-12">
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp} className="max-w-2xl mb-12">
             <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">
               How We Learned
             </div>
@@ -160,7 +160,7 @@ function DevelopersPage() {
 
           <div className="grid md:grid-cols-1 gap-6 max-w-2xl">
             <motion.div
-              initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}
+              initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp}
               className="p-8 rounded-3xl bg-background border border-border shadow-soft"
             >
               <div className="size-12 rounded-2xl bg-accent/10 text-accent grid place-items-center mb-4">
