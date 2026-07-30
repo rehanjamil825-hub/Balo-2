@@ -22,6 +22,7 @@ import musicNew from "@/assets/music-new.jpg";
 import dance1 from "@/assets/dance-new-1.jpg";
 import dance2 from "@/assets/dance-new-2.jpg";
 import dance3 from "@/assets/dance-new-3.jpg";
+import dance4 from "@/assets/dance-new-4.jpg";
 import hero from "@/assets/playground.jpg";
 import { MediaCarousel } from "@/components/MediaCarousel";
 
@@ -73,10 +74,10 @@ const activities: Activity[] = [
     icon: Sun,
     title: "Summer Camp",
     image: summer26a,
-    carousel: [summer26a, summer26b, summer26c, summer25a, summer25b, summerCamp3],
+    carousel: [summer26a, summer26b, summer26c, summer25a, summer25b,],
     season: "Summer Break",
     description: "During summer break, our campus transforms into a creative playground. Students enjoy art, crafts, storytelling, music, dance, and outdoor adventures in a safe, supervised environment.",
-    highlights: ["Arts & crafts", "Music & dance", "Storytelling sessions", "Outdoor exploration"],
+    highlights: ["Arts & crafts", "Music & dance", " Game sessions", "Science Experiments"],
   },
   {
     icon: Activity,
@@ -109,7 +110,7 @@ const activities: Activity[] = [
     icon: Sparkles,
     title: "Dance",
     image: dance1,
-    carousel: [dance1, dance2, dance3],
+    carousel: [dance1, dance2, dance3, dance4],
     season: "Cultural Programme",
     description: "Dance at Balo helps children move with confidence, express feelings without words, and celebrate every festival together. Students learn choreography for annual events, cultural days, and school celebrations.",
     highlights: ["Group choreography", "Festival performances", "Confidence & stage presence", "Team coordination"],

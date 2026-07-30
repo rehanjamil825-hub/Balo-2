@@ -62,7 +62,7 @@ const facilities = [
     image: library,
     carousel: librarySlides,
     description: "A warm, inviting space filled with storybooks, reference materials, and periodicals. Our library encourages every child to read for joy and discovery.",
-    features: ["Age-graded reading corners", "Bengali & English collections", "Daily reading periods", "Librarian-guided sessions"],
+    features: ["Age-graded reading corners", "Hindi & English collections", "Daily reading periods", "Librarian-guided sessions"],
   },
   {
     icon: Monitor,
@@ -86,15 +86,15 @@ const facilities = [
     image: smartClass,
     carousel: smartSlides,
     description: "Interactive whiteboards, projectors, and multimedia lessons bring concepts to life. Smart classes make learning visual, engaging, and memorable.",
-    features: ["Interactive digital boards", "Projector & audio systems", "Animated lesson modules", "Tablet-assisted activities"],
+    features: ["Interactive digital boards", "Projector & audio systems", "Animated lesson modules", "Computers-assisted activities"],
   },
   {
     icon: Wind,
-    title: "Air-Conditioned Classrooms",
+    title: "Air-Conditioners",
     image: acClassroom,
     carousel: acSlides,
     description: "Comfortable, climate-controlled classrooms help students stay focused and alert through Howrah's warmest months.",
-    features: ["Ceiling & split AC units", "Bright LED lighting", "Spacious seating", "Clean, ventilated rooms"],
+    features: ["Ceiling AC units in hallrooms", "Bright LED lighting", "Spacious seating", "Clean, ventilated rooms"],
   },
   {
     icon: Stethoscope,

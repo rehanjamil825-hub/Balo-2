@@ -48,8 +48,8 @@ const fadeUp = {
 
 const leaders = [
   {
-    name: "Mrs Elizabetta Ravoili",
-    role: "Founder",
+    name: "Elizabetta, Liam and Anna ",
+    role: "Founders",
     image: founder,
     quote: "One classroom can lift an entire lane out of poverty.",
     bio: "A lifelong educator with a heart for the underserved, Mrs Ravoili founded Balo English Medium School to make sure no child in Babudanga or Pilkhana was turned away for lack of money. She believes that dignity begins with a good teacher and a welcoming classroom.",
