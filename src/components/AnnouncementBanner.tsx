@@ -37,7 +37,7 @@ export function AnnouncementBanner() {
         }
         .balo-marquee-track {
           animation: balo-marquee 35s linear infinite;
-          will-change: transform;
+            will-change: transform;
         }
         @media (max-width: 640px) {
           .balo-marquee-track { animation-duration: 22s; }
