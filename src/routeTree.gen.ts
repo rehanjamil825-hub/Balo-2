@@ -21,6 +21,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AdminKnowledgeRouteImport } from './routes/admin.knowledge'
 import { Route as AdminAiRouteImport } from './routes/admin.ai'
 
 const SubjectsRoute = SubjectsRouteImport.update({
@@ -83,6 +84,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminKnowledgeRoute = AdminKnowledgeRouteImport.update({
+  id: '/knowledge',
+  path: '/knowledge',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAiRoute = AdminAiRouteImport.update({
   id: '/ai',
   path: '/ai',
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/facilities': typeof FacilitiesRoute
   '/subjects': typeof SubjectsRoute
   '/admin/ai': typeof AdminAiRoute
+  '/admin/knowledge': typeof AdminKnowledgeRoute
   '/api/chat': typeof ApiChatRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -115,6 +122,7 @@ export interface FileRoutesByTo {
   '/facilities': typeof FacilitiesRoute
   '/subjects': typeof SubjectsRoute
   '/admin/ai': typeof AdminAiRoute
+  '/admin/knowledge': typeof AdminKnowledgeRoute
   '/api/chat': typeof ApiChatRoute
   '/admin': typeof AdminIndexRoute
 }
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   '/facilities': typeof FacilitiesRoute
   '/subjects': typeof SubjectsRoute
   '/admin/ai': typeof AdminAiRoute
+  '/admin/knowledge': typeof AdminKnowledgeRoute
   '/api/chat': typeof ApiChatRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -148,6 +157,7 @@ export interface FileRouteTypes {
     | '/facilities'
     | '/subjects'
     | '/admin/ai'
+    | '/admin/knowledge'
     | '/api/chat'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -162,6 +172,7 @@ export interface FileRouteTypes {
     | '/facilities'
     | '/subjects'
     | '/admin/ai'
+    | '/admin/knowledge'
     | '/api/chat'
     | '/admin'
   id:
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/facilities'
     | '/subjects'
     | '/admin/ai'
+    | '/admin/knowledge'
     | '/api/chat'
     | '/admin/'
   fileRoutesById: FileRoutesById
@@ -281,6 +293,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/knowledge': {
+      id: '/admin/knowledge'
+      path: '/knowledge'
+      fullPath: '/admin/knowledge'
+      preLoaderRoute: typeof AdminKnowledgeRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/ai': {
       id: '/admin/ai'
       path: '/ai'
@@ -293,11 +312,13 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminAiRoute: typeof AdminAiRoute
+  AdminKnowledgeRoute: typeof AdminKnowledgeRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAiRoute: AdminAiRoute,
+  AdminKnowledgeRoute: AdminKnowledgeRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
