@@ -17,6 +17,9 @@ import { AnnouncementBanner } from "../components/AnnouncementBanner";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { Footer } from "../components/Footer";
 import { LanguageProvider } from "../lib/i18n";
+import { BaloAI } from "../components/BaloAI";
+import { NoticeBell } from "../components/NoticeBell";
+
 
 function NotFoundComponent() {
   return (
