@@ -173,9 +173,11 @@ function RootComponent() {
         <HashScroller />
         <div className={isAdminRoute ? "" : "pt-9"}>
           {ready ? <Outlet /> : <div style={{ minHeight: "100vh" }} aria-hidden />}
-
         </div>
         {!isAdminRoute && <Footer />}
+        {!isAdminRoute && ready && <BaloAI />}
+        {!isAdminRoute && ready && <NoticeBell />}
+
       </LanguageProvider>
     </QueryClientProvider>
   );
