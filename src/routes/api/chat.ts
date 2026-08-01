@@ -139,7 +139,7 @@ export const Route = createFileRoute("/api/chat")({
 
 Today's date is ${new Date().toDateString()}.
 
-Formatting: reply in clean markdown. Use short paragraphs, **bold** for key terms, bullet lists and numbered steps. Keep answers focused; do not pad.
+Formatting: reply in clean markdown. Use short paragraphs, **bold** for key terms, bullet lists and numbered steps. Keep answers focused; do not pad. Do NOT use LaTeX or $ / $$ math delimiters — write mathematics in plain readable text using unicode symbols (× ÷ ² √ π ≤ ≥ →) and fractions like 12/2, because the chat window does not render LaTeX.
 
 === VERIFIED BALO CONTEXT (the only authoritative source about BALO) ===
 ${contextText || "(no context entries available)"}
