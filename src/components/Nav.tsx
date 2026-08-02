@@ -1,6 +1,6 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Menu, X, Globe } from "lucide-react";
+import { Heart, Menu, X, Globe, Sparkles } from "lucide-react";
 import { useState } from "react";
 import baloLogo from "@/assets/balo-logo.jpg";
 import { useLang, type Lang } from "@/lib/i18n";
@@ -161,7 +161,14 @@ export function Nav() {
         </div>
 
         <div className="hidden lg:flex items-center gap-3">
+          <Link
+            to="/balo-ai"
+            className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3.5 py-2 text-sm font-semibold text-primary hover:bg-primary/20 transition-colors"
+          >
+            <Sparkles className="size-4" /> BALO AI
+          </Link>
           <LangSwitcher />
+
           <a
             href={DONATE_URL}
             target="_blank"
@@ -195,7 +202,15 @@ export function Nav() {
           >
             <div className="px-6 py-4 space-y-3">
               {navItems.map((item) => renderItem(item, true))}
+              <Link
+                to="/balo-ai"
+                onClick={() => setMobileOpen(false)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3.5 py-2 text-sm font-semibold text-primary"
+              >
+                <Sparkles className="size-4" /> BALO AI
+              </Link>
               <div className="pt-2"><LangSwitcher mobile /></div>
+
               <a
                 href={DONATE_URL}
                 target="_blank"
