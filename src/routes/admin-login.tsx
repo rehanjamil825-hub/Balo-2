@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { Lock, Mail, KeyRound, ShieldCheck, RefreshCw, Send } from "lucide-react";
-import { requestAdminApproval, verifyAdminApproval, getAdminStatus } from "@/lib/admin.functions";
+import { requestAdminApproval, getMyApprovalRequest, getAdminStatus } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin-login")({
   ssr: false,
