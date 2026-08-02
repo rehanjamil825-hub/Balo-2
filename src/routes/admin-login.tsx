@@ -139,7 +139,7 @@ function AdminLoginPage() {
           {mode === "signup" && "Create an account. You'll need to verify your email, then request admin approval from the site owner."}
           {mode === "reset" && "Enter your email to receive a password reset link."}
           {mode === "verify-sent" && "We sent you a link. Click it to activate your account, then come back and sign in."}
-          {mode === "approval" && "Request an approval code — the site owner will share a 6-digit code with you. Enter it below to activate admin access."}
+          {mode === "approval" && "Send an access request — the school owner approves admins from the dashboard. You'll get access as soon as they approve."}
         </p>
 
         {mode === "approval" ? (
@@ -152,29 +152,18 @@ function AdminLoginPage() {
             >
               <Send className="size-4" /> Send approval request to owner
             </button>
-            <form onSubmit={submitApprovalCode} className="space-y-3">
-              <label className="block">
-                <span className="text-xs font-semibold text-muted-foreground">Approval code (6 digits)</span>
-                <div className="mt-1 relative">
-                  <ShieldCheck className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  <input
-                    inputMode="numeric" pattern="[0-9]*" required value={code}
-                    onChange={(e) => setCode(e.target.value)} minLength={4} maxLength={12}
-                    className="w-full rounded-md border border-input bg-background pl-9 pr-3 py-2 text-sm tracking-widest text-center font-mono"
-                    placeholder="••••••"
-                  />
-                </div>
-              </label>
-              {msg && (
-                <div className={`text-sm rounded-md p-3 ${msg.kind === "err" ? "bg-destructive/10 text-destructive" : "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"}`}>
-                  {msg.text}
-                </div>
-              )}
-              <button type="submit" disabled={busy}
-                className="w-full rounded-md bg-primary text-primary-foreground py-2.5 text-sm font-semibold disabled:opacity-50">
-                {busy ? "Please wait…" : "Activate admin access"}
-              </button>
-            </form>
+            {msg && (
+              <div className={`text-sm rounded-md p-3 ${msg.kind === "err" ? "bg-destructive/10 text-destructive" : "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"}`}>
+                {msg.text}
+              </div>
+            )}
+            <button
+              type="button" onClick={refreshApprovalStatus} disabled={busy}
+              className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground py-2.5 text-sm font-semibold disabled:opacity-50"
+            >
+              <ShieldCheck className="size-4" /> {busy ? "Please wait…" : "Check approval status"}
+            </button>
+
             <button
               type="button" onClick={async () => { await supabase.auth.signOut(); setMode("signin"); setMsg(null); }}
               className="w-full text-xs text-muted-foreground hover:underline"
