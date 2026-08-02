@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { streamText, type ModelMessage } from "ai";
 import { createLovableAiGatewayProvider, getLovableAiGatewayRunId } from "@/lib/ai-gateway.server";
+import { SITE_FACTS, AI_IDENTITY_RULES } from "@/lib/site-facts.server";
+
 
 type Mode = "assistant" | "student";
 
