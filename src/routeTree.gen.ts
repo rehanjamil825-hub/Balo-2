@@ -14,6 +14,7 @@ import { Route as FacilitiesRouteImport } from './routes/facilities'
 import { Route as ExtracurricularRouteImport } from './routes/extracurricular'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DevelopersRouteImport } from './routes/developers'
+import { Route as BaloAiRouteImport } from './routes/balo-ai'
 import { Route as AdminResetPasswordRouteImport } from './routes/admin-reset-password'
 import { Route as AdminLoginRouteImport } from './routes/admin-login'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -47,6 +48,11 @@ const EventsRoute = EventsRouteImport.update({
 const DevelopersRoute = DevelopersRouteImport.update({
   id: '/developers',
   path: '/developers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BaloAiRoute = BaloAiRouteImport.update({
+  id: '/balo-ai',
+  path: '/balo-ai',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminResetPasswordRoute = AdminResetPasswordRouteImport.update({
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/admin-login': typeof AdminLoginRoute
   '/admin-reset-password': typeof AdminResetPasswordRoute
+  '/balo-ai': typeof BaloAiRoute
   '/developers': typeof DevelopersRoute
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/admin-login': typeof AdminLoginRoute
   '/admin-reset-password': typeof AdminResetPasswordRoute
+  '/balo-ai': typeof BaloAiRoute
   '/developers': typeof DevelopersRoute
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/admin-login': typeof AdminLoginRoute
   '/admin-reset-password': typeof AdminResetPasswordRoute
+  '/balo-ai': typeof BaloAiRoute
   '/developers': typeof DevelopersRoute
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin-login'
     | '/admin-reset-password'
+    | '/balo-ai'
     | '/developers'
     | '/events'
     | '/extracurricular'
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin-login'
     | '/admin-reset-password'
+    | '/balo-ai'
     | '/developers'
     | '/events'
     | '/extracurricular'
@@ -182,6 +193,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin-login'
     | '/admin-reset-password'
+    | '/balo-ai'
     | '/developers'
     | '/events'
     | '/extracurricular'
@@ -199,6 +211,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
   AdminResetPasswordRoute: typeof AdminResetPasswordRoute
+  BaloAiRoute: typeof BaloAiRoute
   DevelopersRoute: typeof DevelopersRoute
   EventsRoute: typeof EventsRoute
   ExtracurricularRoute: typeof ExtracurricularRoute
@@ -242,6 +255,13 @@ declare module '@tanstack/react-router' {
       path: '/developers'
       fullPath: '/developers'
       preLoaderRoute: typeof DevelopersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/balo-ai': {
+      id: '/balo-ai'
+      path: '/balo-ai'
+      fullPath: '/balo-ai'
+      preLoaderRoute: typeof BaloAiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin-reset-password': {
@@ -330,6 +350,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
   AdminResetPasswordRoute: AdminResetPasswordRoute,
+  BaloAiRoute: BaloAiRoute,
   DevelopersRoute: DevelopersRoute,
   EventsRoute: EventsRoute,
   ExtracurricularRoute: ExtracurricularRoute,
