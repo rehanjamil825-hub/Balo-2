@@ -21,8 +21,16 @@ export const getAdminStatus = createServerFn({ method: "GET" })
       .eq("user_id", userId)
       .eq("role", "admin")
       .maybeSingle();
+
+    // Bootstrap: the verified owner account always holds the admin role.
+    if (!existing && emailVerified && email?.toLowerCase() === OWNER_EMAIL) {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      await supabaseAdmin.from("user_roles").insert({ user_id: userId, role: "admin" });
+      return { isAdmin: true, email, emailVerified };
+    }
     return { isAdmin: Boolean(existing), email, emailVerified };
   });
+
 
 // Existing admin CRUD (unchanged)
 const idSchema = z.object({ id: z.string().uuid() });
