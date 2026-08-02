@@ -202,7 +202,15 @@ export function Nav() {
           >
             <div className="px-6 py-4 space-y-3">
               {navItems.map((item) => renderItem(item, true))}
+              <Link
+                to="/balo-ai"
+                onClick={() => setMobileOpen(false)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3.5 py-2 text-sm font-semibold text-primary"
+              >
+                <Sparkles className="size-4" /> BALO AI
+              </Link>
               <div className="pt-2"><LangSwitcher mobile /></div>
+
               <a
                 href={DONATE_URL}
                 target="_blank"
