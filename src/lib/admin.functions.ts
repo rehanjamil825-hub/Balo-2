@@ -43,6 +43,13 @@ async function requireAdmin(ctx: { supabase: any; userId: string }) {
   if (!data) throw new Error("Forbidden: admin only");
 }
 
+// Only the school owner account may approve/reject/revoke admins.
+async function requireOwner(ctx: { claims: unknown }) {
+  const email = (ctx.claims as { email?: string })?.email?.toLowerCase() ?? "";
+  if (email !== OWNER_EMAIL) throw new Error("Forbidden: owner only");
+}
+
+
 export const listAllAnnouncements = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
