@@ -15,7 +15,7 @@ type Mode = "signin" | "signup" | "reset" | "verify-sent" | "approval";
 function AdminLoginPage() {
   const navigate = useNavigate();
   const requestApproval = useServerFn(requestAdminApproval);
-  const verifyApproval = useServerFn(verifyAdminApproval);
+  const myRequest = useServerFn(getMyApprovalRequest);
   const checkAdmin = useServerFn(getAdminStatus);
 
   const [email, setEmail] = useState("");
