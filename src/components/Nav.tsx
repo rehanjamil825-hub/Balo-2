@@ -161,7 +161,14 @@ export function Nav() {
         </div>
 
         <div className="hidden lg:flex items-center gap-3">
+          <Link
+            to="/balo-ai"
+            className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3.5 py-2 text-sm font-semibold text-primary hover:bg-primary/20 transition-colors"
+          >
+            <Sparkles className="size-4" /> BALO AI
+          </Link>
           <LangSwitcher />
+
           <a
             href={DONATE_URL}
             target="_blank"
