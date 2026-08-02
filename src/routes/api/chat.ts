@@ -30,7 +30,10 @@ export const Route = createFileRoute("/api/chat")({
         const mode: Mode = body.mode === "student" ? "student" : "assistant";
         const sessionKey = clean(body.sessionKey, 80);
         const message = clean(body.message, 4000);
-        const image = typeof body.imageDataUrl === "string" ? body.imageDataUrl : null;
+        // Image questions are a Student-mode feature only.
+        const image =
+          mode === "student" && typeof body.imageDataUrl === "string" ? body.imageDataUrl : null;
+
         const classLabel = clean(body.classLabel, 40);
         const subject = clean(body.subject, 80);
         const topic = clean(body.topic, 200);
