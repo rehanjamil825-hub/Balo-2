@@ -16,31 +16,40 @@ export type Database = {
     Tables: {
       admin_approval_requests: {
         Row: {
-          code_hash: string
+          code_hash: string | null
           created_at: string
           email: string
-          expires_at: string
+          expires_at: string | null
           id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
           updated_at: string
           used_at: string | null
           user_id: string
         }
         Insert: {
-          code_hash: string
+          code_hash?: string | null
           created_at?: string
           email: string
-          expires_at: string
+          expires_at?: string | null
           id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
           updated_at?: string
           used_at?: string | null
           user_id: string
         }
         Update: {
-          code_hash?: string
+          code_hash?: string | null
           created_at?: string
           email?: string
-          expires_at?: string
+          expires_at?: string | null
           id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
           updated_at?: string
           used_at?: string | null
           user_id?: string
