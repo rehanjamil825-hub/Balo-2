@@ -99,25 +99,31 @@ function AdminLoginPage() {
       if (r.alreadyAdmin) { navigate({ to: "/admin" }); return; }
       setMsg({
         kind: "ok",
-        text: r.delivered
-          ? "Approval request sent to the site owner. When they share the code with you, enter it below."
-          : "Approval request created. Email delivery isn't configured yet — ask the site owner to check server logs for the code.",
+        text: "Your request has been sent to the school owner. They will approve it from the admin dashboard — sign in again once approved.",
       });
     } catch (err: any) {
       setMsg({ kind: "err", text: err?.message ?? "Could not request approval." });
     } finally { setBusy(false); }
   }
 
-  async function submitApprovalCode(e: React.FormEvent) {
-    e.preventDefault();
+  async function refreshApprovalStatus() {
     setBusy(true); setMsg(null);
     try {
-      await verifyApproval({ data: { code: code.trim() } });
-      navigate({ to: "/admin" });
+      const status = await checkAdmin();
+      if (status.isAdmin) { navigate({ to: "/admin" }); return; }
+      const req = await myRequest();
+      setMsg(
+        req?.status === "rejected"
+          ? { kind: "err", text: "Your admin request was declined by the owner." }
+          : req?.status === "pending"
+            ? { kind: "ok", text: "Your request is still awaiting the owner's approval." }
+            : { kind: "err", text: "No approval request found yet — send one above." },
+      );
     } catch (err: any) {
-      setMsg({ kind: "err", text: err?.message ?? "Could not verify code." });
+      setMsg({ kind: "err", text: err?.message ?? "Could not check status." });
     } finally { setBusy(false); }
   }
+
 
   return (
     <div className="min-h-screen grid place-items-center bg-background px-6 py-12">
