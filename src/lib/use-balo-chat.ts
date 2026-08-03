@@ -139,26 +139,31 @@ export function useBaloChat(active: boolean) {
           }),
         });
 
-        if (!res.ok || !res.body) {
-          const detail = await res.text().catch(() => "");
-          throw new Error(detail || "BALO AI could not answer that.");
+        // The endpoint always answers with JSON: { answer } or { error }.
+        const raw = await res.text();
+        let payload: { answer?: string; error?: string } = {};
+        try {
+          payload = raw ? JSON.parse(raw) : {};
+        } catch {
+          payload = {};
         }
 
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let acc = "";
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          acc += decoder.decode(value, { stream: true });
-          setMsgs((p) => {
-            const list = [...p[mode]];
-            list[list.length - 1] = { role: "assistant", content: acc };
-            return { ...p, [mode]: list };
-          });
+        if (!res.ok) {
+          throw new Error(payload.error || "BALO AI could not answer that. Please try again.");
         }
-        if (!acc.trim()) throw new Error("BALO AI returned an empty answer. Please try again.");
+
+        const answer = (payload.answer ?? "").trim();
+        if (!answer) {
+          throw new Error(payload.error || "BALO AI could not answer that. Please try again.");
+        }
+
+        setMsgs((p) => {
+          const list = [...p[mode]];
+          list[list.length - 1] = { role: "assistant", content: answer };
+          return { ...p, [mode]: list };
+        });
       } catch (e: any) {
+
         setError(e?.message ?? "Something went wrong.");
         setMsgs((p) => {
           const list = [...p[mode]];
