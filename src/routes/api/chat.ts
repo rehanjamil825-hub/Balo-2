@@ -210,49 +210,92 @@ Rules you must never break:
         const initialRunId = getLovableAiGatewayRunId(request);
         const gateway = createLovableAiGatewayProvider(key, initialRunId);
 
-        try {
-          const result = streamText({
-            model: gateway("google/gemini-3.6-flash"),
-            system,
-            messages,
-            onFinish: async ({ text }) => {
-              if (!conversationId) return;
-              const { error } = await supabaseAdmin.from("ai_messages").insert([
-                {
-                  conversation_id: conversationId,
-                  mode,
-                  role: "user",
-                  content: message || "(image only)",
-                  image_url: image ? "inline-upload" : null,
-                  sources:
-                    mode === "student"
-                      ? { classLabel, subject, topic }
-                      : { knowledge_entries: blocks.length },
-                },
-                { conversation_id: conversationId, mode, role: "assistant", content: text },
-              ]);
-              if (error) console.error("[balo-ai] message insert failed", error);
-              await supabaseAdmin
-                .from("ai_conversations")
-                .update({ updated_at: new Date().toISOString() })
-                .eq("id", conversationId);
+        const json = (payload: Record<string, unknown>, status = 200) =>
+          new Response(JSON.stringify(payload), {
+            status,
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              "Cache-Control": "no-store",
+              "X-Balo-Conversation": conversationId ?? "",
             },
           });
 
-          return result.toTextStreamResponse({
-            headers: { "Cache-Control": "no-store", "X-Balo-Conversation": conversationId ?? "" },
+        try {
+          // NOTE: we intentionally await the full generation instead of streaming.
+          // With streaming, gateway failures (402 no credits, 429 rate limit) are
+          // emitted *inside* the stream, so the client received an empty 200 body
+          // and showed "BALO AI returned an empty answer". Awaiting here means the
+          // real error is thrown and surfaced with a correct status + message.
+          const result = await generateText({
+            model: gateway("google/gemini-3.6-flash"),
+            system,
+            messages,
           });
+
+          const answer = (result.text ?? "").trim();
+
+          if (!answer) {
+            console.error("[balo-ai] model returned no text", {
+              mode,
+              finishReason: result.finishReason,
+            });
+            return json(
+              { error: "BALO AI could not produce an answer for that. Please rephrase and try again." },
+              502,
+            );
+          }
+
+          if (conversationId) {
+            const { error: insErr } = await supabaseAdmin.from("ai_messages").insert([
+              {
+                conversation_id: conversationId,
+                mode,
+                role: "user",
+                content: message || "(image only)",
+                image_url: image ? "inline-upload" : null,
+                sources:
+                  mode === "student"
+                    ? { classLabel, subject, topic }
+                    : { knowledge_entries: blocks.length },
+              },
+              { conversation_id: conversationId, mode, role: "assistant", content: answer },
+            ]);
+            if (insErr) console.error("[balo-ai] message insert failed", insErr);
+            await supabaseAdmin
+              .from("ai_conversations")
+              .update({ updated_at: new Date().toISOString() })
+              .eq("id", conversationId);
+          }
+
+          return json({ answer });
         } catch (error: any) {
-          const msg = String(error?.message ?? "");
-          console.error("[balo-ai] gateway error", msg);
-          if (msg.includes("429")) {
-            return new Response("BALO AI is busy right now. Please try again in a moment.", { status: 429 });
+          // Never log the system prompt or the API key — status + message only.
+          const status: number | undefined =
+            error?.statusCode ?? error?.status ?? error?.response?.status;
+          const msg = String(error?.message ?? error ?? "");
+          console.error("[balo-ai] gateway error", { mode, status, msg: msg.slice(0, 400) });
+
+          if (status === 429 || msg.includes("429")) {
+            return json(
+              { error: "BALO AI is busy right now. Please try again in a few moments." },
+              429,
+            );
           }
-          if (msg.includes("402")) {
-            return new Response("BALO AI has run out of credits. Please inform the school office.", { status: 402 });
+          if (status === 402 || msg.includes("402") || /credit/i.test(msg)) {
+            return json(
+              {
+                error:
+                  "BALO AI has run out of AI credits. Please ask the school office to top up the AI workspace credits.",
+              },
+              402,
+            );
           }
-          return new Response("BALO AI could not answer that. Please try again.", { status: 500 });
+          if (status === 401 || status === 403) {
+            return json({ error: "BALO AI is not configured correctly. Please inform the school office." }, 500);
+          }
+          return json({ error: "BALO AI could not answer that. Please try again." }, 500);
         }
+
       },
     },
   },
