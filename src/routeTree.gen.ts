@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VirtualTourRouteImport } from './routes/virtual-tour'
 import { Route as SubjectsRouteImport } from './routes/subjects'
 import { Route as StaffRouteImport } from './routes/staff'
+import { Route as RulesRouteImport } from './routes/rules'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FacilitiesRouteImport } from './routes/facilities'
 import { Route as ExtracurricularRouteImport } from './routes/extracurricular'
@@ -41,6 +42,11 @@ const SubjectsRoute = SubjectsRouteImport.update({
 const StaffRoute = StaffRouteImport.update({
   id: '/staff',
   path: '/staff',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RulesRoute = RulesRouteImport.update({
+  id: '/rules',
+  path: '/rules',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -131,6 +137,7 @@ export interface FileRoutesByFullPath {
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
   '/gallery': typeof GalleryRoute
+  '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
   '/subjects': typeof SubjectsRoute
   '/virtual-tour': typeof VirtualTourRoute
@@ -150,6 +157,7 @@ export interface FileRoutesByTo {
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
   '/gallery': typeof GalleryRoute
+  '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
   '/subjects': typeof SubjectsRoute
   '/virtual-tour': typeof VirtualTourRoute
@@ -171,6 +179,7 @@ export interface FileRoutesById {
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
   '/gallery': typeof GalleryRoute
+  '/rules': typeof RulesRoute
   '/staff': typeof StaffRoute
   '/subjects': typeof SubjectsRoute
   '/virtual-tour': typeof VirtualTourRoute
@@ -193,6 +202,7 @@ export interface FileRouteTypes {
     | '/extracurricular'
     | '/facilities'
     | '/gallery'
+    | '/rules'
     | '/staff'
     | '/subjects'
     | '/virtual-tour'
@@ -212,6 +222,7 @@ export interface FileRouteTypes {
     | '/extracurricular'
     | '/facilities'
     | '/gallery'
+    | '/rules'
     | '/staff'
     | '/subjects'
     | '/virtual-tour'
@@ -232,6 +243,7 @@ export interface FileRouteTypes {
     | '/extracurricular'
     | '/facilities'
     | '/gallery'
+    | '/rules'
     | '/staff'
     | '/subjects'
     | '/virtual-tour'
@@ -253,6 +265,7 @@ export interface RootRouteChildren {
   ExtracurricularRoute: typeof ExtracurricularRoute
   FacilitiesRoute: typeof FacilitiesRoute
   GalleryRoute: typeof GalleryRoute
+  RulesRoute: typeof RulesRoute
   StaffRoute: typeof StaffRoute
   SubjectsRoute: typeof SubjectsRoute
   VirtualTourRoute: typeof VirtualTourRoute
@@ -280,6 +293,13 @@ declare module '@tanstack/react-router' {
       path: '/staff'
       fullPath: '/staff'
       preLoaderRoute: typeof StaffRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rules': {
+      id: '/rules'
+      path: '/rules'
+      fullPath: '/rules'
+      preLoaderRoute: typeof RulesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -416,6 +436,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExtracurricularRoute: ExtracurricularRoute,
   FacilitiesRoute: FacilitiesRoute,
   GalleryRoute: GalleryRoute,
+  RulesRoute: RulesRoute,
   StaffRoute: StaffRoute,
   SubjectsRoute: SubjectsRoute,
   VirtualTourRoute: VirtualTourRoute,
