@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VirtualTourRouteImport } from './routes/virtual-tour'
 import { Route as SubjectsRouteImport } from './routes/subjects'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FacilitiesRouteImport } from './routes/facilities'
@@ -26,6 +27,11 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AdminKnowledgeRouteImport } from './routes/admin.knowledge'
 import { Route as AdminAiRouteImport } from './routes/admin.ai'
 
+const VirtualTourRoute = VirtualTourRouteImport.update({
+  id: '/virtual-tour',
+  path: '/virtual-tour',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SubjectsRoute = SubjectsRouteImport.update({
   id: '/subjects',
   path: '/subjects',
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/facilities': typeof FacilitiesRoute
   '/gallery': typeof GalleryRoute
   '/subjects': typeof SubjectsRoute
+  '/virtual-tour': typeof VirtualTourRoute
   '/admin/ai': typeof AdminAiRoute
   '/admin/knowledge': typeof AdminKnowledgeRoute
   '/api/chat': typeof ApiChatRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/facilities': typeof FacilitiesRoute
   '/gallery': typeof GalleryRoute
   '/subjects': typeof SubjectsRoute
+  '/virtual-tour': typeof VirtualTourRoute
   '/admin/ai': typeof AdminAiRoute
   '/admin/knowledge': typeof AdminKnowledgeRoute
   '/api/chat': typeof ApiChatRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/facilities': typeof FacilitiesRoute
   '/gallery': typeof GalleryRoute
   '/subjects': typeof SubjectsRoute
+  '/virtual-tour': typeof VirtualTourRoute
   '/admin/ai': typeof AdminAiRoute
   '/admin/knowledge': typeof AdminKnowledgeRoute
   '/api/chat': typeof ApiChatRoute
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
     | '/facilities'
     | '/gallery'
     | '/subjects'
+    | '/virtual-tour'
     | '/admin/ai'
     | '/admin/knowledge'
     | '/api/chat'
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
     | '/facilities'
     | '/gallery'
     | '/subjects'
+    | '/virtual-tour'
     | '/admin/ai'
     | '/admin/knowledge'
     | '/api/chat'
@@ -211,6 +222,7 @@ export interface FileRouteTypes {
     | '/facilities'
     | '/gallery'
     | '/subjects'
+    | '/virtual-tour'
     | '/admin/ai'
     | '/admin/knowledge'
     | '/api/chat'
@@ -230,11 +242,19 @@ export interface RootRouteChildren {
   FacilitiesRoute: typeof FacilitiesRoute
   GalleryRoute: typeof GalleryRoute
   SubjectsRoute: typeof SubjectsRoute
+  VirtualTourRoute: typeof VirtualTourRoute
   ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/virtual-tour': {
+      id: '/virtual-tour'
+      path: '/virtual-tour'
+      fullPath: '/virtual-tour'
+      preLoaderRoute: typeof VirtualTourRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/subjects': {
       id: '/subjects'
       path: '/subjects'
@@ -377,6 +397,7 @@ const rootRouteChildren: RootRouteChildren = {
   FacilitiesRoute: FacilitiesRoute,
   GalleryRoute: GalleryRoute,
   SubjectsRoute: SubjectsRoute,
+  VirtualTourRoute: VirtualTourRoute,
   ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
