@@ -9,11 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WelfareSocietyRouteImport } from './routes/welfare-society'
+import { Route as VirtualTourRouteImport } from './routes/virtual-tour'
 import { Route as SubjectsRouteImport } from './routes/subjects'
+import { Route as StaffRouteImport } from './routes/staff'
+import { Route as RulesRouteImport } from './routes/rules'
+import { Route as LifeAtBaloRouteImport } from './routes/life-at-balo'
+import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FacilitiesRouteImport } from './routes/facilities'
 import { Route as ExtracurricularRouteImport } from './routes/extracurricular'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as EnquiryRouteImport } from './routes/enquiry'
 import { Route as DevelopersRouteImport } from './routes/developers'
+import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as BaloAiRouteImport } from './routes/balo-ai'
 import { Route as AdminResetPasswordRouteImport } from './routes/admin-reset-password'
 import { Route as AdminLoginRouteImport } from './routes/admin-login'
@@ -25,9 +33,39 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AdminKnowledgeRouteImport } from './routes/admin.knowledge'
 import { Route as AdminAiRouteImport } from './routes/admin.ai'
 
+const WelfareSocietyRoute = WelfareSocietyRouteImport.update({
+  id: '/welfare-society',
+  path: '/welfare-society',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VirtualTourRoute = VirtualTourRouteImport.update({
+  id: '/virtual-tour',
+  path: '/virtual-tour',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SubjectsRoute = SubjectsRouteImport.update({
   id: '/subjects',
   path: '/subjects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StaffRoute = StaffRouteImport.update({
+  id: '/staff',
+  path: '/staff',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RulesRoute = RulesRouteImport.update({
+  id: '/rules',
+  path: '/rules',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LifeAtBaloRoute = LifeAtBaloRouteImport.update({
+  id: '/life-at-balo',
+  path: '/life-at-balo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FacilitiesRoute = FacilitiesRouteImport.update({
@@ -45,9 +83,19 @@ const EventsRoute = EventsRouteImport.update({
   path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnquiryRoute = EnquiryRouteImport.update({
+  id: '/enquiry',
+  path: '/enquiry',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevelopersRoute = DevelopersRouteImport.update({
   id: '/developers',
   path: '/developers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalendarRoute = CalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BaloAiRoute = BaloAiRouteImport.update({
@@ -108,11 +156,19 @@ export interface FileRoutesByFullPath {
   '/admin-login': typeof AdminLoginRoute
   '/admin-reset-password': typeof AdminResetPasswordRoute
   '/balo-ai': typeof BaloAiRoute
+  '/calendar': typeof CalendarRoute
   '/developers': typeof DevelopersRoute
+  '/enquiry': typeof EnquiryRoute
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
+  '/gallery': typeof GalleryRoute
+  '/life-at-balo': typeof LifeAtBaloRoute
+  '/rules': typeof RulesRoute
+  '/staff': typeof StaffRoute
   '/subjects': typeof SubjectsRoute
+  '/virtual-tour': typeof VirtualTourRoute
+  '/welfare-society': typeof WelfareSocietyRoute
   '/admin/ai': typeof AdminAiRoute
   '/admin/knowledge': typeof AdminKnowledgeRoute
   '/api/chat': typeof ApiChatRoute
@@ -124,11 +180,19 @@ export interface FileRoutesByTo {
   '/admin-login': typeof AdminLoginRoute
   '/admin-reset-password': typeof AdminResetPasswordRoute
   '/balo-ai': typeof BaloAiRoute
+  '/calendar': typeof CalendarRoute
   '/developers': typeof DevelopersRoute
+  '/enquiry': typeof EnquiryRoute
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
+  '/gallery': typeof GalleryRoute
+  '/life-at-balo': typeof LifeAtBaloRoute
+  '/rules': typeof RulesRoute
+  '/staff': typeof StaffRoute
   '/subjects': typeof SubjectsRoute
+  '/virtual-tour': typeof VirtualTourRoute
+  '/welfare-society': typeof WelfareSocietyRoute
   '/admin/ai': typeof AdminAiRoute
   '/admin/knowledge': typeof AdminKnowledgeRoute
   '/api/chat': typeof ApiChatRoute
@@ -142,11 +206,19 @@ export interface FileRoutesById {
   '/admin-login': typeof AdminLoginRoute
   '/admin-reset-password': typeof AdminResetPasswordRoute
   '/balo-ai': typeof BaloAiRoute
+  '/calendar': typeof CalendarRoute
   '/developers': typeof DevelopersRoute
+  '/enquiry': typeof EnquiryRoute
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
+  '/gallery': typeof GalleryRoute
+  '/life-at-balo': typeof LifeAtBaloRoute
+  '/rules': typeof RulesRoute
+  '/staff': typeof StaffRoute
   '/subjects': typeof SubjectsRoute
+  '/virtual-tour': typeof VirtualTourRoute
+  '/welfare-society': typeof WelfareSocietyRoute
   '/admin/ai': typeof AdminAiRoute
   '/admin/knowledge': typeof AdminKnowledgeRoute
   '/api/chat': typeof ApiChatRoute
@@ -161,11 +233,19 @@ export interface FileRouteTypes {
     | '/admin-login'
     | '/admin-reset-password'
     | '/balo-ai'
+    | '/calendar'
     | '/developers'
+    | '/enquiry'
     | '/events'
     | '/extracurricular'
     | '/facilities'
+    | '/gallery'
+    | '/life-at-balo'
+    | '/rules'
+    | '/staff'
     | '/subjects'
+    | '/virtual-tour'
+    | '/welfare-society'
     | '/admin/ai'
     | '/admin/knowledge'
     | '/api/chat'
@@ -177,11 +257,19 @@ export interface FileRouteTypes {
     | '/admin-login'
     | '/admin-reset-password'
     | '/balo-ai'
+    | '/calendar'
     | '/developers'
+    | '/enquiry'
     | '/events'
     | '/extracurricular'
     | '/facilities'
+    | '/gallery'
+    | '/life-at-balo'
+    | '/rules'
+    | '/staff'
     | '/subjects'
+    | '/virtual-tour'
+    | '/welfare-society'
     | '/admin/ai'
     | '/admin/knowledge'
     | '/api/chat'
@@ -194,11 +282,19 @@ export interface FileRouteTypes {
     | '/admin-login'
     | '/admin-reset-password'
     | '/balo-ai'
+    | '/calendar'
     | '/developers'
+    | '/enquiry'
     | '/events'
     | '/extracurricular'
     | '/facilities'
+    | '/gallery'
+    | '/life-at-balo'
+    | '/rules'
+    | '/staff'
     | '/subjects'
+    | '/virtual-tour'
+    | '/welfare-society'
     | '/admin/ai'
     | '/admin/knowledge'
     | '/api/chat'
@@ -212,21 +308,71 @@ export interface RootRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   AdminResetPasswordRoute: typeof AdminResetPasswordRoute
   BaloAiRoute: typeof BaloAiRoute
+  CalendarRoute: typeof CalendarRoute
   DevelopersRoute: typeof DevelopersRoute
+  EnquiryRoute: typeof EnquiryRoute
   EventsRoute: typeof EventsRoute
   ExtracurricularRoute: typeof ExtracurricularRoute
   FacilitiesRoute: typeof FacilitiesRoute
+  GalleryRoute: typeof GalleryRoute
+  LifeAtBaloRoute: typeof LifeAtBaloRoute
+  RulesRoute: typeof RulesRoute
+  StaffRoute: typeof StaffRoute
   SubjectsRoute: typeof SubjectsRoute
+  VirtualTourRoute: typeof VirtualTourRoute
+  WelfareSocietyRoute: typeof WelfareSocietyRoute
   ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/welfare-society': {
+      id: '/welfare-society'
+      path: '/welfare-society'
+      fullPath: '/welfare-society'
+      preLoaderRoute: typeof WelfareSocietyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/virtual-tour': {
+      id: '/virtual-tour'
+      path: '/virtual-tour'
+      fullPath: '/virtual-tour'
+      preLoaderRoute: typeof VirtualTourRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/subjects': {
       id: '/subjects'
       path: '/subjects'
       fullPath: '/subjects'
       preLoaderRoute: typeof SubjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/staff': {
+      id: '/staff'
+      path: '/staff'
+      fullPath: '/staff'
+      preLoaderRoute: typeof StaffRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rules': {
+      id: '/rules'
+      path: '/rules'
+      fullPath: '/rules'
+      preLoaderRoute: typeof RulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/life-at-balo': {
+      id: '/life-at-balo'
+      path: '/life-at-balo'
+      fullPath: '/life-at-balo'
+      preLoaderRoute: typeof LifeAtBaloRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/facilities': {
@@ -250,11 +396,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/enquiry': {
+      id: '/enquiry'
+      path: '/enquiry'
+      fullPath: '/enquiry'
+      preLoaderRoute: typeof EnquiryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/developers': {
       id: '/developers'
       path: '/developers'
       fullPath: '/developers'
       preLoaderRoute: typeof DevelopersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calendar': {
+      id: '/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof CalendarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/balo-ai': {
@@ -351,11 +511,19 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   AdminResetPasswordRoute: AdminResetPasswordRoute,
   BaloAiRoute: BaloAiRoute,
+  CalendarRoute: CalendarRoute,
   DevelopersRoute: DevelopersRoute,
+  EnquiryRoute: EnquiryRoute,
   EventsRoute: EventsRoute,
   ExtracurricularRoute: ExtracurricularRoute,
   FacilitiesRoute: FacilitiesRoute,
+  GalleryRoute: GalleryRoute,
+  LifeAtBaloRoute: LifeAtBaloRoute,
+  RulesRoute: RulesRoute,
+  StaffRoute: StaffRoute,
   SubjectsRoute: SubjectsRoute,
+  VirtualTourRoute: VirtualTourRoute,
+  WelfareSocietyRoute: WelfareSocietyRoute,
   ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
