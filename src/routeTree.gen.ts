@@ -19,6 +19,7 @@ import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FacilitiesRouteImport } from './routes/facilities'
 import { Route as ExtracurricularRouteImport } from './routes/extracurricular'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as EnquiryRouteImport } from './routes/enquiry'
 import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as BaloAiRouteImport } from './routes/balo-ai'
@@ -80,6 +81,11 @@ const ExtracurricularRoute = ExtracurricularRouteImport.update({
 const EventsRoute = EventsRouteImport.update({
   id: '/events',
   path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnquiryRoute = EnquiryRouteImport.update({
+  id: '/enquiry',
+  path: '/enquiry',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevelopersRoute = DevelopersRouteImport.update({
@@ -152,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/balo-ai': typeof BaloAiRoute
   '/calendar': typeof CalendarRoute
   '/developers': typeof DevelopersRoute
+  '/enquiry': typeof EnquiryRoute
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
@@ -175,6 +182,7 @@ export interface FileRoutesByTo {
   '/balo-ai': typeof BaloAiRoute
   '/calendar': typeof CalendarRoute
   '/developers': typeof DevelopersRoute
+  '/enquiry': typeof EnquiryRoute
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
@@ -200,6 +208,7 @@ export interface FileRoutesById {
   '/balo-ai': typeof BaloAiRoute
   '/calendar': typeof CalendarRoute
   '/developers': typeof DevelopersRoute
+  '/enquiry': typeof EnquiryRoute
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
@@ -226,6 +235,7 @@ export interface FileRouteTypes {
     | '/balo-ai'
     | '/calendar'
     | '/developers'
+    | '/enquiry'
     | '/events'
     | '/extracurricular'
     | '/facilities'
@@ -249,6 +259,7 @@ export interface FileRouteTypes {
     | '/balo-ai'
     | '/calendar'
     | '/developers'
+    | '/enquiry'
     | '/events'
     | '/extracurricular'
     | '/facilities'
@@ -273,6 +284,7 @@ export interface FileRouteTypes {
     | '/balo-ai'
     | '/calendar'
     | '/developers'
+    | '/enquiry'
     | '/events'
     | '/extracurricular'
     | '/facilities'
@@ -298,6 +310,7 @@ export interface RootRouteChildren {
   BaloAiRoute: typeof BaloAiRoute
   CalendarRoute: typeof CalendarRoute
   DevelopersRoute: typeof DevelopersRoute
+  EnquiryRoute: typeof EnquiryRoute
   EventsRoute: typeof EventsRoute
   ExtracurricularRoute: typeof ExtracurricularRoute
   FacilitiesRoute: typeof FacilitiesRoute
@@ -381,6 +394,13 @@ declare module '@tanstack/react-router' {
       path: '/events'
       fullPath: '/events'
       preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/enquiry': {
+      id: '/enquiry'
+      path: '/enquiry'
+      fullPath: '/enquiry'
+      preLoaderRoute: typeof EnquiryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/developers': {
@@ -493,6 +513,7 @@ const rootRouteChildren: RootRouteChildren = {
   BaloAiRoute: BaloAiRoute,
   CalendarRoute: CalendarRoute,
   DevelopersRoute: DevelopersRoute,
+  EnquiryRoute: EnquiryRoute,
   EventsRoute: EventsRoute,
   ExtracurricularRoute: ExtracurricularRoute,
   FacilitiesRoute: FacilitiesRoute,
