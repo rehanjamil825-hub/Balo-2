@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SubjectsRouteImport } from './routes/subjects'
+import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FacilitiesRouteImport } from './routes/facilities'
 import { Route as ExtracurricularRouteImport } from './routes/extracurricular'
 import { Route as EventsRouteImport } from './routes/events'
@@ -28,6 +29,11 @@ import { Route as AdminAiRouteImport } from './routes/admin.ai'
 const SubjectsRoute = SubjectsRouteImport.update({
   id: '/subjects',
   path: '/subjects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FacilitiesRoute = FacilitiesRouteImport.update({
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
+  '/gallery': typeof GalleryRoute
   '/subjects': typeof SubjectsRoute
   '/admin/ai': typeof AdminAiRoute
   '/admin/knowledge': typeof AdminKnowledgeRoute
@@ -128,6 +135,7 @@ export interface FileRoutesByTo {
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
+  '/gallery': typeof GalleryRoute
   '/subjects': typeof SubjectsRoute
   '/admin/ai': typeof AdminAiRoute
   '/admin/knowledge': typeof AdminKnowledgeRoute
@@ -146,6 +154,7 @@ export interface FileRoutesById {
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
+  '/gallery': typeof GalleryRoute
   '/subjects': typeof SubjectsRoute
   '/admin/ai': typeof AdminAiRoute
   '/admin/knowledge': typeof AdminKnowledgeRoute
@@ -165,6 +174,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/extracurricular'
     | '/facilities'
+    | '/gallery'
     | '/subjects'
     | '/admin/ai'
     | '/admin/knowledge'
@@ -181,6 +191,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/extracurricular'
     | '/facilities'
+    | '/gallery'
     | '/subjects'
     | '/admin/ai'
     | '/admin/knowledge'
@@ -198,6 +209,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/extracurricular'
     | '/facilities'
+    | '/gallery'
     | '/subjects'
     | '/admin/ai'
     | '/admin/knowledge'
@@ -216,6 +228,7 @@ export interface RootRouteChildren {
   EventsRoute: typeof EventsRoute
   ExtracurricularRoute: typeof ExtracurricularRoute
   FacilitiesRoute: typeof FacilitiesRoute
+  GalleryRoute: typeof GalleryRoute
   SubjectsRoute: typeof SubjectsRoute
   ApiChatRoute: typeof ApiChatRoute
 }
@@ -227,6 +240,13 @@ declare module '@tanstack/react-router' {
       path: '/subjects'
       fullPath: '/subjects'
       preLoaderRoute: typeof SubjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/facilities': {
@@ -355,6 +375,7 @@ const rootRouteChildren: RootRouteChildren = {
   EventsRoute: EventsRoute,
   ExtracurricularRoute: ExtracurricularRoute,
   FacilitiesRoute: FacilitiesRoute,
+  GalleryRoute: GalleryRoute,
   SubjectsRoute: SubjectsRoute,
   ApiChatRoute: ApiChatRoute,
 }
