@@ -15,7 +15,15 @@ const navItems: NavItem[] = [
   { key: "nav.subjects", href: "/subjects" },
   { key: "nav.extracurricular", href: "/extracurricular" },
   { key: "nav.events", href: "/events", notice: true },
+  { key: "nav.gallery", href: "/gallery" },
+  { key: "nav.life", href: "/life-at-balo" },
+  { key: "nav.staff", href: "/staff" },
+  { key: "nav.tour", href: "/virtual-tour" },
+  { key: "nav.rules", href: "/rules" },
+  { key: "nav.calendar", href: "/calendar" },
+  { key: "nav.welfare", href: "/welfare-society" },
   { key: "nav.developers", href: "/developers" },
+  { key: "nav.enquiry", href: "/enquiry" },
   { key: "nav.contact", href: "/", hash: "contact" },
 ];
 
