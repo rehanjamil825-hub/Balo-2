@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { streamText, type ModelMessage } from "ai";
+import { generateText, type ModelMessage } from "ai";
 import { createLovableAiGatewayProvider, getLovableAiGatewayRunId } from "@/lib/ai-gateway.server";
 import { SITE_FACTS, AI_IDENTITY_RULES } from "@/lib/site-facts.server";
 
@@ -17,6 +17,13 @@ type Body = {
 };
 
 const MAX_HISTORY = 24;
+
+function errorJson(error: string, status: number) {
+  return new Response(JSON.stringify({ error }), {
+    status,
+    headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
+  });
+}
 
 function clean(v: unknown, max: number) {
   return typeof v === "string" ? v.trim().slice(0, max) : "";
@@ -38,17 +45,17 @@ export const Route = createFileRoute("/api/chat")({
         const subject = clean(body.subject, 80);
         const topic = clean(body.topic, 200);
 
-        if (!sessionKey) return new Response("Missing session", { status: 400 });
-        if (!message && !image) return new Response("Message required", { status: 400 });
+        if (!sessionKey) return errorJson("Missing session", 400);
+        if (!message && !image) return errorJson("Message required", 400);
         if (image && !image.startsWith("data:image/")) {
-          return new Response("Unsupported image", { status: 400 });
+          return errorJson("Unsupported image", 400);
         }
         if (image && image.length > 7_000_000) {
-          return new Response("Image too large. Please upload an image under 5 MB.", { status: 413 });
+          return errorJson("Image too large. Please upload an image under 5 MB.", 413);
         }
 
         const key = process.env["LOVABLE_API_KEY"];
-        if (!key) return new Response("AI is not configured yet.", { status: 500 });
+        if (!key) return errorJson("AI is not configured yet.", 500);
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -59,11 +66,11 @@ export const Route = createFileRoute("/api/chat")({
           .maybeSingle();
 
         if (settings && settings.is_enabled === false) {
-          return new Response(
+          return errorJson(
             mode === "student"
               ? "BALO AI Student mode is currently switched off by the school. Please try again later."
               : "BALO AI Assistant is currently switched off by the school. Please try again later.",
-            { status: 503 },
+            503,
           );
         }
 
