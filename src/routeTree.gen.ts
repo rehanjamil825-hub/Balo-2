@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WelfareSocietyRouteImport } from './routes/welfare-society'
 import { Route as VirtualTourRouteImport } from './routes/virtual-tour'
 import { Route as SubjectsRouteImport } from './routes/subjects'
 import { Route as StaffRouteImport } from './routes/staff'
@@ -31,6 +32,11 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AdminKnowledgeRouteImport } from './routes/admin.knowledge'
 import { Route as AdminAiRouteImport } from './routes/admin.ai'
 
+const WelfareSocietyRoute = WelfareSocietyRouteImport.update({
+  id: '/welfare-society',
+  path: '/welfare-society',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VirtualTourRoute = VirtualTourRouteImport.update({
   id: '/virtual-tour',
   path: '/virtual-tour',
@@ -155,6 +161,7 @@ export interface FileRoutesByFullPath {
   '/staff': typeof StaffRoute
   '/subjects': typeof SubjectsRoute
   '/virtual-tour': typeof VirtualTourRoute
+  '/welfare-society': typeof WelfareSocietyRoute
   '/admin/ai': typeof AdminAiRoute
   '/admin/knowledge': typeof AdminKnowledgeRoute
   '/api/chat': typeof ApiChatRoute
@@ -177,6 +184,7 @@ export interface FileRoutesByTo {
   '/staff': typeof StaffRoute
   '/subjects': typeof SubjectsRoute
   '/virtual-tour': typeof VirtualTourRoute
+  '/welfare-society': typeof WelfareSocietyRoute
   '/admin/ai': typeof AdminAiRoute
   '/admin/knowledge': typeof AdminKnowledgeRoute
   '/api/chat': typeof ApiChatRoute
@@ -201,6 +209,7 @@ export interface FileRoutesById {
   '/staff': typeof StaffRoute
   '/subjects': typeof SubjectsRoute
   '/virtual-tour': typeof VirtualTourRoute
+  '/welfare-society': typeof WelfareSocietyRoute
   '/admin/ai': typeof AdminAiRoute
   '/admin/knowledge': typeof AdminKnowledgeRoute
   '/api/chat': typeof ApiChatRoute
@@ -226,6 +235,7 @@ export interface FileRouteTypes {
     | '/staff'
     | '/subjects'
     | '/virtual-tour'
+    | '/welfare-society'
     | '/admin/ai'
     | '/admin/knowledge'
     | '/api/chat'
@@ -248,6 +258,7 @@ export interface FileRouteTypes {
     | '/staff'
     | '/subjects'
     | '/virtual-tour'
+    | '/welfare-society'
     | '/admin/ai'
     | '/admin/knowledge'
     | '/api/chat'
@@ -271,6 +282,7 @@ export interface FileRouteTypes {
     | '/staff'
     | '/subjects'
     | '/virtual-tour'
+    | '/welfare-society'
     | '/admin/ai'
     | '/admin/knowledge'
     | '/api/chat'
@@ -295,11 +307,19 @@ export interface RootRouteChildren {
   StaffRoute: typeof StaffRoute
   SubjectsRoute: typeof SubjectsRoute
   VirtualTourRoute: typeof VirtualTourRoute
+  WelfareSocietyRoute: typeof WelfareSocietyRoute
   ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/welfare-society': {
+      id: '/welfare-society'
+      path: '/welfare-society'
+      fullPath: '/welfare-society'
+      preLoaderRoute: typeof WelfareSocietyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/virtual-tour': {
       id: '/virtual-tour'
       path: '/virtual-tour'
@@ -482,6 +502,7 @@ const rootRouteChildren: RootRouteChildren = {
   StaffRoute: StaffRoute,
   SubjectsRoute: SubjectsRoute,
   VirtualTourRoute: VirtualTourRoute,
+  WelfareSocietyRoute: WelfareSocietyRoute,
   ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
