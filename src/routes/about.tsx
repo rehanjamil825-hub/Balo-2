@@ -342,7 +342,22 @@ function Staff() {
           <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
             Many of our teachers grew up in the very same neighbourhoods our children come from. That shared story is what makes Balo more than a school — it's a community raising itself.
           </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              to="/staff"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-soft transition-transform hover:scale-105"
+            >
+              Explore more — meet our staff <ArrowRight className="size-4" />
+            </Link>
+            <Link
+              to="/gallery"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-6 py-3 text-sm font-semibold transition-colors hover:bg-muted"
+            >
+              View the gallery <ArrowRight className="size-4" />
+            </Link>
+          </div>
         </motion.div>
+
       </div>
     </section>
   );
