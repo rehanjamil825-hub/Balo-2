@@ -238,18 +238,22 @@ function FacilitiesGrid() {
             >
               <div className="aspect-[4/3] overflow-hidden">
                 {f.carousel ? (
-                  <FacilityCarousel images={f.carousel} title={f.title} />
+                  <FacilityCarousel images={f.carousel} title={f.title} onOpen={lightbox.open} />
                 ) : (
-                  <img
-                    src={f.image}
-                    alt={f.title}
-                    width={1280}
-                    height={900}
-                    loading="lazy"
-                    className="size-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
+                  <div className="relative size-full cursor-zoom-in" onClick={() => lightbox.open(f.image, f.title)}>
+                    <img
+                      src={f.image}
+                      alt={f.title}
+                      width={1280}
+                      height={900}
+                      loading="lazy"
+                      className="size-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <TapHint />
+                  </div>
                 )}
               </div>
+
               <div className="p-6 flex-1 flex flex-col">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="size-10 rounded-xl bg-primary/10 text-primary grid place-items-center">
