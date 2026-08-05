@@ -281,11 +281,15 @@ function BaloAiPage() {
             </div>
           )}
         </section>
+        </div>
+      </div>
 
-        {/* Composer */}
-        {!chat.modeOff && (
-          <div className="sticky bottom-4 mt-6">
+      {/* Composer — fixed at the bottom, never scrolls away */}
+      {!chat.modeOff && (
+        <div className="relative shrink-0 border-t border-border/60 bg-background/85 px-4 pb-4 pt-3 backdrop-blur-md sm:px-6">
+          <div className="mx-auto w-full max-w-4xl">
             <div className="rounded-3xl border border-border bg-card/90 p-3 shadow-xl backdrop-blur">
+
               {canUpload && chat.image && (
                 <div className="mb-2 flex items-center gap-2 px-1">
                   <img src={chat.image} alt="Attached" className="size-14 rounded-xl border border-border object-cover" />
