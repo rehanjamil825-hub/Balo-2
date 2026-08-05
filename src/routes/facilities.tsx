@@ -277,8 +277,10 @@ function FacilitiesGrid() {
           ))}
         </div>
       </div>
+      {lightbox.node}
     </section>
   );
+
 }
 
 function CTA() {
