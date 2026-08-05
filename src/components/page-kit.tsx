@@ -44,15 +44,29 @@ export function PageHero({
   title,
   highlight,
   lead,
+  image,
 }: {
   eyebrow: string;
   title: string;
   highlight?: string;
   lead: string;
+  /** Background photograph shown behind the page title. */
+  image?: string;
 }) {
+  const bg = image ?? sampleFor(`${title} hero`);
   return (
-    <section className="relative overflow-hidden px-6 pt-28 pb-16">
+    <section className="relative overflow-hidden px-6 pt-32 pb-20">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        {bg && (
+          <img
+            src={bg}
+            alt=""
+            loading="eager"
+            decoding="async"
+            className="size-full object-cover"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/85 to-background/70" />
         <div className="absolute -top-40 left-1/2 size-[34rem] -translate-x-1/2 rounded-full bg-primary/15 blur-3xl" />
         <div className="absolute -right-24 top-24 size-[20rem] rounded-full bg-accent/15 blur-3xl" />
       </div>
@@ -64,7 +78,7 @@ export function PageHero({
           <h1 className="text-balance font-display text-4xl font-black leading-[1.05] md:text-6xl">
             {title} {highlight && <span className="italic text-primary">{highlight}</span>}
           </h1>
-          <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          <p className="mt-5 max-w-2xl text-base leading-relaxed text-foreground/75 md:text-lg">
             {lead}
           </p>
         </Reveal>
@@ -72,6 +86,7 @@ export function PageHero({
     </section>
   );
 }
+
 
 export function Section({
   id,
