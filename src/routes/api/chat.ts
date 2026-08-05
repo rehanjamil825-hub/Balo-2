@@ -154,7 +154,7 @@ export const Route = createFileRoute("/api/chat")({
 
         const system = `${baseInstructions}
 
-${AI_IDENTITY_RULES}
+${mode === "student" ? STUDENT_IDENTITY_RULES : ASSISTANT_IDENTITY_RULES}
 
 Today's date is ${new Date().toDateString()}.
 
