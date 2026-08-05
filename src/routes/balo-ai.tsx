@@ -31,39 +31,72 @@ export const Route = createFileRoute("/balo-ai")({
   component: BaloAiPage,
 });
 
+/**
+ * Intro animation shown when the BALO AI page opens: the uploaded BALO AI
+ * animation video plays once, then fades into the static logo.
+ */
+function IntroAnimation({ onDone }: { onDone: () => void }) {
+  return (
+    <motion.div
+      className="fixed inset-0 z-[60] grid place-items-center bg-background"
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="flex flex-col items-center">
+        <video
+          src={baloAiAnimation}
+          poster={baloAiLogo}
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          onEnded={onDone}
+          onError={onDone}
+          className="w-56 max-w-[70vw] rounded-3xl sm:w-72"
+        />
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="mt-5 text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground"
+        >
+          BALO AI
+        </motion.p>
+      </div>
+      <button
+        onClick={onDone}
+        className="absolute bottom-8 text-xs text-muted-foreground underline hover:text-foreground"
+      >
+        Skip
+      </button>
+    </motion.div>
+  );
+}
+
 function AnimatedLogo() {
   return (
     <div className="relative grid place-items-center">
-      {[0, 1, 2].map((i) => (
-        <motion.span
-          key={i}
-          aria-hidden
-          className="absolute rounded-full border border-primary/25"
-          style={{ width: 96 + i * 46, height: 96 + i * 46 }}
-          initial={{ opacity: 0, scale: 0.7 }}
-          animate={{ opacity: [0.05, 0.45, 0.05], scale: [0.9, 1.06, 0.9] }}
-          transition={{ duration: 4.2, repeat: Infinity, delay: i * 0.55, ease: "easeInOut" }}
-        />
-      ))}
       <motion.span
         aria-hidden
-        className="absolute size-28 rounded-full bg-primary/25 blur-2xl"
-        animate={{ opacity: [0.35, 0.7, 0.35], scale: [0.95, 1.1, 0.95] }}
+        className="absolute size-24 rounded-full bg-primary/25 blur-2xl"
+        animate={{ opacity: [0.35, 0.65, 0.35] }}
         transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.img
         src={baloAiLogo}
         alt="BALO AI logo"
-        width={112}
-        height={112}
-        initial={{ scale: 0.4, opacity: 0, rotate: -25 }}
-        animate={{ scale: 1, opacity: 1, rotate: 0 }}
-        transition={{ type: "spring", stiffness: 130, damping: 12 }}
-        className="relative size-24 sm:size-28 drop-shadow-xl"
+        width={96}
+        height={96}
+        initial={{ scale: 0.6, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 140, damping: 14 }}
+        className="relative size-20 drop-shadow-xl sm:size-24"
       />
     </div>
   );
 }
+
 
 function Bubble({ m }: { m: Msg }) {
   const isUser = m.role === "user";
