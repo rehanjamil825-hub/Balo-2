@@ -197,9 +197,54 @@ export function Nav() {
           </div>
         </Link>
 
-        <div className="hidden lg:flex items-center gap-7">
-          {navItems.map((item) => renderItem(item))}
+        <div className="hidden lg:flex items-center gap-1">
+          {navGroups.map((group) => {
+            const open = openGroup === group.key;
+            const groupHasDot = group.items.some((i) => i.notice) && hasUnreadNotices;
+            const groupActive = group.items.some((i) => !i.hash && i.href === pathname);
+            return (
+              <div
+                key={group.key}
+                className="relative"
+                onMouseEnter={() => setOpenGroup(group.key)}
+                onMouseLeave={() => setOpenGroup(null)}
+              >
+                <button
+                  type="button"
+                  aria-expanded={open}
+                  onClick={() => setOpenGroup(open ? null : group.key)}
+                  className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+                    groupActive ? "text-foreground font-semibold" : "text-foreground/70 hover:text-foreground"
+                  }`}
+                >
+                  {t(group.key)}
+                  {groupHasDot && (
+                    <span className="inline-block size-1.5 rounded-full bg-red-500 animate-pulse" />
+                  )}
+                  <ChevronDown
+                    className={`size-3.5 transition-transform ${open ? "rotate-180" : ""}`}
+                  />
+                </button>
+                <AnimatePresence>
+                  {open && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute left-0 top-full z-50 min-w-[13rem] rounded-2xl border border-border bg-card p-2 shadow-card"
+                    >
+                      <div className="flex flex-col">
+                        {group.items.map((item) => renderItem(item, false, true))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
         </div>
+
 
         <div className="hidden lg:flex items-center gap-3">
           <Link
