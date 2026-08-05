@@ -7,6 +7,8 @@ import {
   Send, ImagePlus, GraduationCap, MessagesSquare, RotateCcw, Loader2, Sparkles, X,
 } from "lucide-react";
 import baloAiLogo from "@/assets/balo-ai-logo.png";
+import baloAiAnimation from "@/assets/balo-ai-animation.mp4";
+
 import { useBaloChat, STARTERS, type Mode, type Msg } from "@/lib/use-balo-chat";
 
 export const Route = createFileRoute("/balo-ai")({
