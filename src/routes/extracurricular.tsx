@@ -25,6 +25,8 @@ import dance3 from "@/assets/dance-new-3.jpg";
 import dance4 from "@/assets/dance-new-4.jpg";
 import hero from "@/assets/playground.jpg";
 import { MediaCarousel } from "@/components/MediaCarousel";
+import { useLightbox, TapHint } from "@/components/page-kit";
+
 
 const music = musicAsset;
 
