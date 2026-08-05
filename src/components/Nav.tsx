@@ -1,31 +1,64 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Menu, X, Globe, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { Heart, Menu, X, Globe, Sparkles, ChevronDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import baloLogo from "@/assets/balo-logo.jpg";
 import { useLang, type Lang } from "@/lib/i18n";
 import { useUnreadNotices } from "@/lib/notices";
 
 type NavItem = { key: string; href: string; hash?: string; notice?: boolean };
+type NavGroup = { key: string; items: NavItem[] };
 
-const navItems: NavItem[] = [
-  { key: "nav.home", href: "/" },
-  { key: "nav.about", href: "/about" },
-  { key: "nav.facilities", href: "/facilities" },
-  { key: "nav.subjects", href: "/subjects" },
-  { key: "nav.extracurricular", href: "/extracurricular" },
-  { key: "nav.events", href: "/events", notice: true },
-  { key: "nav.gallery", href: "/gallery" },
-  { key: "nav.life", href: "/life-at-balo" },
-  { key: "nav.staff", href: "/staff" },
-  { key: "nav.tour", href: "/virtual-tour" },
-  { key: "nav.rules", href: "/rules" },
-  { key: "nav.calendar", href: "/calendar" },
-  { key: "nav.welfare", href: "/welfare-society" },
-  { key: "nav.developers", href: "/developers" },
-  { key: "nav.enquiry", href: "/enquiry" },
-  { key: "nav.contact", href: "/", hash: "contact" },
+const navGroups: NavGroup[] = [
+  {
+    key: "navgroup.school",
+    items: [
+      { key: "nav.home", href: "/" },
+      { key: "nav.life", href: "/life-at-balo" },
+      { key: "nav.welfare", href: "/welfare-society" },
+      { key: "nav.events", href: "/events", notice: true },
+    ],
+  },
+  {
+    key: "navgroup.about",
+    items: [
+      { key: "nav.about", href: "/about" },
+      { key: "nav.staff", href: "/staff" },
+      { key: "nav.developers", href: "/developers" },
+    ],
+  },
+  {
+    key: "navgroup.academics",
+    items: [
+      { key: "nav.facilities", href: "/facilities" },
+      { key: "nav.subjects", href: "/subjects" },
+      { key: "nav.extracurricular", href: "/extracurricular" },
+    ],
+  },
+  {
+    key: "navgroup.media",
+    items: [
+      { key: "nav.gallery", href: "/gallery" },
+      { key: "nav.tour", href: "/virtual-tour" },
+    ],
+  },
+  {
+    key: "navgroup.info",
+    items: [
+      { key: "nav.rules", href: "/rules" },
+      { key: "nav.calendar", href: "/calendar" },
+    ],
+  },
+  {
+    key: "navgroup.connect",
+    items: [
+      { key: "nav.contact", href: "/", hash: "contact" },
+      { key: "nav.enquiry", href: "/enquiry" },
+      { key: "nav.faq", href: "/enquiry", hash: "faq" },
+    ],
+  },
 ];
+
 
 const DONATE_URL = "https://www.balousa.org/donation-confirmation/";
 
