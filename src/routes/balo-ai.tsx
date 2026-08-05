@@ -141,27 +141,39 @@ function Bubble({ m }: { m: Msg }) {
 function BaloAiPage() {
   const chat = useBaloChat(true);
   const endRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const canUpload = chat.mode === "student";
   const started = chat.messages.length > 0;
+  // Play the BALO AI logo animation each time the page is opened.
+  const [intro, setIntro] = useState(true);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
   }, [chat.messages, chat.busy]);
 
   useEffect(() => {
-    chat.inputRef.current?.focus();
-  }, [chat.mode, chat.inputRef]);
+    if (!intro) chat.inputRef.current?.focus();
+  }, [chat.mode, chat.inputRef, intro]);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-background">
+    <main className="relative flex h-[100dvh] flex-col overflow-hidden bg-background">
+      <AnimatePresence>
+        {intro && <IntroAnimation key="intro" onDone={() => setIntro(false)} />}
+      </AnimatePresence>
+
       {/* Ambient background */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="absolute -top-40 left-1/2 size-[38rem] -translate-x-1/2 rounded-full bg-primary/15 blur-3xl" />
         <div className="absolute top-1/3 -right-32 size-[26rem] rounded-full bg-accent/15 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-4xl flex-col px-4 pt-10 pb-6 sm:px-6">
+      {/* Scrollable area — the composer below stays fixed */}
+      <div
+        ref={scrollRef}
+        className="relative flex-1 overflow-y-auto overscroll-contain px-4 pt-8 sm:px-6"
+      >
+        <div className="mx-auto w-full max-w-4xl pb-6">
         {/* Hero */}
         <motion.header
           initial={{ opacity: 0, y: 18 }}
@@ -170,13 +182,16 @@ function BaloAiPage() {
           className={`flex flex-col items-center text-center ${started ? "pb-4" : "pb-8"}`}
         >
           <AnimatedLogo />
-          <h1 className="mt-6 font-display text-3xl font-bold sm:text-4xl">
+          <h1 className="mt-5 font-display text-3xl font-bold sm:text-4xl">
             BALO <span className="text-primary">AI</span>
           </h1>
           <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
-            Your school companion — official BALO answers in <strong>Assistant</strong> mode, and a
-            patient ICSE tutor in <strong>Student</strong> mode.
+            I am BALO AI — the official assistant of BALO English Medium School in{" "}
+            <strong>Assistant</strong> mode, and in <strong>Student</strong> mode I help BALO&apos;s
+            students study from the books and syllabus used at school, understand their textbooks and
+            practise previous year questions across the ICSE curriculum.
           </p>
+
 
           {/* Mode switch */}
           <div className="mt-6 inline-flex rounded-full border border-border bg-card/80 p-1 shadow-sm backdrop-blur">
