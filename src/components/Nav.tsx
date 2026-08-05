@@ -1,31 +1,64 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Menu, X, Globe, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { Heart, Menu, X, Globe, Sparkles, ChevronDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import baloLogo from "@/assets/balo-logo.jpg";
 import { useLang, type Lang } from "@/lib/i18n";
 import { useUnreadNotices } from "@/lib/notices";
 
 type NavItem = { key: string; href: string; hash?: string; notice?: boolean };
+type NavGroup = { key: string; items: NavItem[] };
 
-const navItems: NavItem[] = [
-  { key: "nav.home", href: "/" },
-  { key: "nav.about", href: "/about" },
-  { key: "nav.facilities", href: "/facilities" },
-  { key: "nav.subjects", href: "/subjects" },
-  { key: "nav.extracurricular", href: "/extracurricular" },
-  { key: "nav.events", href: "/events", notice: true },
-  { key: "nav.gallery", href: "/gallery" },
-  { key: "nav.life", href: "/life-at-balo" },
-  { key: "nav.staff", href: "/staff" },
-  { key: "nav.tour", href: "/virtual-tour" },
-  { key: "nav.rules", href: "/rules" },
-  { key: "nav.calendar", href: "/calendar" },
-  { key: "nav.welfare", href: "/welfare-society" },
-  { key: "nav.developers", href: "/developers" },
-  { key: "nav.enquiry", href: "/enquiry" },
-  { key: "nav.contact", href: "/", hash: "contact" },
+const navGroups: NavGroup[] = [
+  {
+    key: "navgroup.school",
+    items: [
+      { key: "nav.home", href: "/" },
+      { key: "nav.life", href: "/life-at-balo" },
+      { key: "nav.welfare", href: "/welfare-society" },
+      { key: "nav.events", href: "/events", notice: true },
+    ],
+  },
+  {
+    key: "navgroup.about",
+    items: [
+      { key: "nav.about", href: "/about" },
+      { key: "nav.staff", href: "/staff" },
+      { key: "nav.developers", href: "/developers" },
+    ],
+  },
+  {
+    key: "navgroup.academics",
+    items: [
+      { key: "nav.facilities", href: "/facilities" },
+      { key: "nav.subjects", href: "/subjects" },
+      { key: "nav.extracurricular", href: "/extracurricular" },
+    ],
+  },
+  {
+    key: "navgroup.media",
+    items: [
+      { key: "nav.gallery", href: "/gallery" },
+      { key: "nav.tour", href: "/virtual-tour" },
+    ],
+  },
+  {
+    key: "navgroup.info",
+    items: [
+      { key: "nav.rules", href: "/rules" },
+      { key: "nav.calendar", href: "/calendar" },
+    ],
+  },
+  {
+    key: "navgroup.connect",
+    items: [
+      { key: "nav.contact", href: "/", hash: "contact" },
+      { key: "nav.enquiry", href: "/enquiry" },
+      { key: "nav.faq", href: "/enquiry", hash: "faq" },
+    ],
+  },
 ];
+
 
 const DONATE_URL = "https://www.balousa.org/donation-confirmation/";
 
@@ -84,16 +117,24 @@ export function Nav() {
   const isHome = pathname === "/";
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
   const { t } = useLang();
   const hasUnreadNotices = useUnreadNotices();
+
+  // Close any open dropdown when the route changes.
+  useEffect(() => {
+    setOpenGroup(null);
+    setMobileOpen(false);
+  }, [pathname]);
 
   const linkClasses =
     "text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer";
 
-  const handleHashClick = (e: React.MouseEvent, hash: string) => {
+  const handleHashClick = (e: React.MouseEvent, hash: string, href = "/") => {
     e.preventDefault();
     setMobileOpen(false);
-    if (isHome) {
+    setOpenGroup(null);
+    if (pathname === href) {
       const scrollToTarget = () => {
         const el = document.getElementById(hash);
         if (!el) return;
@@ -103,14 +144,17 @@ export function Nav() {
       window.setTimeout(scrollToTarget, 300);
       window.history.replaceState(null, "", `#${hash}`);
     } else {
-      navigate({ to: "/", hash });
+      navigate({ to: href, hash });
     }
   };
 
-  const renderItem = (item: NavItem, mobile = false) => {
+
+  const renderItem = (item: NavItem, mobile = false, inMenu = false) => {
     const className = mobile
       ? "block text-sm font-medium text-foreground/70 hover:text-foreground cursor-pointer"
-      : linkClasses;
+      : inMenu
+        ? "rounded-xl px-3 py-2 text-sm font-medium text-foreground/75 hover:bg-muted hover:text-foreground cursor-pointer"
+        : linkClasses;
     const showDot = item.notice && hasUnreadNotices;
     const dot = showDot ? (
       <span className="ml-1 inline-block size-1.5 rounded-full bg-red-500 align-middle animate-pulse" />
@@ -122,7 +166,7 @@ export function Nav() {
           key={item.key}
           href={`#${item.hash}`}
           className={`${className} relative`}
-          onClick={(e) => handleHashClick(e, item.hash!)}
+          onClick={(e) => handleHashClick(e, item.hash!, item.href)}
         >
           {t(item.key)}
           {dot}
@@ -136,13 +180,14 @@ export function Nav() {
         className={`${className} relative`}
         activeProps={{ className: `${className} relative text-foreground font-semibold` }}
         activeOptions={{ exact: true }}
-        onClick={() => setMobileOpen(false)}
+        onClick={() => { setMobileOpen(false); setOpenGroup(null); }}
       >
         {t(item.key)}
         {dot}
       </Link>
     );
   };
+
 
   return (
     <motion.nav
@@ -164,9 +209,54 @@ export function Nav() {
           </div>
         </Link>
 
-        <div className="hidden lg:flex items-center gap-7">
-          {navItems.map((item) => renderItem(item))}
+        <div className="hidden lg:flex items-center gap-1">
+          {navGroups.map((group) => {
+            const open = openGroup === group.key;
+            const groupHasDot = group.items.some((i) => i.notice) && hasUnreadNotices;
+            const groupActive = group.items.some((i) => !i.hash && i.href === pathname);
+            return (
+              <div
+                key={group.key}
+                className="relative"
+                onMouseEnter={() => setOpenGroup(group.key)}
+                onMouseLeave={() => setOpenGroup(null)}
+              >
+                <button
+                  type="button"
+                  aria-expanded={open}
+                  onClick={() => setOpenGroup(open ? null : group.key)}
+                  className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+                    groupActive ? "text-foreground font-semibold" : "text-foreground/70 hover:text-foreground"
+                  }`}
+                >
+                  {t(group.key)}
+                  {groupHasDot && (
+                    <span className="inline-block size-1.5 rounded-full bg-red-500 animate-pulse" />
+                  )}
+                  <ChevronDown
+                    className={`size-3.5 transition-transform ${open ? "rotate-180" : ""}`}
+                  />
+                </button>
+                <AnimatePresence>
+                  {open && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute left-0 top-full z-50 min-w-[13rem] rounded-2xl border border-border bg-card p-2 shadow-card"
+                    >
+                      <div className="flex flex-col">
+                        {group.items.map((item) => renderItem(item, false, true))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
         </div>
+
 
         <div className="hidden lg:flex items-center gap-3">
           <Link
@@ -209,7 +299,17 @@ export function Nav() {
             className="lg:hidden overflow-hidden border-t border-border/50"
           >
             <div className="px-6 py-4 space-y-3">
-              {navItems.map((item) => renderItem(item, true))}
+              {navGroups.map((group) => (
+                <div key={group.key} className="space-y-2">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                    {t(group.key)}
+                  </div>
+                  <div className="space-y-2 pl-3">
+                    {group.items.map((item) => renderItem(item, true))}
+                  </div>
+                </div>
+              ))}
+
               <Link
                 to="/balo-ai"
                 onClick={() => setMobileOpen(false)}

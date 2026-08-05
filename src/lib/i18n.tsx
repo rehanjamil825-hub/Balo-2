@@ -15,12 +15,20 @@ const dict: Record<string, Record<Lang, string>> = {
   "nav.tour":           { en: "Virtual Tour", hi: "वर्चुअल टूर", bn: "ভার্চুয়াল টুর" },
   "nav.rules":          { en: "Rules", hi: "नियम", bn: "নিয়মাবলী" },
   "nav.calendar":       { en: "Calendar", hi: "कैलेंडर", bn: "ক্যালেন্ডার" },
-  "nav.welfare":        { en: "Welfare Society", hi: "वेलफेयर सोसाइटी", bn: "ওয়েলফেয়ার সোসাইটি" },
-  "nav.enquiry":        { en: "Enquiry", hi: "पूछताछ", bn: "অনুসন্ধান" },
+  "nav.welfare":        { en: "Balo Welfare Society", hi: "बालो वेलफेयर सोसाइटी", bn: "বালো ওয়েলফেয়ার সোসাইটি" },
+  "nav.enquiry":        { en: "Enquiry Form", hi: "पूछताछ फॉर्म", bn: "অনুসন্ধান ফর্ম" },
   "nav.developers":     { en: "Developers", hi: "डेवलपर्स", bn: "ডেভেলপারস" },
   "nav.contact":        { en: "Contact", hi: "संपर्क", bn: "যোগাযোগ" },
+  "nav.faq":            { en: "FAQ", hi: "सामान्य प्रश्न", bn: "সাধারণ প্রশ্ন" },
   "nav.donate":         { en: "Donate", hi: "दान करें", bn: "দান করুন" },
+  "navgroup.school":    { en: "School", hi: "स्कूल", bn: "স্কুল" },
+  "navgroup.about":     { en: "About Us", hi: "हमारे बारे में", bn: "আমাদের সম্পর্কে" },
+  "navgroup.academics": { en: "Academics", hi: "शिक्षा", bn: "শিক্ষা" },
+  "navgroup.media":     { en: "Media", hi: "मीडिया", bn: "মিডিয়া" },
+  "navgroup.info":      { en: "Information", hi: "जानकारी", bn: "তথ্য" },
+  "navgroup.connect":   { en: "Connect", hi: "संपर्क करें", bn: "যোগাযোগ" },
   "lang.label":         { en: "Language", hi: "भाषा", bn: "ভাষা" },
+
 };
 
 type Ctx = { lang: Lang; setLang: (l: Lang) => void; t: (key: string) => string };

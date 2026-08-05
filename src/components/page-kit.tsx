@@ -1,7 +1,9 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
-import { X } from "lucide-react";
+import { X, ZoomIn } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { sampleFor } from "@/components/sample-pool";
+
 
 /** Entrance animation used across the content pages. `once: true` keeps
  *  low-end devices happy — each block animates a single time per page visit. */
@@ -42,15 +44,29 @@ export function PageHero({
   title,
   highlight,
   lead,
+  image,
 }: {
   eyebrow: string;
   title: string;
   highlight?: string;
   lead: string;
+  /** Background photograph shown behind the page title. */
+  image?: string;
 }) {
+  const bg = image ?? sampleFor(`${title} hero`);
   return (
-    <section className="relative overflow-hidden px-6 pt-28 pb-16">
+    <section className="relative overflow-hidden px-6 pt-32 pb-20">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        {bg && (
+          <img
+            src={bg}
+            alt=""
+            loading="eager"
+            decoding="async"
+            className="size-full object-cover"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/85 to-background/70" />
         <div className="absolute -top-40 left-1/2 size-[34rem] -translate-x-1/2 rounded-full bg-primary/15 blur-3xl" />
         <div className="absolute -right-24 top-24 size-[20rem] rounded-full bg-accent/15 blur-3xl" />
       </div>
@@ -62,7 +78,7 @@ export function PageHero({
           <h1 className="text-balance font-display text-4xl font-black leading-[1.05] md:text-6xl">
             {title} {highlight && <span className="italic text-primary">{highlight}</span>}
           </h1>
-          <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          <p className="mt-5 max-w-2xl text-base leading-relaxed text-foreground/75 md:text-lg">
             {lead}
           </p>
         </Reveal>
@@ -70,6 +86,7 @@ export function PageHero({
     </section>
   );
 }
+
 
 export function Section({
   id,
@@ -109,9 +126,25 @@ export function Section({
  * Replaceable sample images
  *
  * HOW TO REPLACE: drop the real photo into `src/assets/`, import it, and
- * pass it as `src`. Until then a clearly-labelled placeholder is shown, so
- * every sample image on the site is obvious and easy to swap.
+ * pass it as `src`. When no `src` is given, a real BALO photo from
+ * `src/assets` is picked automatically for the label, so every sample slot
+ * always shows a photo while staying easy to swap.
  * ------------------------------------------------------------------ */
+
+/** Small "tap to preview" affordance shown over previewable photos. */
+export function TapHint({ className }: { className?: string }) {
+  return (
+    <span
+      className={cn(
+        "pointer-events-none absolute bottom-2 right-2 z-10 inline-flex items-center gap-1 rounded-full bg-black/55 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm",
+        className,
+      )}
+    >
+      <ZoomIn className="size-3" /> Tap to preview
+    </span>
+  );
+}
+
 export function SampleImage({
   label,
   src,
@@ -123,24 +156,29 @@ export function SampleImage({
   ratio?: string;
   onOpen?: (src: string, label: string) => void;
 }) {
-  const clickable = Boolean(src && onOpen);
+  // Auto-fill with a real photo from src/assets when no explicit src is set.
+  const resolved = src ?? sampleFor(label);
+  const clickable = Boolean(resolved && onOpen);
   return (
     <figure
-      onClick={() => src && onOpen?.(src, label)}
+      onClick={() => resolved && onOpen?.(resolved, label)}
       className={cn(
         "group relative overflow-hidden rounded-3xl border border-border bg-muted/40 shadow-soft",
         clickable && "cursor-zoom-in",
       )}
       style={{ aspectRatio: ratio }}
     >
-      {src ? (
-        <img
-          src={src}
-          alt={label}
-          loading="lazy"
-          decoding="async"
-          className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-        />
+      {resolved ? (
+        <>
+          <img
+            src={resolved}
+            alt={label}
+            loading="lazy"
+            decoding="async"
+            className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+          />
+          {clickable && <TapHint />}
+        </>
       ) : (
         <div className="grid size-full place-items-center bg-gradient-to-br from-primary/10 via-transparent to-accent/10 p-5 text-center">
           <div>
@@ -154,6 +192,7 @@ export function SampleImage({
     </figure>
   );
 }
+
 
 export function SamplePair({
   label,

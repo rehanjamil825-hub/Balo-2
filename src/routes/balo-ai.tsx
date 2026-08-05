@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -7,6 +7,8 @@ import {
   Send, ImagePlus, GraduationCap, MessagesSquare, RotateCcw, Loader2, Sparkles, X,
 } from "lucide-react";
 import baloAiLogo from "@/assets/balo-ai-logo.png";
+import baloAiAnimation from "@/assets/balo-ai-animation.mp4";
+
 import { useBaloChat, STARTERS, type Mode, type Msg } from "@/lib/use-balo-chat";
 
 export const Route = createFileRoute("/balo-ai")({
@@ -31,39 +33,72 @@ export const Route = createFileRoute("/balo-ai")({
   component: BaloAiPage,
 });
 
+/**
+ * Intro animation shown when the BALO AI page opens: the uploaded BALO AI
+ * animation video plays once, then fades into the static logo.
+ */
+function IntroAnimation({ onDone }: { onDone: () => void }) {
+  return (
+    <motion.div
+      className="fixed inset-0 z-[60] grid place-items-center bg-background"
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="flex flex-col items-center">
+        <video
+          src={baloAiAnimation}
+          poster={baloAiLogo}
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          onEnded={onDone}
+          onError={onDone}
+          className="w-56 max-w-[70vw] rounded-3xl sm:w-72"
+        />
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="mt-5 text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground"
+        >
+          BALO AI
+        </motion.p>
+      </div>
+      <button
+        onClick={onDone}
+        className="absolute bottom-8 text-xs text-muted-foreground underline hover:text-foreground"
+      >
+        Skip
+      </button>
+    </motion.div>
+  );
+}
+
 function AnimatedLogo() {
   return (
     <div className="relative grid place-items-center">
-      {[0, 1, 2].map((i) => (
-        <motion.span
-          key={i}
-          aria-hidden
-          className="absolute rounded-full border border-primary/25"
-          style={{ width: 96 + i * 46, height: 96 + i * 46 }}
-          initial={{ opacity: 0, scale: 0.7 }}
-          animate={{ opacity: [0.05, 0.45, 0.05], scale: [0.9, 1.06, 0.9] }}
-          transition={{ duration: 4.2, repeat: Infinity, delay: i * 0.55, ease: "easeInOut" }}
-        />
-      ))}
       <motion.span
         aria-hidden
-        className="absolute size-28 rounded-full bg-primary/25 blur-2xl"
-        animate={{ opacity: [0.35, 0.7, 0.35], scale: [0.95, 1.1, 0.95] }}
+        className="absolute size-24 rounded-full bg-primary/25 blur-2xl"
+        animate={{ opacity: [0.35, 0.65, 0.35] }}
         transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.img
         src={baloAiLogo}
         alt="BALO AI logo"
-        width={112}
-        height={112}
-        initial={{ scale: 0.4, opacity: 0, rotate: -25 }}
-        animate={{ scale: 1, opacity: 1, rotate: 0 }}
-        transition={{ type: "spring", stiffness: 130, damping: 12 }}
-        className="relative size-24 sm:size-28 drop-shadow-xl"
+        width={96}
+        height={96}
+        initial={{ scale: 0.6, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 140, damping: 14 }}
+        className="relative size-20 drop-shadow-xl sm:size-24"
       />
     </div>
   );
 }
+
 
 function Bubble({ m }: { m: Msg }) {
   const isUser = m.role === "user";
@@ -106,27 +141,39 @@ function Bubble({ m }: { m: Msg }) {
 function BaloAiPage() {
   const chat = useBaloChat(true);
   const endRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const canUpload = chat.mode === "student";
   const started = chat.messages.length > 0;
+  // Play the BALO AI logo animation each time the page is opened.
+  const [intro, setIntro] = useState(true);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
   }, [chat.messages, chat.busy]);
 
   useEffect(() => {
-    chat.inputRef.current?.focus();
-  }, [chat.mode, chat.inputRef]);
+    if (!intro) chat.inputRef.current?.focus();
+  }, [chat.mode, chat.inputRef, intro]);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-background">
+    <main className="relative flex h-[100dvh] flex-col overflow-hidden bg-background">
+      <AnimatePresence>
+        {intro && <IntroAnimation key="intro" onDone={() => setIntro(false)} />}
+      </AnimatePresence>
+
       {/* Ambient background */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="absolute -top-40 left-1/2 size-[38rem] -translate-x-1/2 rounded-full bg-primary/15 blur-3xl" />
         <div className="absolute top-1/3 -right-32 size-[26rem] rounded-full bg-accent/15 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-4xl flex-col px-4 pt-10 pb-6 sm:px-6">
+      {/* Scrollable area — the composer below stays fixed */}
+      <div
+        ref={scrollRef}
+        className="relative flex-1 overflow-y-auto overscroll-contain px-4 pt-8 sm:px-6"
+      >
+        <div className="mx-auto w-full max-w-4xl pb-6">
         {/* Hero */}
         <motion.header
           initial={{ opacity: 0, y: 18 }}
@@ -135,13 +182,16 @@ function BaloAiPage() {
           className={`flex flex-col items-center text-center ${started ? "pb-4" : "pb-8"}`}
         >
           <AnimatedLogo />
-          <h1 className="mt-6 font-display text-3xl font-bold sm:text-4xl">
+          <h1 className="mt-5 font-display text-3xl font-bold sm:text-4xl">
             BALO <span className="text-primary">AI</span>
           </h1>
           <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
-            Your school companion — official BALO answers in <strong>Assistant</strong> mode, and a
-            patient ICSE tutor in <strong>Student</strong> mode.
+            I am BALO AI — the official assistant of BALO English Medium School in{" "}
+            <strong>Assistant</strong> mode, and in <strong>Student</strong> mode I help BALO&apos;s
+            students study from the books and syllabus used at school, understand their textbooks and
+            practise previous year questions across the ICSE curriculum.
           </p>
+
 
           {/* Mode switch */}
           <div className="mt-6 inline-flex rounded-full border border-border bg-card/80 p-1 shadow-sm backdrop-blur">
@@ -231,11 +281,15 @@ function BaloAiPage() {
             </div>
           )}
         </section>
+        </div>
+      </div>
 
-        {/* Composer */}
-        {!chat.modeOff && (
-          <div className="sticky bottom-4 mt-6">
+      {/* Composer — fixed at the bottom, never scrolls away */}
+      {!chat.modeOff && (
+        <div className="relative shrink-0 border-t border-border/60 bg-background/85 px-4 pb-4 pt-3 backdrop-blur-md sm:px-6">
+          <div className="mx-auto w-full max-w-4xl">
             <div className="rounded-3xl border border-border bg-card/90 p-3 shadow-xl backdrop-blur">
+
               {canUpload && chat.image && (
                 <div className="mb-2 flex items-center gap-2 px-1">
                   <img src={chat.image} alt="Attached" className="size-14 rounded-xl border border-border object-cover" />
@@ -303,8 +357,9 @@ function BaloAiPage() {
               <Link to="/" className="underline hover:text-foreground">Back to website</Link>
             </p>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </main>
+
   );
 }
