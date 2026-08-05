@@ -1,7 +1,9 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
-import { X } from "lucide-react";
+import { X, ZoomIn } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { sampleFor } from "@/components/sample-pool";
+
 
 /** Entrance animation used across the content pages. `once: true` keeps
  *  low-end devices happy — each block animates a single time per page visit. */
