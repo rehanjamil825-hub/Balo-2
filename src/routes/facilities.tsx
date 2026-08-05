@@ -181,17 +181,19 @@ function FacilityCarousel({
           className="absolute inset-0 size-full object-cover"
         />
       ))}
+      {onOpen && <TapHint className="bottom-8" />}
       <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
         {images.map((src, i) => (
           <button
             key={src}
             type="button"
             aria-label={`Show ${title} image ${i + 1}`}
-            onClick={() => setActive(i)}
+            onClick={(e) => { e.stopPropagation(); setActive(i); }}
             className={`h-1.5 rounded-full transition-all ${active === i ? "w-6 bg-white" : "w-1.5 bg-white/60"}`}
           />
         ))}
       </div>
+
     </div>
   );
 }
