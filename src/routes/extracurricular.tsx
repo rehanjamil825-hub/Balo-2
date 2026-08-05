@@ -236,7 +236,9 @@ function ActivitiesGrid() {
           ))}
         </div>
       </div>
+      {lightbox.node}
     </section>
+
   );
 }
 
