@@ -299,7 +299,17 @@ export function Nav() {
             className="lg:hidden overflow-hidden border-t border-border/50"
           >
             <div className="px-6 py-4 space-y-3">
-              {navItems.map((item) => renderItem(item, true))}
+              {navGroups.map((group) => (
+                <div key={group.key} className="space-y-2">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                    {t(group.key)}
+                  </div>
+                  <div className="space-y-2 pl-3">
+                    {group.items.map((item) => renderItem(item, true))}
+                  </div>
+                </div>
+              ))}
+
               <Link
                 to="/balo-ai"
                 onClick={() => setMobileOpen(false)}
