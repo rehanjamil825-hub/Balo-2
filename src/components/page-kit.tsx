@@ -126,9 +126,25 @@ export function Section({
  * Replaceable sample images
  *
  * HOW TO REPLACE: drop the real photo into `src/assets/`, import it, and
- * pass it as `src`. Until then a clearly-labelled placeholder is shown, so
- * every sample image on the site is obvious and easy to swap.
+ * pass it as `src`. When no `src` is given, a real BALO photo from
+ * `src/assets` is picked automatically for the label, so every sample slot
+ * always shows a photo while staying easy to swap.
  * ------------------------------------------------------------------ */
+
+/** Small "tap to preview" affordance shown over previewable photos. */
+export function TapHint({ className }: { className?: string }) {
+  return (
+    <span
+      className={cn(
+        "pointer-events-none absolute bottom-2 right-2 z-10 inline-flex items-center gap-1 rounded-full bg-black/55 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm",
+        className,
+      )}
+    >
+      <ZoomIn className="size-3" /> Tap to preview
+    </span>
+  );
+}
+
 export function SampleImage({
   label,
   src,
@@ -140,24 +156,29 @@ export function SampleImage({
   ratio?: string;
   onOpen?: (src: string, label: string) => void;
 }) {
-  const clickable = Boolean(src && onOpen);
+  // Auto-fill with a real photo from src/assets when no explicit src is set.
+  const resolved = src ?? sampleFor(label);
+  const clickable = Boolean(resolved && onOpen);
   return (
     <figure
-      onClick={() => src && onOpen?.(src, label)}
+      onClick={() => resolved && onOpen?.(resolved, label)}
       className={cn(
         "group relative overflow-hidden rounded-3xl border border-border bg-muted/40 shadow-soft",
         clickable && "cursor-zoom-in",
       )}
       style={{ aspectRatio: ratio }}
     >
-      {src ? (
-        <img
-          src={src}
-          alt={label}
-          loading="lazy"
-          decoding="async"
-          className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-        />
+      {resolved ? (
+        <>
+          <img
+            src={resolved}
+            alt={label}
+            loading="lazy"
+            decoding="async"
+            className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+          />
+          {clickable && <TapHint />}
+        </>
       ) : (
         <div className="grid size-full place-items-center bg-gradient-to-br from-primary/10 via-transparent to-accent/10 p-5 text-center">
           <div>
@@ -171,6 +192,7 @@ export function SampleImage({
     </figure>
   );
 }
+
 
 export function SamplePair({
   label,
