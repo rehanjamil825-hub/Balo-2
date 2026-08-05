@@ -149,14 +149,26 @@ function Hero() {
   );
 }
 
-function FacilityCarousel({ images, title }: { images: string[]; title: string }) {
+function FacilityCarousel({
+  images,
+  title,
+  onOpen,
+}: {
+  images: string[];
+  title: string;
+  onOpen?: (src: string, label: string) => void;
+}) {
   const [active, setActive] = useState(0);
   useEffect(() => {
     const t = window.setInterval(() => setActive((i) => (i + 1) % images.length), 3200);
     return () => window.clearInterval(t);
   }, [images.length]);
   return (
-    <div className="relative size-full">
+    <div
+      className={`relative size-full ${onOpen ? "cursor-zoom-in" : ""}`}
+      onClick={() => { const s = images[active]; if (s && onOpen) onOpen(s, title); }}
+    >
+
       {images.map((src, i) => (
         <motion.img
           key={src}
