@@ -201,7 +201,9 @@ function FacilityCarousel({
 }
 
 function FacilitiesGrid() {
+  const lightbox = useLightbox();
   return (
+
     <section className="py-28 px-6">
       <div className="max-w-7xl mx-auto">
         <motion.div
