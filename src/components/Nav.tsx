@@ -117,16 +117,24 @@ export function Nav() {
   const isHome = pathname === "/";
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
   const { t } = useLang();
   const hasUnreadNotices = useUnreadNotices();
+
+  // Close any open dropdown when the route changes.
+  useEffect(() => {
+    setOpenGroup(null);
+    setMobileOpen(false);
+  }, [pathname]);
 
   const linkClasses =
     "text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer";
 
-  const handleHashClick = (e: React.MouseEvent, hash: string) => {
+  const handleHashClick = (e: React.MouseEvent, hash: string, href = "/") => {
     e.preventDefault();
     setMobileOpen(false);
-    if (isHome) {
+    setOpenGroup(null);
+    if (pathname === href) {
       const scrollToTarget = () => {
         const el = document.getElementById(hash);
         if (!el) return;
@@ -136,9 +144,10 @@ export function Nav() {
       window.setTimeout(scrollToTarget, 300);
       window.history.replaceState(null, "", `#${hash}`);
     } else {
-      navigate({ to: "/", hash });
+      navigate({ to: href, hash });
     }
   };
+
 
   const renderItem = (item: NavItem, mobile = false, inMenu = false) => {
     const className = mobile
