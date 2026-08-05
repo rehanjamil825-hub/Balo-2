@@ -140,10 +140,12 @@ export function Nav() {
     }
   };
 
-  const renderItem = (item: NavItem, mobile = false) => {
+  const renderItem = (item: NavItem, mobile = false, inMenu = false) => {
     const className = mobile
       ? "block text-sm font-medium text-foreground/70 hover:text-foreground cursor-pointer"
-      : linkClasses;
+      : inMenu
+        ? "rounded-xl px-3 py-2 text-sm font-medium text-foreground/75 hover:bg-muted hover:text-foreground cursor-pointer"
+        : linkClasses;
     const showDot = item.notice && hasUnreadNotices;
     const dot = showDot ? (
       <span className="ml-1 inline-block size-1.5 rounded-full bg-red-500 align-middle animate-pulse" />
@@ -155,7 +157,7 @@ export function Nav() {
           key={item.key}
           href={`#${item.hash}`}
           className={`${className} relative`}
-          onClick={(e) => handleHashClick(e, item.hash!)}
+          onClick={(e) => handleHashClick(e, item.hash!, item.href)}
         >
           {t(item.key)}
           {dot}
@@ -169,13 +171,14 @@ export function Nav() {
         className={`${className} relative`}
         activeProps={{ className: `${className} relative text-foreground font-semibold` }}
         activeOptions={{ exact: true }}
-        onClick={() => setMobileOpen(false)}
+        onClick={() => { setMobileOpen(false); setOpenGroup(null); }}
       >
         {t(item.key)}
         {dot}
       </Link>
     );
   };
+
 
   return (
     <motion.nav
