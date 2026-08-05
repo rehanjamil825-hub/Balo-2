@@ -192,18 +192,22 @@ function ActivitiesGrid() {
             >
               <div className="aspect-[16/10] overflow-hidden">
                 {a.carousel ? (
-                  <MediaCarousel images={a.carousel} title={a.title} aspect="aspect-[16/10]" />
+                  <MediaCarousel images={a.carousel} title={a.title} aspect="aspect-[16/10]" onOpen={lightbox.open} />
                 ) : (
-                  <img
-                    src={a.image}
-                    alt={a.title}
-                    width={1280}
-                    height={900}
-                    loading="lazy"
-                    className="size-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
+                  <div className="relative size-full cursor-zoom-in" onClick={() => lightbox.open(a.image, a.title)}>
+                    <img
+                      src={a.image}
+                      alt={a.title}
+                      width={1280}
+                      height={900}
+                      loading="lazy"
+                      className="size-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <TapHint />
+                  </div>
                 )}
               </div>
+
               <div className="p-6 md:p-8">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
