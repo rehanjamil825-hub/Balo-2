@@ -357,8 +357,9 @@ function BaloAiPage() {
               <Link to="/" className="underline hover:text-foreground">Back to website</Link>
             </p>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </main>
+
   );
 }
