@@ -6,7 +6,7 @@ import remarkGfm from "remark-gfm";
 import {
   Send, ImagePlus, GraduationCap, MessagesSquare, RotateCcw, Loader2, Sparkles, X,
 } from "lucide-react";
-import baloAiLogo from "@/assets/balo-ai-logo.png";
+import { BaloAiMark } from "@/components/BaloAiMark";
 import baloAiAnimation from "@/assets/balo-ai-animation.mp4";
 
 import { useBaloChat, STARTERS, type Mode, type Msg } from "@/lib/use-balo-chat";
@@ -48,7 +48,6 @@ function IntroAnimation({ onDone }: { onDone: () => void }) {
       <div className="flex flex-col items-center">
         <video
           src={baloAiAnimation}
-          poster={baloAiLogo}
           autoPlay
           muted
           playsInline
@@ -85,16 +84,14 @@ function AnimatedLogo() {
         animate={{ opacity: [0.35, 0.65, 0.35] }}
         transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
       />
-      <motion.img
-        src={baloAiLogo}
-        alt="BALO AI logo"
-        width={96}
-        height={96}
+      <motion.div
         initial={{ scale: 0.6, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 140, damping: 14 }}
-        className="relative size-20 drop-shadow-xl sm:size-24"
-      />
+        className="relative"
+      >
+        <BaloAiMark className="size-20 drop-shadow-xl sm:size-24" />
+      </motion.div>
     </div>
   );
 }
@@ -110,7 +107,7 @@ function Bubble({ m }: { m: Msg }) {
       className={`flex gap-2.5 ${isUser ? "justify-end" : "justify-start"}`}
     >
       {!isUser && (
-        <img src={baloAiLogo} alt="" width={28} height={28} className="mt-1 size-7 shrink-0" />
+        <BaloAiMark className="mt-1 size-7 shrink-0" />
       )}
       <div
         className={`max-w-[min(46rem,86%)] rounded-3xl px-4 py-3 text-sm sm:text-[0.95rem] leading-relaxed shadow-sm ${
