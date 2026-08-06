@@ -16,6 +16,7 @@ import { Route as StaffRouteImport } from './routes/staff'
 import { Route as RulesRouteImport } from './routes/rules'
 import { Route as LifeAtBaloRouteImport } from './routes/life-at-balo'
 import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FacilitiesRouteImport } from './routes/facilities'
 import { Route as ExtracurricularRouteImport } from './routes/extracurricular'
 import { Route as EventsRouteImport } from './routes/events'
@@ -66,6 +67,11 @@ const LifeAtBaloRoute = LifeAtBaloRouteImport.update({
 const GalleryRoute = GalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FacilitiesRoute = FacilitiesRouteImport.update({
@@ -162,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
+  '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
   '/life-at-balo': typeof LifeAtBaloRoute
   '/rules': typeof RulesRoute
@@ -186,6 +193,7 @@ export interface FileRoutesByTo {
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
+  '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
   '/life-at-balo': typeof LifeAtBaloRoute
   '/rules': typeof RulesRoute
@@ -212,6 +220,7 @@ export interface FileRoutesById {
   '/events': typeof EventsRoute
   '/extracurricular': typeof ExtracurricularRoute
   '/facilities': typeof FacilitiesRoute
+  '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
   '/life-at-balo': typeof LifeAtBaloRoute
   '/rules': typeof RulesRoute
@@ -239,6 +248,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/extracurricular'
     | '/facilities'
+    | '/faq'
     | '/gallery'
     | '/life-at-balo'
     | '/rules'
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/extracurricular'
     | '/facilities'
+    | '/faq'
     | '/gallery'
     | '/life-at-balo'
     | '/rules'
@@ -288,6 +299,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/extracurricular'
     | '/facilities'
+    | '/faq'
     | '/gallery'
     | '/life-at-balo'
     | '/rules'
@@ -314,6 +326,7 @@ export interface RootRouteChildren {
   EventsRoute: typeof EventsRoute
   ExtracurricularRoute: typeof ExtracurricularRoute
   FacilitiesRoute: typeof FacilitiesRoute
+  FaqRoute: typeof FaqRoute
   GalleryRoute: typeof GalleryRoute
   LifeAtBaloRoute: typeof LifeAtBaloRoute
   RulesRoute: typeof RulesRoute
@@ -373,6 +386,13 @@ declare module '@tanstack/react-router' {
       path: '/gallery'
       fullPath: '/gallery'
       preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/facilities': {
@@ -517,6 +537,7 @@ const rootRouteChildren: RootRouteChildren = {
   EventsRoute: EventsRoute,
   ExtracurricularRoute: ExtracurricularRoute,
   FacilitiesRoute: FacilitiesRoute,
+  FaqRoute: FaqRoute,
   GalleryRoute: GalleryRoute,
   LifeAtBaloRoute: LifeAtBaloRoute,
   RulesRoute: RulesRoute,
