@@ -238,25 +238,34 @@ export type Database = {
       ai_settings: {
         Row: {
           created_at: string
+          fallback_models: string[]
           id: string
           is_enabled: boolean
           mode: Database["public"]["Enums"]["ai_mode"]
+          model: string | null
+          provider: string
           system_instructions: string
           updated_at: string
         }
         Insert: {
           created_at?: string
+          fallback_models?: string[]
           id?: string
           is_enabled?: boolean
           mode: Database["public"]["Enums"]["ai_mode"]
+          model?: string | null
+          provider?: string
           system_instructions?: string
           updated_at?: string
         }
         Update: {
           created_at?: string
+          fallback_models?: string[]
           id?: string
           is_enabled?: boolean
           mode?: Database["public"]["Enums"]["ai_mode"]
+          model?: string | null
+          provider?: string
           system_instructions?: string
           updated_at?: string
         }
