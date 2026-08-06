@@ -1,6 +1,7 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Menu, X, Globe, Sparkles, ChevronDown } from "lucide-react";
+import { Heart, Menu, X, Globe, Sparkles, ChevronDown, UserCircle2 } from "lucide-react";
+import { SmartSearch } from "@/components/SmartSearch";
 import { useEffect, useRef, useState } from "react";
 import baloLogo from "@/assets/balo-logo.jpg";
 import { useLang, type Lang } from "@/lib/i18n";
@@ -54,7 +55,7 @@ const navGroups: NavGroup[] = [
     items: [
       { key: "nav.contact", href: "/", hash: "contact" },
       { key: "nav.enquiry", href: "/enquiry" },
-      { key: "nav.faq", href: "/enquiry", hash: "faq" },
+      { key: "nav.faq", href: "/faq" },
     ],
   },
 ];
@@ -265,7 +266,16 @@ export function Nav() {
           >
             <Sparkles className="size-4" /> BALO AI
           </Link>
+          <SmartSearch />
           <LangSwitcher />
+          <Link
+            to="/admin-login"
+            aria-label="Admin login"
+            title="Admin login"
+            className="grid size-9 place-items-center rounded-full border border-border text-foreground/70 transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <UserCircle2 className="size-5" />
+          </Link>
 
           <a
             href={DONATE_URL}
@@ -316,6 +326,14 @@ export function Nav() {
                 className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3.5 py-2 text-sm font-semibold text-primary"
               >
                 <Sparkles className="size-4" /> BALO AI
+              </Link>
+              <div className="pt-2"><SmartSearch mobile /></div>
+              <Link
+                to="/admin-login"
+                onClick={() => setMobileOpen(false)}
+                className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-semibold"
+              >
+                <UserCircle2 className="size-4" /> Admin login
               </Link>
               <div className="pt-2"><LangSwitcher mobile /></div>
 

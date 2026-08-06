@@ -55,7 +55,7 @@ export function PageHero({
 }) {
   const bg = image ?? sampleFor(`${title} hero`);
   return (
-    <section className="relative overflow-hidden px-6 pt-32 pb-20">
+    <section className="relative flex min-h-[70vh] items-center overflow-hidden px-6 pt-24">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         {bg && (
           <img
@@ -63,29 +63,28 @@ export function PageHero({
             alt=""
             loading="eager"
             decoding="async"
+            width={1600}
+            height={1024}
             className="size-full object-cover"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/85 to-background/70" />
-        <div className="absolute -top-40 left-1/2 size-[34rem] -translate-x-1/2 rounded-full bg-primary/15 blur-3xl" />
-        <div className="absolute -right-24 top-24 size-[20rem] rounded-full bg-accent/15 blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/85 via-primary/70 to-accent/70" />
       </div>
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto w-full max-w-7xl text-white">
         <Reveal>
-          <div className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-accent">
+          <div className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-secondary">
             {eyebrow}
           </div>
-          <h1 className="text-balance font-display text-4xl font-black leading-[1.05] md:text-6xl">
-            {title} {highlight && <span className="italic text-primary">{highlight}</span>}
+          <h1 className="text-balance font-display text-5xl font-black leading-[0.95] md:text-7xl">
+            {title} {highlight && <span className="italic text-secondary">{highlight}</span>}
           </h1>
-          <p className="mt-5 max-w-2xl text-base leading-relaxed text-foreground/75 md:text-lg">
-            {lead}
-          </p>
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85 md:text-xl">{lead}</p>
         </Reveal>
       </div>
     </section>
   );
 }
+
 
 
 export function Section({
