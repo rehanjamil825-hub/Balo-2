@@ -1,16 +1,11 @@
 /**
  * BALO AI Student engine — talks directly to the Google Gemini API from the
- * server using the GEMINI_API_KEY secret. The key never reaches the browser.
+ * server using mode-specific API-key secrets. Keys never reach the browser.
  *
  * The preferred model and the fallback chain are read from the `ai_settings`
  * table so the school can change models from the admin dashboard without any
- * frontend change. If every Gemini model fails (rate limit / overload /
- * unavailable), the engine falls back to the Lovable AI gateway so students
- * still get an answer.
+ * frontend change. Models and keys are both retried for temporary failures.
  */
-
-import { generateText, type ModelMessage } from "ai";
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
 
 const GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 
@@ -49,7 +44,7 @@ function buildContents(history: StudentTurn[], message: string, imageDataUrl: st
   return contents;
 }
 
-type GeminiAttempt = { model: string; status?: number; message: string };
+type GeminiAttempt = { model: string; keyIndex: number; status?: number; message: string };
 
 async function callGemini(opts: {
   apiKey: string;
@@ -68,7 +63,7 @@ async function callGemini(opts: {
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: opts.system }] },
         contents: opts.contents,
-        generationConfig: { temperature: 0.6, maxOutputTokens: 2048 },
+        generationConfig: { temperature: 0.6, maxOutputTokens: 8192 },
       }),
     },
   );
@@ -106,8 +101,8 @@ async function callGemini(opts: {
 }
 
 /** Statuses worth retrying on the next model in the chain. */
-function shouldTryNextModel(status?: number) {
-  return status === undefined || status === 404 || status === 429 || status === 400 || status >= 500;
+function shouldRetry(status?: number) {
+  return status === undefined || status === 404 || status === 408 || status === 429 || status >= 500;
 }
 
 export async function generateStudentAnswer(opts: {
@@ -117,9 +112,7 @@ export async function generateStudentAnswer(opts: {
   imageDataUrl: string | null;
   model?: string | null;
   fallbackModels?: string[] | null;
-  geminiApiKey?: string;
-  lovableApiKey?: string;
-  runId?: string;
+  apiKeys: string[];
 }): Promise<{ answer: string; model: string; attempts: GeminiAttempt[] }> {
   const attempts: GeminiAttempt[] = [];
   const chain = Array.from(
@@ -130,12 +123,14 @@ export async function generateStudentAnswer(opts: {
     ),
   );
 
-  if (opts.geminiApiKey) {
-    const contents = buildContents(opts.history, opts.message, opts.imageDataUrl);
+  const contents = buildContents(opts.history, opts.message, opts.imageDataUrl);
+  for (let keyIndex = 0; keyIndex < opts.apiKeys.length; keyIndex += 1) {
+    const apiKey = opts.apiKeys[keyIndex];
+    if (!apiKey) continue;
     for (const model of chain) {
       try {
         const answer = await callGemini({
-          apiKey: opts.geminiApiKey,
+          apiKey,
           model,
           system: opts.system,
           contents,
@@ -143,35 +138,10 @@ export async function generateStudentAnswer(opts: {
         return { answer, model, attempts };
       } catch (error: any) {
         const status = error?.status as number | undefined;
-        attempts.push({ model, status, message: String(error?.message ?? error).slice(0, 200) });
-        if (!shouldTryNextModel(status)) break;
+        attempts.push({ model, keyIndex, status, message: String(error?.message ?? error).slice(0, 200) });
+        if (!shouldRetry(status)) break;
       }
     }
-  }
-
-  // Last resort: the Lovable AI gateway (also a Gemini-class model).
-  if (opts.lovableApiKey) {
-    const gateway = createLovableAiGatewayProvider(opts.lovableApiKey, opts.runId);
-    const messages: ModelMessage[] = [
-      ...opts.history.map((t) => ({ role: t.role, content: t.content }) as ModelMessage),
-      {
-        role: "user",
-        content: opts.imageDataUrl
-          ? ([
-              { type: "text", text: opts.message || "Please read this image and help me with it." },
-              { type: "image", image: opts.imageDataUrl },
-            ] as any)
-          : opts.message,
-      },
-    ];
-    const result = await generateText({
-      model: gateway("google/gemini-3.6-flash"),
-      system: opts.system,
-      messages,
-    });
-    const answer = (result.text ?? "").trim();
-    if (answer) return { answer, model: "gateway", attempts };
-    attempts.push({ model: "gateway", message: "empty answer" });
   }
 
   const last = attempts[attempts.length - 1];

@@ -38,6 +38,11 @@ export const Route = createFileRoute("/balo-ai")({
  * animation video plays once, then fades into the static logo.
  */
 function IntroAnimation({ onDone }: { onDone: () => void }) {
+  useEffect(() => {
+    const timer = window.setTimeout(onDone, 2200);
+    return () => window.clearTimeout(timer);
+  }, [onDone]);
+
   return (
     <motion.div
       className="fixed inset-0 z-[60] grid place-items-center bg-background"
@@ -51,26 +56,13 @@ function IntroAnimation({ onDone }: { onDone: () => void }) {
           autoPlay
           muted
           playsInline
+          playbackRate={1.5}
           preload="auto"
           onEnded={onDone}
           onError={onDone}
           className="w-56 max-w-[70vw] rounded-3xl sm:w-72"
         />
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="mt-5 text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground"
-        >
-          BALO AI
-        </motion.p>
       </div>
-      <button
-        onClick={onDone}
-        className="absolute bottom-8 text-xs text-muted-foreground underline hover:text-foreground"
-      >
-        Skip
-      </button>
     </motion.div>
   );
 }
@@ -144,14 +136,11 @@ function BaloAiPage() {
   const started = chat.messages.length > 0;
   // Play the BALO AI logo animation each time the page is opened.
   const [intro, setIntro] = useState(true);
+  const [studentPledge, setStudentPledge] = useState(false);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
   }, [chat.messages, chat.busy]);
-
-  useEffect(() => {
-    if (!intro) chat.inputRef.current?.focus();
-  }, [chat.mode, chat.inputRef, intro]);
 
   return (
     <main className="relative flex h-[100dvh] flex-col overflow-hidden bg-background">
@@ -209,7 +198,8 @@ function BaloAiPage() {
           </div>
 
           {chat.mode === "student" && (
-            <div className="mt-4 grid w-full max-w-2xl gap-2 sm:grid-cols-3">
+            <div className="mt-4 w-full max-w-2xl">
+              <div className="grid gap-2 sm:grid-cols-3">
               <select
                 value={chat.classLabel}
                 onChange={(e) => chat.setClassLabel(e.target.value)}
@@ -232,6 +222,16 @@ function BaloAiPage() {
                 placeholder="Topic / chapter (optional)"
                 className="rounded-xl border border-input bg-card px-3 py-2 text-sm"
               />
+              </div>
+              <label className="mt-3 flex cursor-pointer items-start gap-2 rounded-xl border border-border bg-card/80 p-3 text-left text-xs leading-relaxed text-muted-foreground">
+                <input
+                  type="checkbox"
+                  checked={studentPledge}
+                  onChange={(event) => setStudentPledge(event.target.checked)}
+                  className="mt-0.5 size-4 shrink-0 accent-primary"
+                />
+                <span>I confirm that I will not exploit BALO AI to do my work or cheat. Being caught cheating may result in school punishment.</span>
+              </label>
             </div>
           )}
         </motion.header>
@@ -250,7 +250,8 @@ function BaloAiPage() {
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 + i * 0.06, duration: 0.35 }}
-                  onClick={() => chat.send(s)}
+                  onClick={() => chat.mode !== "student" || studentPledge ? chat.send(s) : undefined}
+                  disabled={chat.mode === "student" && !studentPledge}
                   className="group flex items-start gap-3 rounded-2xl border border-border bg-card/80 p-4 text-left text-sm backdrop-blur transition hover:border-primary/50 hover:shadow-md"
                 >
                   <Sparkles className="mt-0.5 size-4 shrink-0 text-primary transition group-hover:scale-110" />
@@ -283,7 +284,7 @@ function BaloAiPage() {
 
       {/* Composer — fixed at the bottom, never scrolls away */}
       {!chat.modeOff && (
-        <div className="relative shrink-0 border-t border-border/60 bg-background/85 px-4 pb-4 pt-3 backdrop-blur-md sm:px-6">
+        <div className="relative z-20 shrink-0 border-t border-border/60 bg-background/95 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-md sm:px-6">
           <div className="mx-auto w-full max-w-4xl">
             <div className="rounded-3xl border border-border bg-card/90 p-3 shadow-xl backdrop-blur">
 
@@ -342,7 +343,7 @@ function BaloAiPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={chat.busy || (!chat.input.trim() && !(chat.image && canUpload))}
+                   disabled={chat.busy || (chat.mode === "student" && !studentPledge) || (!chat.input.trim() && !(chat.image && canUpload))}
                   className="shrink-0 grid size-11 place-items-center rounded-2xl bg-primary text-primary-foreground transition hover:brightness-110 disabled:opacity-40"
                 >
                   <Send className="size-4" />
@@ -350,7 +351,7 @@ function BaloAiPage() {
               </form>
             </div>
             <p className="mt-2 text-center text-[11px] text-muted-foreground">
-              BALO AI answers from official school information ·{" "}
+               {chat.mode === "student" && !studentPledge ? "Accept the learning pledge to begin · " : "BALO AI answers from official school information · "}
               <Link to="/" className="underline hover:text-foreground">Back to website</Link>
             </p>
           </div>
