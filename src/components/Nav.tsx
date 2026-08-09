@@ -310,13 +310,30 @@ export function Nav() {
           >
             <div className="px-6 py-4 space-y-3">
               {navGroups.map((group) => (
-                <div key={group.key} className="space-y-2">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                <div key={group.key} className="rounded-xl border border-border/60 bg-card/60">
+                  <button
+                    type="button"
+                    onClick={() => setOpenGroup(openGroup === group.key ? null : group.key)}
+                    className="flex w-full items-center justify-between px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground"
+                    aria-expanded={openGroup === group.key}
+                  >
                     {t(group.key)}
-                  </div>
-                  <div className="space-y-2 pl-3">
-                    {group.items.map((item) => renderItem(item, true))}
-                  </div>
+                    <ChevronDown className={`size-4 transition-transform ${openGroup === group.key ? "rotate-180" : ""}`} />
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {openGroup === group.key && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="space-y-2 border-t border-border/60 px-3 py-3 pl-5">
+                          {group.items.map((item) => renderItem(item, true))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               ))}
 

@@ -193,7 +193,6 @@ export function useBaloChat(active: boolean) {
         });
       } finally {
         setBusy(false);
-        inputRef.current?.focus();
       }
     },
     [busy, classLabel, image, mode, sessionKey, subject, topic],

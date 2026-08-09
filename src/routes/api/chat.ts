@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { getLovableAiGatewayRunId } from "@/lib/ai-gateway.server";
-import { SITE_FACTS, STUDENT_IDENTITY_RULES } from "@/lib/site-facts.server";
+import { ASSISTANT_IDENTITY_RULES, SITE_FACTS, STUDENT_IDENTITY_RULES } from "@/lib/site-facts.server";
 import {
   composeAssistantAnswer,
   splitSiteFacts,
@@ -21,6 +20,14 @@ type Body = {
 };
 
 const MAX_HISTORY = 24;
+
+function secretList(...names: string[]) {
+  return names.map((name) => process.env[name]?.trim()).filter((value): value is string => Boolean(value));
+}
+
+function asksAboutProvider(message: string) {
+  return /\b(power(?:s|ed)?|provider|model|gemini|google|technology|engine)\b/i.test(message);
+}
 
 function errorJson(error: string, status: number) {
   return new Response(JSON.stringify({ error }), {
@@ -204,31 +211,51 @@ export const Route = createFileRoute("/api/chat")({
             .eq("id", conversationId);
         };
 
-        // =================================================================
-        // ASSISTANT MODE — BALO's own on-site knowledge engine.
-        // No external AI provider is contacted here, ever.
-        // =================================================================
+        // ASSISTANT MODE — its own backend keys, models and verified school context.
         if (mode === "assistant") {
           const sections: ContextSection[] = [...dbSections, ...splitSiteFacts(SITE_FACTS)];
-          const { answer, used } = composeAssistantAnswer(message, sections);
+          const { answer: retrievedAnswer, used } = composeAssistantAnswer(message, sections);
+          const assistantKeys = secretList("BALO_ASSISTANT_API_KEY", "BALO_ASSISTANT_API_KEY_BACKUP");
+          if (!assistantKeys.length) {
+            await persist(retrievedAnswer, { engine: "balo-knowledge", passages: used.length });
+            return json({ answer: retrievedAnswer, engine: "balo-knowledge" });
+          }
 
-          await persist(answer, { engine: "balo-knowledge", passages: used.length });
-
-          // `context` lets a browser with on-device AI reword these same
-          // verified passages locally. It is school content only.
-          return json({
-            answer,
-            engine: "balo-knowledge",
-            context: used.map((s) => ({ title: s.title, body: s.body.slice(0, 2400) })),
-          });
+          const providerRule = asksAboutProvider(message)
+            ? 'The CURRENT question asks who powers you. Answer clearly: "No, I am BALO AI, powered by Google." Do not name a model unless specifically asked which model.'
+            : "The CURRENT question does not ask about your provider. Never mention Google, Gemini, a model, a provider, an API, or earlier provider-related conversation.";
+          const context = used.map((s) => `[${s.title}]\n${s.body}`).join("\n\n---\n\n").slice(0, 40000);
+          const system = `${settings?.system_instructions?.trim() || ASSISTANT_IDENTITY_RULES}\n\n${ASSISTANT_IDENTITY_RULES}\n\n${providerRule}\n\nAnswer only from this verified school context:\n${context}`;
+          try {
+            const result = await generateStudentAnswer({
+              system,
+              history,
+              message,
+              imageDataUrl: null,
+              model: settings?.model ?? null,
+              fallbackModels: settings?.fallback_models ?? null,
+              apiKeys: assistantKeys,
+            });
+            await persist(result.answer, { engine: "balo-assistant", model: result.model, passages: used.length });
+            return json({ answer: result.answer, engine: "balo-assistant" });
+          } catch (error) {
+            console.error("[balo-ai] assistant backend failed", error);
+            await persist(retrievedAnswer, { engine: "balo-knowledge", passages: used.length });
+            return json({ answer: retrievedAnswer, engine: "balo-knowledge" });
+          }
         }
 
         // =================================================================
         // STUDENT MODE — direct Google Gemini with automatic model fallback.
         // =================================================================
-        const geminiApiKey = process.env["GEMINI_API_KEY"];
-        const lovableApiKey = process.env["LOVABLE_API_KEY"];
-        if (!geminiApiKey && !lovableApiKey) {
+        const studentKeys = secretList(
+          "GEMINI_API_KEY",
+          "GEMINI_API_KEY_BACKUP",
+          "GEMINI_API_KEY_2",
+          "BALO_STUDENT_API_KEY",
+          "BALO_STUDENT_API_KEY_BACKUP",
+        );
+        if (!studentKeys.length) {
           return errorJson("The tutor is not configured yet. Please inform the school office.", 500);
         }
 
@@ -249,6 +276,10 @@ export const Route = createFileRoute("/api/chat")({
         const system = `${baseInstructions}
 
 ${STUDENT_IDENTITY_RULES}
+
+${asksAboutProvider(message)
+  ? 'The CURRENT question asks about your provider. If asked whether you are Gemini, answer: "No, I am BALO AI, powered by Google." Do not repeat this in later answers unless the current question asks again.'
+  : "The CURRENT question does not ask about your provider. Do not mention Google, Gemini, models, providers, APIs, or provider-related content from earlier turns."}
 
 Today's date is ${new Date().toDateString()}.
 
@@ -271,9 +302,7 @@ Rules you must never break:
             imageDataUrl: image,
             model: settings?.model ?? null,
             fallbackModels: settings?.fallback_models ?? null,
-            geminiApiKey,
-            lovableApiKey,
-            runId: getLovableAiGatewayRunId(request),
+            apiKeys: studentKeys,
           });
 
           if (attempts.length) {
@@ -295,15 +324,6 @@ Rules you must never break:
             return json(
               { error: "The tutor is very busy right now. Please try again in a few moments." },
               429,
-            );
-          }
-          if (status === 402 || /credit/i.test(msg)) {
-            return json(
-              {
-                error:
-                  "BALO AI has run out of AI credits. Please ask the school office to top up the AI credits.",
-              },
-              402,
             );
           }
           if (status === 401 || status === 403) {
