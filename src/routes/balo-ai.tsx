@@ -56,8 +56,10 @@ function IntroAnimation({ onDone }: { onDone: () => void }) {
           autoPlay
           muted
           playsInline
-          playbackRate={1.5}
           preload="auto"
+          onLoadedMetadata={(event) => {
+            event.currentTarget.playbackRate = 1.5;
+          }}
           onEnded={onDone}
           onError={onDone}
           className="w-56 max-w-[70vw] rounded-3xl sm:w-72"
