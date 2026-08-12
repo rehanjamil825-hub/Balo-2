@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero, Section, Reveal, SampleImage, useLightbox } from "@/components/page-kit";
 import { Trophy, ShieldCheck, Scale, HeartHandshake } from "lucide-react";
+import welfare1 from "@/assets/balo-welfare-society.jpg";
 
 export const Route = createFileRoute("/welfare-society")({
   head: () => ({
@@ -10,6 +11,7 @@ export const Route = createFileRoute("/welfare-society")({
         name: "description",
         content:
           "The BALO Welfare Society supports children of Pilkhana and Fakir Bagan Lane, Howrah, through sports and cultural competitions, consumer awareness camps, human rights workshops and community outreach.",
+          image : welfare1
       },
       { property: "og:title", content: "BALO Welfare Society" },
       {
@@ -75,7 +77,7 @@ function WelfarePage() {
             </div>
           </Reveal>
           <Reveal i={1}>
-            <SampleImage label="BALO Welfare Society programme" ratio="4 / 3" onOpen={lightbox.open} />
+            <SampleImage label="BALO Welfare Society programme" src={welfare1} ratio="4 / 3" onOpen={lightbox.open} />
           </Reveal>
         </div>
       </Section>

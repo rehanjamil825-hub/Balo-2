@@ -1,14 +1,30 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Menu, X, Globe, Sparkles, ChevronDown, UserCircle2 } from "lucide-react";
+import {
+  Heart,
+  Menu,
+  X,
+  Globe,
+  ChevronDown,
+  UserCircle2,
+} from "lucide-react";
 import { SmartSearch } from "@/components/SmartSearch";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import baloLogo from "@/assets/balo-logo.jpg";
 import { useLang, type Lang } from "@/lib/i18n";
 import { useUnreadNotices } from "@/lib/notices";
 
-type NavItem = { key: string; href: string; hash?: string; notice?: boolean };
-type NavGroup = { key: string; items: NavItem[] };
+type NavItem = {
+  key: string;
+  href: string;
+  hash?: string;
+  notice?: boolean;
+};
+
+type NavGroup = {
+  key: string;
+  items: NavItem[];
+};
 
 const navGroups: NavGroup[] = [
   {
@@ -60,7 +76,6 @@ const navGroups: NavGroup[] = [
   },
 ];
 
-
 const DONATE_URL = "https://www.balousa.org/donation-confirmation/";
 
 const langOptions: { code: Lang; label: string }[] = [
@@ -72,16 +87,18 @@ const langOptions: { code: Lang; label: string }[] = [
 function LangSwitcher({ mobile = false }: { mobile?: boolean }) {
   const { lang, setLang, t } = useLang();
   const [open, setOpen] = useState(false);
+
   return (
     <div className={mobile ? "" : "relative"}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/60 px-3 py-1.5 text-xs font-semibold hover:bg-muted transition-colors"
+        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/60 px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-muted"
         aria-label={t("lang.label")}
       >
         <Globe className="size-3.5" />
         {langOptions.find((o) => o.code === lang)?.label}
       </button>
+
       <AnimatePresence>
         {open && (
           <motion.div
@@ -92,15 +109,24 @@ function LangSwitcher({ mobile = false }: { mobile?: boolean }) {
             className={
               mobile
                 ? "mt-2 flex gap-2"
-                : "absolute right-0 mt-2 rounded-xl border border-border bg-card shadow-card p-1 min-w-[8rem] z-50"
+                : "absolute right-0 z-50 mt-2 min-w-[8rem] rounded-xl border border-border bg-card p-1 shadow-card"
             }
           >
             {langOptions.map((o) => (
               <button
                 key={o.code}
-                onClick={() => { setLang(o.code); setOpen(false); }}
-                className={`${mobile ? "flex-1 rounded-full px-3 py-1.5 text-xs" : "block w-full text-left px-3 py-2 rounded-lg text-sm"} font-semibold transition-colors ${
-                  lang === o.code ? "bg-accent text-accent-foreground" : "hover:bg-muted"
+                onClick={() => {
+                  setLang(o.code);
+                  setOpen(false);
+                }}
+                className={`${
+                  mobile
+                    ? "flex-1 rounded-full px-3 py-1.5 text-xs"
+                    : "block w-full rounded-lg px-3 py-2 text-left text-sm"
+                } font-semibold transition-colors ${
+                  lang === o.code
+                    ? "bg-accent text-accent-foreground"
+                    : "hover:bg-muted"
                 }`}
               >
                 {o.label}
@@ -114,15 +140,18 @@ function LangSwitcher({ mobile = false }: { mobile?: boolean }) {
 }
 
 export function Nav() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isHome = pathname === "/";
+  const pathname = useRouterState({
+    select: (s) => s.location.pathname,
+  });
+
   const navigate = useNavigate();
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
+
   const { t } = useLang();
   const hasUnreadNotices = useUnreadNotices();
 
-  // Close any open dropdown when the route changes.
   useEffect(() => {
     setOpenGroup(null);
     setMobileOpen(false);
@@ -131,32 +160,54 @@ export function Nav() {
   const linkClasses =
     "text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer";
 
-  const handleHashClick = (e: React.MouseEvent, hash: string, href = "/") => {
+  const handleHashClick = (
+    e: React.MouseEvent,
+    hash: string,
+    href = "/",
+  ) => {
     e.preventDefault();
+
     setMobileOpen(false);
     setOpenGroup(null);
+
     if (pathname === href) {
       const scrollToTarget = () => {
         const el = document.getElementById(hash);
+
         if (!el) return;
-        const top = el.getBoundingClientRect().top + window.scrollY - 80;
-        window.scrollTo({ top, behavior: "smooth" });
+
+        const top =
+          el.getBoundingClientRect().top + window.scrollY - 80;
+
+        window.scrollTo({
+          top,
+          behavior: "smooth",
+        });
       };
+
       window.setTimeout(scrollToTarget, 300);
       window.history.replaceState(null, "", `#${hash}`);
     } else {
-      navigate({ to: href, hash });
+      navigate({
+        to: href,
+        hash,
+      });
     }
   };
 
-
-  const renderItem = (item: NavItem, mobile = false, inMenu = false) => {
+  const renderItem = (
+    item: NavItem,
+    mobile = false,
+    inMenu = false,
+  ) => {
     const className = mobile
       ? "block text-sm font-medium text-foreground/70 hover:text-foreground cursor-pointer"
       : inMenu
         ? "rounded-xl px-3 py-2 text-sm font-medium text-foreground/75 hover:bg-muted hover:text-foreground cursor-pointer"
         : linkClasses;
+
     const showDot = item.notice && hasUnreadNotices;
+
     const dot = showDot ? (
       <span className="ml-1 inline-block size-1.5 rounded-full bg-red-500 align-middle animate-pulse" />
     ) : null;
@@ -167,21 +218,31 @@ export function Nav() {
           key={item.key}
           href={`#${item.hash}`}
           className={`${className} relative`}
-          onClick={(e) => handleHashClick(e, item.hash!, item.href)}
+          onClick={(e) =>
+            handleHashClick(e, item.hash!, item.href)
+          }
         >
           {t(item.key)}
           {dot}
         </a>
       );
     }
+
     return (
       <Link
         key={item.key}
         to={item.href}
         className={`${className} relative`}
-        activeProps={{ className: `${className} relative text-foreground font-semibold` }}
-        activeOptions={{ exact: true }}
-        onClick={() => { setMobileOpen(false); setOpenGroup(null); }}
+        activeProps={{
+          className: `${className} relative text-foreground font-semibold`,
+        }}
+        activeOptions={{
+          exact: true,
+        }}
+        onClick={() => {
+          setMobileOpen(false);
+          setOpenGroup(null);
+        }}
       >
         {t(item.key)}
         {dot}
@@ -189,32 +250,48 @@ export function Nav() {
     );
   };
 
-
   return (
     <motion.nav
       initial={{ y: -30, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-background/70 border-b border-border/50"
+      className="fixed inset-x-0 top-0 z-50 border-b border-border/50 bg-background/70 backdrop-blur-md"
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <div className="size-10 rounded-full overflow-hidden shadow-soft ring-2 ring-accent/40">
-            <img src={baloLogo} alt="Balo India logo" className="w-full h-full object-cover" />
+          <div className="size-10 overflow-hidden rounded-full shadow-soft ring-2 ring-accent/40">
+            <img
+              src={baloLogo}
+              alt="Balo India logo"
+              className="h-full w-full object-cover"
+            />
           </div>
+
           <div className="leading-tight">
-            <div className="font-display font-bold text-lg">Balo India</div>
+            <div className="font-display text-lg font-bold">
+              Balo India
+            </div>
+
             <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
               School · Howrah
             </div>
           </div>
         </Link>
 
-        <div className="hidden lg:flex items-center gap-1">
+        {/* Desktop Navigation */}
+        <div className="hidden items-center gap-1 lg:flex">
           {navGroups.map((group) => {
             const open = openGroup === group.key;
-            const groupHasDot = group.items.some((i) => i.notice) && hasUnreadNotices;
-            const groupActive = group.items.some((i) => !i.hash && i.href === pathname);
+
+            const groupHasDot =
+              group.items.some((i) => i.notice) &&
+              hasUnreadNotices;
+
+            const groupActive = group.items.some(
+              (i) => !i.hash && i.href === pathname,
+            );
+
             return (
               <div
                 key={group.key}
@@ -225,19 +302,28 @@ export function Nav() {
                 <button
                   type="button"
                   aria-expanded={open}
-                  onClick={() => setOpenGroup(open ? null : group.key)}
+                  onClick={() =>
+                    setOpenGroup(open ? null : group.key)
+                  }
                   className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-                    groupActive ? "text-foreground font-semibold" : "text-foreground/70 hover:text-foreground"
+                    groupActive
+                      ? "font-semibold text-foreground"
+                      : "text-foreground/70 hover:text-foreground"
                   }`}
                 >
                   {t(group.key)}
+
                   {groupHasDot && (
-                    <span className="inline-block size-1.5 rounded-full bg-red-500 animate-pulse" />
+                    <span className="inline-block size-1.5 animate-pulse rounded-full bg-red-500" />
                   )}
+
                   <ChevronDown
-                    className={`size-3.5 transition-transform ${open ? "rotate-180" : ""}`}
+                    className={`size-3.5 transition-transform ${
+                      open ? "rotate-180" : ""
+                    }`}
                   />
                 </button>
+
                 <AnimatePresence>
                   {open && (
                     <motion.div
@@ -248,7 +334,9 @@ export function Nav() {
                       className="absolute left-0 top-full z-50 min-w-[13rem] rounded-2xl border border-border bg-card p-2 shadow-card"
                     >
                       <div className="flex flex-col">
-                        {group.items.map((item) => renderItem(item, false, true))}
+                        {group.items.map((item) =>
+                          renderItem(item, false, true),
+                        )}
                       </div>
                     </motion.div>
                   )}
@@ -258,16 +346,12 @@ export function Nav() {
           })}
         </div>
 
-
-        <div className="hidden lg:flex items-center gap-3">
-          <Link
-            to="/balo-ai"
-            className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3.5 py-2 text-sm font-semibold text-primary hover:bg-primary/20 transition-colors"
-          >
-            <Sparkles className="size-4" /> BALO AI
-          </Link>
+        {/* Desktop Actions */}
+        <div className="hidden items-center gap-3 lg:flex">
           <SmartSearch />
+
           <LangSwitcher />
+
           <Link
             to="/admin-login"
             aria-label="Admin login"
@@ -281,24 +365,34 @@ export function Nav() {
             href={DONATE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-accent text-accent-foreground px-5 py-2.5 text-sm font-semibold shadow-soft hover:scale-105 transition-transform"
+            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground shadow-soft transition-transform hover:scale-105"
           >
-            <Heart className="size-4" /> {t("nav.donate")}
+            <Heart className="size-4" />
+            {t("nav.donate")}
           </a>
         </div>
 
+        {/* Mobile Menu Button */}
         <button
-          className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors relative"
+          className="relative rounded-lg p-2 transition-colors hover:bg-muted lg:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          aria-label={
+            mobileOpen ? "Close menu" : "Open menu"
+          }
         >
-          {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+          {mobileOpen ? (
+            <X className="size-6" />
+          ) : (
+            <Menu className="size-6" />
+          )}
+
           {hasUnreadNotices && !mobileOpen && (
-            <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-red-500 animate-pulse" />
+            <span className="absolute right-1.5 top-1.5 size-2 animate-pulse rounded-full bg-red-500" />
           )}
         </button>
       </div>
 
+      {/* Mobile Navigation */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -306,30 +400,60 @@ export function Nav() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="lg:hidden overflow-hidden border-t border-border/50"
+            className="overflow-hidden border-t border-border/50 lg:hidden"
           >
-            <div className="px-6 py-4 space-y-3">
+            <div className="space-y-3 px-6 py-4">
               {navGroups.map((group) => (
-                <div key={group.key} className="rounded-xl border border-border/60 bg-card/60">
+                <div
+                  key={group.key}
+                  className="rounded-xl border border-border/60 bg-card/60"
+                >
                   <button
                     type="button"
-                    onClick={() => setOpenGroup(openGroup === group.key ? null : group.key)}
+                    onClick={() =>
+                      setOpenGroup(
+                        openGroup === group.key
+                          ? null
+                          : group.key,
+                      )
+                    }
                     className="flex w-full items-center justify-between px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground"
-                    aria-expanded={openGroup === group.key}
+                    aria-expanded={
+                      openGroup === group.key
+                    }
                   >
                     {t(group.key)}
-                    <ChevronDown className={`size-4 transition-transform ${openGroup === group.key ? "rotate-180" : ""}`} />
+
+                    <ChevronDown
+                      className={`size-4 transition-transform ${
+                        openGroup === group.key
+                          ? "rotate-180"
+                          : ""
+                      }`}
+                    />
                   </button>
+
                   <AnimatePresence initial={false}>
                     {openGroup === group.key && (
                       <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
+                        initial={{
+                          height: 0,
+                          opacity: 0,
+                        }}
+                        animate={{
+                          height: "auto",
+                          opacity: 1,
+                        }}
+                        exit={{
+                          height: 0,
+                          opacity: 0,
+                        }}
                         className="overflow-hidden"
                       >
                         <div className="space-y-2 border-t border-border/60 px-3 py-3 pl-5">
-                          {group.items.map((item) => renderItem(item, true))}
+                          {group.items.map((item) =>
+                            renderItem(item, true),
+                          )}
                         </div>
                       </motion.div>
                     )}
@@ -337,31 +461,32 @@ export function Nav() {
                 </div>
               ))}
 
-              <Link
-                to="/balo-ai"
-                onClick={() => setMobileOpen(false)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3.5 py-2 text-sm font-semibold text-primary"
-              >
-                <Sparkles className="size-4" /> BALO AI
-              </Link>
-              <div className="pt-2"><SmartSearch mobile /></div>
+              <div className="pt-2">
+                <SmartSearch mobile />
+              </div>
+
               <Link
                 to="/admin-login"
                 onClick={() => setMobileOpen(false)}
                 className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-semibold"
               >
-                <UserCircle2 className="size-4" /> Admin login
+                <UserCircle2 className="size-4" />
+                Admin login
               </Link>
-              <div className="pt-2"><LangSwitcher mobile /></div>
+
+              <div className="pt-2">
+                <LangSwitcher mobile />
+              </div>
 
               <a
                 href={DONATE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-accent text-accent-foreground px-5 py-2 text-sm font-semibold"
+                className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-accent-foreground"
                 onClick={() => setMobileOpen(false)}
               >
-                <Heart className="size-4" /> {t("nav.donate")}
+                <Heart className="size-4" />
+                {t("nav.donate")}
               </a>
             </div>
           </motion.div>
