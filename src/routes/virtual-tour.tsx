@@ -15,6 +15,7 @@ import classA from "@/assets/classroom-1.jpg";
 import classB from "@/assets/classroom-2.jpg";
 import receptionA from "@/assets/reception1.jpg";
 import receptionB from "@/assets/reception2.jpg";
+import imglibrarytree from "@/assets/img-library-tree.jpg";
 
 export const Route = createFileRoute("/virtual-tour")({
   head: () => ({
@@ -85,6 +86,7 @@ function VirtualTourPage() {
         title="Step inside our"
         highlight="campus."
         lead="Can't visit in person yet? Take the tour room by room — from the morning prayer in the hall to the science lab, the kitchen and the classrooms where 480 children learn every day."
+        image={imglibrarytree}
       />
 
       {stops.map((s, i) => (
