@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHero, Section, Reveal, SampleImage, useLightbox } from "@/components/page-kit";
 import { Trophy, ShieldCheck, Scale, HeartHandshake } from "lucide-react";
 import welfare1 from "@/assets/balo-welfare-society.jpg";
+import welfare2 from "@/assets/balo-background.jpg";
 
 export const Route = createFileRoute("/welfare-society")({
   head: () => ({
@@ -58,6 +59,7 @@ function WelfarePage() {
         title="Empowering the children of"
         highlight="Pilkhana."
         lead="The BALO Welfare Society is an initiative organised specifically to support and empower the children living in the slum areas of Pilkhana and Fakir Bagan Lane in Howrah."
+        image={welfare2}
       />
 
       <Section>

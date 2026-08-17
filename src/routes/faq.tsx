@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { ChevronDown, HelpCircle } from "lucide-react";
 import { PageHero, Section, Reveal } from "@/components/page-kit";
+import faqPage from "@/assets/faq-background.jpg";
 
 export const Route = createFileRoute("/faq")({
   head: () => ({
@@ -141,6 +142,7 @@ function FaqPage() {
         title="Straight answers,"
         highlight="no forms."
         lead="The questions parents actually ask us at the office — about admission, fees and sponsorship, timings, uniform, what we teach and how you can help."
+        image={faqPage}
       />
       {GROUPS.map((g, gi) => (
         <Section key={g.group} title={g.group} eyebrow={`0${gi + 1}`} muted={gi % 2 === 1}>

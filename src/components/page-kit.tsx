@@ -53,7 +53,7 @@ export function PageHero({
   /** Background photograph shown behind the page title. */
   image?: string;
 }) {
-  const bg = image ?? sampleFor(`${title} hero`);
+  const bg = image;
   return (
     <section className="relative flex min-h-[70vh] items-center overflow-hidden px-6 pt-24">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">

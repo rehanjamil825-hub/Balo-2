@@ -1,10 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero, Section, Reveal, SamplePair, useLightbox } from "@/components/page-kit";
 
-import assembly from "@/assets/raised-hands.jpg";
+import baloBackground from "@/assets/balo-background.jpg";
+import assembly1 from "@/assets/assembly1.jpg";
+import assembly2 from "@/assets/assembly2.jpg";
 import classes1 from "@/assets/classroom-1.jpg";
 import classes2 from "@/assets/teacher-board.jpg";
 import breaktime from "@/assets/break1.jpg";
+import breaktime2 from "@/assets/drive-gallery2-15.jpg";
 import music1 from "@/assets/music.jpg";
 import dance1 from "@/assets/dance-new-1.jpg";
 import prac1 from "@/assets/img-science-exp-a.jpg";
@@ -13,7 +16,8 @@ import lunch1 from "@/assets/meal.jpg";
 import lunch2 from "@/assets/lunch-meal.jpg";
 import yoga1 from "@/assets/yoga1.jpg";
 import yoga2 from "@/assets/yoga2.jpg";
-
+import ref1 from "@/assets/up-classroom-02.jpg";
+import ref2 from "@/assets/ref2.jpg";
 import nutrition1 from "@/assets/nutrition1.jpg";
 import nutrition2 from "@/assets/nutrition2.jpg";
 
@@ -68,7 +72,7 @@ const dayFlow: Block[] = [
   {
     title: "Morning Assembly, Prayer & Activities",
     desc: "The day opens with the whole school together in the hall — the morning prayer, the national pledge, a thought for the day, news headlines read by students and short activities or announcements. It sets a calm, shared tone before the first bell.",
-    images: [assembly, undefined],
+    images: [assembly1, assembly2],
   },
   {
     title: "Classes",
@@ -78,7 +82,7 @@ const dayFlow: Block[] = [
   {
     title: "Breaktime",
     desc: "A proper break to eat tiffin, drink water, run in the foyer play area and simply be children. Teachers supervise so that every child is safe, included and has someone to play with.",
-    images: [breaktime, undefined],
+    images: [breaktime, breaktime2],
   },
   {
     title: "Music & Dance",
@@ -93,6 +97,7 @@ const dayFlow: Block[] = [
   {
     title: "Reflection",
     desc: "Each week, students write about their good and bad actions of the week — what they did well, where they fell short and what they will do differently. This weekly reflection helps children think honestly about their behaviour, take responsibility and steadily improve.",
+    images: [ref1, ref2],
   },
   {
     title: "Lunch",
@@ -123,7 +128,7 @@ const otherActivities: Block[] = [
   {
     title: "Students Rally for a Clean Neighbourhood",
     desc: "Students take to the lanes of Pilkhana and Babudanga with placards and slogans, educating local families about cleanliness, garbage disposal and the harm caused by improper waste management.",
-    images: [hygiene1, hygiene2],
+    images: [rally1, rally2],
   },
   {
     title: "Result Day",
@@ -187,6 +192,7 @@ function LifeAtBaloPage() {
         title="One school day, from prayer to"
         highlight="lunch."
         lead="This is what a day at Balo English Medium School actually looks like — and the awareness programmes, rallies and celebrations that fill the rest of our year."
+        image={baloBackground}
       />
 
       {dayFlow.map((b, i) => (

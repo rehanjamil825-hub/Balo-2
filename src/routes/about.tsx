@@ -59,14 +59,14 @@ const leaders = [
     role: "Director",
     image: director,
     quote: "Education is not a privilege; it is a promise we keep.",
-    bio: "As Director, Mrs Khatoon shapes the day-to-day soul of the school. She oversees curriculum, teacher training, and community outreach, making sure every family feels heard and every child feels safe.",
+    bio: "As Director, Mrs Rehana shapes the day-to-day soul of the school. She oversees curriculum, teacher training, and community outreach, making sure every family feels heard and every child feels safe.",
   },
   {
     name: "Mrs Roshan Ara",
     role: "Principal",
     image: principal,
     quote: "When children feel loved, they learn without fear.",
-    bio: "Principal Ara leads the school with warmth and discipline in equal measure. Under her guidance, Balo English Medium School has grown from a small tuition corner into a full-fledged English-medium learning centre.",
+    bio: "Principal Roshan Ara leads the school with warmth and discipline in equal measure. Under her guidance, Balo English Medium School has grown from a small tuition corner into a full-fledged English-medium learning centre.",
   },
 ];
 
