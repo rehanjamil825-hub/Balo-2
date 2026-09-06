@@ -2,6 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+const OWNER_EMAIL = "baloindia2015@gmail.com";
+
 const usernameSchema = z
   .string()
   .trim()
