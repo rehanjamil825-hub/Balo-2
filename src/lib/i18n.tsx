@@ -4,7 +4,7 @@ export type Lang = "en" | "hi" | "bn";
 
 const dict: Record<string, Record<Lang, string>> = {
   "nav.home":           { en: "Home", hi: "होम", bn: "হোম" },
-  "nav.about":          { en: "About", hi: "हमारे बारे में", bn: "আমাদের সম্পর্কে" },
+  "nav.about":          { en: "Leadership", hi: "नेतृत्व", bn: "নেতৃত্ব" },
   "nav.facilities":     { en: "Facilities", hi: "सुविधाएँ", bn: "সুবিধাসমূহ" },
   "nav.subjects":       { en: "Academics", hi: "शिक्षा", bn: "শিক্ষাক্রম" },
   "nav.extracurricular":{ en: "Extracurricular", hi: "सहायक गतिविधियाँ", bn: "অতিরিক্ত কার্যক্রম" },
@@ -12,6 +12,7 @@ const dict: Record<string, Record<Lang, string>> = {
   "nav.gallery":        { en: "Gallery", hi: "गैलरी", bn: "গ্যালারি" },
   "nav.life":           { en: "Life at BALO", hi: "बालो में जीवन", bn: "বালোতে জীবন" },
   "nav.staff":          { en: "Staff", hi: "स्टाफ", bn: "স্টাফ" },
+  "nav.volunteers":     { en: "Volunteers", hi: "स्वयंसेवक", bn: "স্বেচ্ছাসেবক" },
   "nav.tour":           { en: "Virtual Tour", hi: "वर्चुअल टूर", bn: "ভার্চুয়াল টুর" },
   "nav.rules":          { en: "Rules", hi: "नियम", bn: "নিয়মাবলী" },
   "nav.calendar":       { en: "Calendar", hi: "कैलेंडर", bn: "ক্যালেন্ডার" },

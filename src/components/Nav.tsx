@@ -40,7 +40,7 @@ const navGroups: NavGroup[] = [
     key: "navgroup.about",
     items: [
       { key: "nav.about", href: "/about" },
-      { key: "nav.staff", href: "/staff" },
+      { key: "nav.volunteers", href: "/volunteers" },
       { key: "nav.developers", href: "/developers" },
     ],
   },
@@ -372,24 +372,27 @@ export function Nav() {
           </a>
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          className="relative rounded-lg p-2 transition-colors hover:bg-muted lg:hidden"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label={
-            mobileOpen ? "Close menu" : "Open menu"
-          }
-        >
-          {mobileOpen ? (
-            <X className="size-6" />
-          ) : (
-            <Menu className="size-6" />
-          )}
-
-          {hasUnreadNotices && !mobileOpen && (
-            <span className="absolute right-1.5 top-1.5 size-2 animate-pulse rounded-full bg-red-500" />
-          )}
-        </button>
+        {/* Mobile account and menu actions */}
+        <div className="flex items-center gap-1 lg:hidden">
+          <Link
+            to="/admin-login"
+            aria-label="Admin login"
+            title="Admin login"
+            className="grid size-9 place-items-center rounded-full border border-border text-foreground/70 transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <UserCircle2 className="size-5" />
+          </Link>
+          <button
+            className="relative rounded-lg p-2 transition-colors hover:bg-muted"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          >
+            {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+            {hasUnreadNotices && !mobileOpen && (
+              <span className="absolute right-1.5 top-1.5 size-2 animate-pulse rounded-full bg-red-500" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Navigation */}
