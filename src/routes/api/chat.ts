@@ -214,12 +214,9 @@ export const Route = createFileRoute("/api/chat")({
         // ASSISTANT MODE — its own backend keys, models and verified school context.
         if (mode === "assistant") {
           const sections: ContextSection[] = [...dbSections, ...splitSiteFacts(SITE_FACTS)];
-          const { answer: retrievedAnswer, used } = composeAssistantAnswer(message, sections);
+          const { used } = composeAssistantAnswer(message, sections);
           const assistantKeys = secretList("BALO_ASSISTANT_API_KEY", "BALO_ASSISTANT_API_KEY_BACKUP");
-          if (!assistantKeys.length) {
-            await persist(retrievedAnswer, { engine: "balo-knowledge", passages: used.length });
-            return json({ answer: retrievedAnswer, engine: "balo-knowledge" });
-          }
+          if (!assistantKeys.length) return errorJson("The school assistant is not configured yet. Please inform the school office.", 500);
 
           const providerRule = asksAboutProvider(message)
             ? 'The CURRENT question asks who powers you. Answer clearly: "No, I am BALO AI, powered by Google." Do not name a model unless specifically asked which model.'
@@ -240,8 +237,7 @@ export const Route = createFileRoute("/api/chat")({
             return json({ answer: result.answer, engine: "balo-assistant" });
           } catch (error) {
             console.error("[balo-ai] assistant backend failed", error);
-            await persist(retrievedAnswer, { engine: "balo-knowledge", passages: used.length });
-            return json({ answer: retrievedAnswer, engine: "balo-knowledge" });
+            return errorJson("The school assistant is temporarily unavailable. Please try again shortly.", 503);
           }
         }
 

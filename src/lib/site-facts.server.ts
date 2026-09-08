@@ -7,9 +7,11 @@
  */
 export const SITE_FACTS = `
 === WEBSITE PAGE MAP ===
-The website (Balo India) has these pages: Home (/), About Us (/about),
-Academics (/subjects), Facilities (/facilities), Extracurricular (/extracurricular),
-Notice & Events (/events), Developers (/developers), BALO AI (/balo-ai).
+ The website (Balo India) has these pages: Home (/), Leadership (/about), Volunteers (/volunteers),
+ Academics (/subjects), Facilities (/facilities), Extracurricular (/extracurricular),
+ Notice & Events (/events), Gallery (/gallery), Virtual Tour (/virtual-tour), Rules (/rules),
+ Calendar (/calendar), Life at BALO (/life-at-balo), Balo Welfare Society (/welfare-society),
+ Staff (/staff), Developers (/developers), FAQ (/faq), Enquiry (/enquiry), BALO AI (/balo-ai).
 The Donate button links to https://www.balousa.org/donation-confirmation/.
 
 === HOME ===
@@ -31,17 +33,18 @@ English-medium learning centre. Manager: Mr. Ranjit Mishra (he is the Manager of
 the school, and also teaches Hindi).
 History: BALO launched in 2006 through the dedication of Betta Ravaioli. The global
 BALO story began in August 2005 when Betta, Liam (Ireland) and Anne Leache first met
-in India. Together with sister organisations Balo Italia, Balo USA, Ireland and
+ Together with sister organisations Balo Italia, Balo USA, Balo Children Ireland and
 Malaysia, BALO raises funds for building costs, teacher salaries, a daily hot meal
 for 480 students and 20+ staff, school supplies, uniforms, a safe home for girls in
 danger, women's training programmes and micro loans.
 Staff: 20+ teachers, coordinators, helpers and volunteers.
-Volunteers: international volunteers come from Italy, Ireland and the USA; they run
+ Volunteers page: international volunteers come from Italy, Ireland, the USA, Malaysia and beyond; they run
 classroom workshops, reading time, mentoring with laptops, circle games and
 confidence-building sessions.
 Casabalo: a safe, compassionate home for girls in danger with a loving house mother;
 tailoring, vocational training and hairdressing classes run there.
-BALO Welfare Society: organised for slum children of Pilkhana and Fakir Bagan Lane;
+ Balo Children Ireland is a registered charity based in Ennis, County Clare, focused on improving children's social and life chances through education, nutrition and health services. BALO Welfare Society is the Indian organisation supporting this local work.
+ BALO Welfare Society: organised for slum children of Pilkhana and Fakir Bagan Lane;
 ran a Consumer Awareness Camp at Fresh Buds School, Howrah, Human Rights workshops,
 and organises Annual Sports and Cultural Competitions every year.
 
