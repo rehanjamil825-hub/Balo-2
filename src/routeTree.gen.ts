@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WelfareSocietyRouteImport } from './routes/welfare-society'
+import { Route as VolunteersRouteImport } from './routes/volunteers'
 import { Route as VirtualTourRouteImport } from './routes/virtual-tour'
 import { Route as SubjectsRouteImport } from './routes/subjects'
 import { Route as StaffRouteImport } from './routes/staff'
@@ -37,6 +38,11 @@ import { Route as AdminAiRouteImport } from './routes/admin.ai'
 const WelfareSocietyRoute = WelfareSocietyRouteImport.update({
   id: '/welfare-society',
   path: '/welfare-society',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VolunteersRoute = VolunteersRouteImport.update({
+  id: '/volunteers',
+  path: '/volunteers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VirtualTourRoute = VirtualTourRouteImport.update({
@@ -175,6 +181,7 @@ export interface FileRoutesByFullPath {
   '/staff': typeof StaffRoute
   '/subjects': typeof SubjectsRoute
   '/virtual-tour': typeof VirtualTourRoute
+  '/volunteers': typeof VolunteersRoute
   '/welfare-society': typeof WelfareSocietyRoute
   '/admin/ai': typeof AdminAiRoute
   '/admin/knowledge': typeof AdminKnowledgeRoute
@@ -200,6 +207,7 @@ export interface FileRoutesByTo {
   '/staff': typeof StaffRoute
   '/subjects': typeof SubjectsRoute
   '/virtual-tour': typeof VirtualTourRoute
+  '/volunteers': typeof VolunteersRoute
   '/welfare-society': typeof WelfareSocietyRoute
   '/admin/ai': typeof AdminAiRoute
   '/admin/knowledge': typeof AdminKnowledgeRoute
@@ -227,6 +235,7 @@ export interface FileRoutesById {
   '/staff': typeof StaffRoute
   '/subjects': typeof SubjectsRoute
   '/virtual-tour': typeof VirtualTourRoute
+  '/volunteers': typeof VolunteersRoute
   '/welfare-society': typeof WelfareSocietyRoute
   '/admin/ai': typeof AdminAiRoute
   '/admin/knowledge': typeof AdminKnowledgeRoute
@@ -255,6 +264,7 @@ export interface FileRouteTypes {
     | '/staff'
     | '/subjects'
     | '/virtual-tour'
+    | '/volunteers'
     | '/welfare-society'
     | '/admin/ai'
     | '/admin/knowledge'
@@ -280,6 +290,7 @@ export interface FileRouteTypes {
     | '/staff'
     | '/subjects'
     | '/virtual-tour'
+    | '/volunteers'
     | '/welfare-society'
     | '/admin/ai'
     | '/admin/knowledge'
@@ -306,6 +317,7 @@ export interface FileRouteTypes {
     | '/staff'
     | '/subjects'
     | '/virtual-tour'
+    | '/volunteers'
     | '/welfare-society'
     | '/admin/ai'
     | '/admin/knowledge'
@@ -333,6 +345,7 @@ export interface RootRouteChildren {
   StaffRoute: typeof StaffRoute
   SubjectsRoute: typeof SubjectsRoute
   VirtualTourRoute: typeof VirtualTourRoute
+  VolunteersRoute: typeof VolunteersRoute
   WelfareSocietyRoute: typeof WelfareSocietyRoute
   ApiChatRoute: typeof ApiChatRoute
 }
@@ -344,6 +357,13 @@ declare module '@tanstack/react-router' {
       path: '/welfare-society'
       fullPath: '/welfare-society'
       preLoaderRoute: typeof WelfareSocietyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/volunteers': {
+      id: '/volunteers'
+      path: '/volunteers'
+      fullPath: '/volunteers'
+      preLoaderRoute: typeof VolunteersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/virtual-tour': {
@@ -544,6 +564,7 @@ const rootRouteChildren: RootRouteChildren = {
   StaffRoute: StaffRoute,
   SubjectsRoute: SubjectsRoute,
   VirtualTourRoute: VirtualTourRoute,
+  VolunteersRoute: VolunteersRoute,
   WelfareSocietyRoute: WelfareSocietyRoute,
   ApiChatRoute: ApiChatRoute,
 }
