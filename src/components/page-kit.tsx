@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { X, ZoomIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { sampleFor } from "@/components/sample-pool";
@@ -54,9 +54,12 @@ export function PageHero({
   image?: string;
 }) {
   const bg = image;
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
   return (
-    <section className="relative flex min-h-[70vh] items-center overflow-hidden px-6 pt-24">
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+    <section ref={heroRef} className="relative flex min-h-[70vh] items-center overflow-hidden px-6 pt-24">
+      <motion.div aria-hidden style={{ scale }} className="pointer-events-none absolute inset-0 -z-10 origin-center">
         {bg && (
           <img
             src={bg}
@@ -69,7 +72,7 @@ export function PageHero({
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/85 via-primary/70 to-accent/70" />
-      </div>
+      </motion.div>
       <div className="mx-auto w-full max-w-7xl text-white">
         <Reveal>
           <div className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-secondary">
