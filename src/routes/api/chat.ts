@@ -19,7 +19,7 @@ type Body = {
   topic?: string | null;
 };
 
-const MAX_HISTORY = 24;
+const MAX_HISTORY = 10;
 
 function secretList(...names: string[]) {
   return names.map((name) => process.env[name]?.trim()).filter((value): value is string => Boolean(value));
@@ -89,7 +89,7 @@ export const Route = createFileRoute("/api/chat")({
             .select("category, title, content")
             .eq("mode", mode)
             .eq("is_active", true)
-            .limit(200),
+            .limit(50),
           supabaseAdmin
             .from("ai_documents")
             .select("title, doc_type, extracted_text")
@@ -258,7 +258,7 @@ export const Route = createFileRoute("/api/chat")({
         const contextText = dbSections
           .map((s) => `[${s.title}]\n${s.body}`)
           .join("\n\n---\n\n")
-          .slice(0, 60_000);
+          .slice(0, 20_000);
 
         const baseInstructions =
           settings?.system_instructions?.trim() ||
@@ -305,8 +305,11 @@ Rules you must never break:
             console.warn("[balo-ai] student model fallbacks used", { attempts, served: model });
           }
 
-          await persist(answer, { engine: "gemini", model, classLabel, subject, topic });
-          return json({ answer, engine: "gemini", model });
+        persist(answer, { engine: "gemini", model, classLabel, subject, topic }).catch((err) => {
+          console.error("[balo-ai] background persist failed", err);
+        });
+
+        return json({ answer, engine: "gemini", model });
         } catch (error: any) {
           const status: number | undefined = error?.status ?? error?.statusCode;
           const msg = String(error?.message ?? error ?? "");
