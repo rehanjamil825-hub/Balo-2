@@ -63,7 +63,7 @@ async function callGemini(opts: {
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: opts.system }] },
         contents: opts.contents,
-        generationConfig: { temperature: 0.6, maxOutputTokens: 8192 },
+        generationConfig: { temperature: 0.6, maxOutputTokens: 2048 },
       }),
     },
   );

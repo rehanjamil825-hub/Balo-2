@@ -172,9 +172,10 @@ export const Route = createFileRoute("/api/chat")({
             .from("ai_messages")
             .select("role, content")
             .eq("conversation_id", conversationId)
-            .order("created_at", { ascending: true })
-            .limit(200);
-          for (const r of (rows ?? []).slice(-MAX_HISTORY)) {
+            .order("created_at", { ascending: false })
+            .limit(MAX_HISTORY);
+
+          for (const r of (rows ?? []).reverse()) {
             if (r.role === "user" || r.role === "assistant") {
               history.push({ role: r.role, content: r.content });
             }
