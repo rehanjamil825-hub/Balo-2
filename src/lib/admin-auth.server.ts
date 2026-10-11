@@ -1,0 +1,27 @@
+import { createClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
+
+function withPublishableKey(key: string): typeof fetch {
+  return (input, init) => {
+    const headers = new Headers(
+      typeof Request !== "undefined" && input instanceof Request ? input.headers : undefined,
+    );
+    if (init?.headers) new Headers(init.headers).forEach((value, name) => headers.set(name, value));
+    if (key.startsWith("sb_") && headers.get("Authorization") === `Bearer ${key}`) {
+      headers.delete("Authorization");
+    }
+    headers.set("apikey", key);
+    return fetch(input, { ...init, headers });
+  };
+}
+
+export function createAdminOtpClient() {
+  const url = process.env["SUPABASE_URL"];
+  const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
+  if (!url || !key) throw new Error("Admin sign-in is temporarily unavailable.");
+
+  return createClient<Database>(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: withPublishableKey(key) },
+  });
+}

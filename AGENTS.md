@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep admin OTP verification in a server-only auth helper using the publishable client; this prevents service-role credentials and verification internals from reaching browser code.
