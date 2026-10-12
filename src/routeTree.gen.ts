@@ -26,6 +26,7 @@ import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as BaloAiRouteImport } from './routes/balo-ai'
 import { Route as AdminResetPasswordRouteImport } from './routes/admin-reset-password'
+import { Route as AdminLoginRouteImport } from './routes/admin-login'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -119,6 +120,11 @@ const AdminResetPasswordRoute = AdminResetPasswordRouteImport.update({
   path: '/admin-reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin-login',
+  path: '/admin-login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -159,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/admin-login': typeof AdminLoginRoute
   '/admin-reset-password': typeof AdminResetPasswordRoute
   '/balo-ai': typeof BaloAiRoute
   '/calendar': typeof CalendarRoute
@@ -184,6 +191,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin-login': typeof AdminLoginRoute
   '/admin-reset-password': typeof AdminResetPasswordRoute
   '/balo-ai': typeof BaloAiRoute
   '/calendar': typeof CalendarRoute
@@ -211,6 +219,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/admin-login': typeof AdminLoginRoute
   '/admin-reset-password': typeof AdminResetPasswordRoute
   '/balo-ai': typeof BaloAiRoute
   '/calendar': typeof CalendarRoute
@@ -239,6 +248,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
+    | '/admin-login'
     | '/admin-reset-password'
     | '/balo-ai'
     | '/calendar'
@@ -264,6 +274,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/admin-login'
     | '/admin-reset-password'
     | '/balo-ai'
     | '/calendar'
@@ -290,6 +301,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
+    | '/admin-login'
     | '/admin-reset-password'
     | '/balo-ai'
     | '/calendar'
@@ -317,6 +329,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
+  AdminLoginRoute: typeof AdminLoginRoute
   AdminResetPasswordRoute: typeof AdminResetPasswordRoute
   BaloAiRoute: typeof BaloAiRoute
   CalendarRoute: typeof CalendarRoute
@@ -458,6 +471,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin-login': {
+      id: '/admin-login'
+      path: '/admin-login'
+      fullPath: '/admin-login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -528,6 +548,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
+  AdminLoginRoute: AdminLoginRoute,
   AdminResetPasswordRoute: AdminResetPasswordRoute,
   BaloAiRoute: BaloAiRoute,
   CalendarRoute: CalendarRoute,
