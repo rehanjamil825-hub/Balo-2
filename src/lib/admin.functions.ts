@@ -87,6 +87,29 @@ export const finishAdminRegistration = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+/** Updates the owner password only inside the email-verified Auth session. */
+export const finishAdminRecovery = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ username: usernameSchema, password: passwordSchema }).parse(input))
+  .handler(async ({ context, data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: profile, error: profileError } = await supabaseAdmin
+      .from("admin_profiles")
+      .select("user_id")
+      .eq("normalized_username", normalizeAdminUsername(data.username))
+      .maybeSingle();
+    if (profileError || !profile || profile.user_id !== context.userId) {
+      throw new Error("The recovery code does not match this admin username.");
+    }
+    const { data: userData, error: userError } = await context.supabase.auth.getUser();
+    if (userError || !userData.user || userData.user.id !== context.userId || !isVerifiedAdminAccount(userData.user.email, userData.user.email_confirmed_at)) {
+      throw new Error("Verify the authorised email before updating this password.");
+    }
+    const { error } = await context.supabase.auth.updateUser({ password: data.password });
+    if (error) throw new Error("Could not update the admin password. Please try again.");
+    return { ok: true };
+  });
+
 /** Username-to-owner identity lookup never returns the Auth email to the UI. */
 export const signInAdmin = createServerFn({ method: "POST" })
   .inputValidator((input) =>
@@ -178,6 +201,10 @@ function isAdminEmail(value: string) {
 export const getAdminStatus = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    const { data: user, error: userError } = await context.supabase.auth.getUser();
+    if (userError || !user.user || !isVerifiedAdminAccount(user.user.email, user.user.email_confirmed_at)) {
+      return { isAdmin: false, username: null };
+    }
     const { data: role, error: roleError } = await context.supabase
       .from("user_roles")
       .select("role")
