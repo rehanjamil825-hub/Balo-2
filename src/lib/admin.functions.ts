@@ -62,12 +62,14 @@ export const verifyAdminEmailOtp = createServerFn({ method: "POST" })
  */
 export const finishAdminRegistration = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ username: usernameSchema }).parse(input))
+  .inputValidator((input) => z.object({ username: usernameSchema, password: passwordSchema }).parse(input))
   .handler(async ({ context, data }) => {
     const { data: authData, error: authError } = await context.supabase.auth.getUser();
     if (authError || !authData.user || authData.user.id !== context.userId || !isVerifiedAdminAccount(authData.user.email, authData.user.email_confirmed_at)) {
       throw new Error("Verify the authorised email before finishing admin registration.");
     }
+    const { error: passwordError } = await context.supabase.auth.updateUser({ password: data.password });
+    if (passwordError) throw new Error("Could not set the admin password. Please verify the code again and retry.");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const normalized = normalizeAdminUsername(data.username);
     const { error: profileError } = await supabaseAdmin.from("admin_profiles").upsert({
