@@ -1,8 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-
-const OWNER_EMAIL = "baloindia2015@gmail.com";
+import { ADMIN_OWNER_EMAIL, isVerifiedAdminAccount, normalizeAdminUsername } from "@/lib/admin-auth-rules";
 
 const usernameSchema = z
   .string()
@@ -14,69 +13,106 @@ const usernameSchema = z
 const passwordSchema = z.string().min(8, "Password must be at least 8 characters.").max(128);
 const adminEmailSchema = z.string().trim().email("Enter a valid admin email.");
 
-function normalizedUsername(value: string) {
-  return value.trim().toLowerCase();
-}
-
 function invalidCredentials() {
   return new Error("Invalid username or password.");
 }
 
-/**
- * Public server boundary for registration. The Auth identity and profile are
- * created on the server so the internal Auth email never reaches the browser.
- * The admin role is deliberately not granted until a verified login.
- */
-export const registerAdmin = createServerFn({ method: "POST" })
+const emailOtpInput = z.object({ email: adminEmailSchema, token: z.string().trim().regex(/^\d{6}$/, "Enter the 6-digit email code.") });
+
+/** Sends an email OTP only to the single approved owner identity. */
+export const requestAdminRegistrationOtp = createServerFn({ method: "POST" })
   .inputValidator((input) =>
     z.object({
-      username: usernameSchema,
-      password: passwordSchema,
-      adminEmail: adminEmailSchema,
+      email: adminEmailSchema,
     }).parse(input),
   )
   .handler(async ({ data }) => {
-    const acceptedEmail = "baloindia2015@gmail.com";
-    if (data.adminEmail.trim().toLowerCase() !== acceptedEmail) {
+    if (!isAdminEmail(data.email)) {
       throw new Error("Only the authorised admin email can register an administrator.");
     }
-
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const normalized = normalizedUsername(data.username);
-    const { data: existingProfile, error: profileLookupError } = await supabaseAdmin
-      .from("admin_profiles")
-      .select("id")
-      .eq("normalized_username", normalized)
-      .maybeSingle();
-    if (profileLookupError) throw profileLookupError;
-    if (existingProfile) throw new Error("That username is already registered.");
-
-    const { data: authData, error: authError } = await supabaseAdmin.auth.signUp({
-      email: acceptedEmail,
-      password: data.password,
-      options: { emailRedirectTo: "" },
+    const { createAdminOtpClient } = await import("@/lib/admin-auth.server");
+    const { error } = await createAdminOtpClient().auth.signInWithOtp({
+      email: ADMIN_OWNER_EMAIL,
+      options: { shouldCreateUser: false },
     });
-    if (authError) {
-      throw new Error("This admin email is already registered or could not be registered.");
-    }
-    if (!authData.user || authData.user.identities?.length === 0) {
-      throw new Error("This admin email is already registered or could not be registered.");
-    }
+    if (error) throw new Error("Could not send a verification code. Please wait a moment and try again.");
+    return { ok: true };
+  });
 
-    const { error: profileError } = await supabaseAdmin.from("admin_profiles").insert({
-      user_id: authData.user.id,
-      username: data.username.trim(),
-      normalized_username: normalized,
+/** OTP verification returns an Auth session only after Auth accepts the email code. */
+export const verifyAdminEmailOtp = createServerFn({ method: "POST" })
+  .inputValidator((input) => emailOtpInput.parse(input))
+  .handler(async ({ data }) => {
+    if (!isAdminEmail(data.email)) throw new Error("The verification code is invalid or expired.");
+    const { createAdminOtpClient } = await import("@/lib/admin-auth.server");
+    const { data: authData, error } = await createAdminOtpClient().auth.verifyOtp({
+      email: ADMIN_OWNER_EMAIL,
+      token: data.token,
+      type: "email",
     });
-    if (profileError) throw profileError;
-
-    return { verificationRequired: !authData.user.email_confirmed_at };
+    if (error || !authData.user || !authData.session || !isVerifiedAdminAccount(authData.user.email, authData.user.email_confirmed_at)) {
+      throw new Error("The verification code is invalid or expired.");
+    }
+    return { session: authData.session };
   });
 
 /**
- * Username authentication stays entirely server-side: the browser receives a
- * Supabase session, never the internal email used to resolve the username.
+ * Assigns the admin role only to the owner identity after email OTP has
+ * produced the current authenticated session.
  */
+export const finishAdminRegistration = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ username: usernameSchema, password: passwordSchema }).parse(input))
+  .handler(async ({ context, data }) => {
+    const { data: authData, error: authError } = await context.supabase.auth.getUser();
+    if (authError || !authData.user || authData.user.id !== context.userId || !isVerifiedAdminAccount(authData.user.email, authData.user.email_confirmed_at)) {
+      throw new Error("Verify the authorised email before finishing admin registration.");
+    }
+    const { error: passwordError } = await context.supabase.auth.updateUser({ password: data.password });
+    if (passwordError) throw new Error("Could not set the admin password. Please verify the code again and retry.");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const normalized = normalizeAdminUsername(data.username);
+    const { error: profileError } = await supabaseAdmin.from("admin_profiles").upsert({
+      user_id: context.userId,
+      username: data.username.trim(),
+      normalized_username: normalized,
+    }, { onConflict: "user_id" });
+    if (profileError) {
+      if (profileError.code === "23505") throw new Error("That username is already registered.");
+      throw new Error("Could not save the admin username. Please try again.");
+    }
+    const { error: roleError } = await supabaseAdmin.from("user_roles").upsert(
+      { user_id: context.userId, role: "admin" },
+      { onConflict: "user_id,role" },
+    );
+    if (roleError) throw new Error("Could not finish admin access setup. Please try again.");
+    return { ok: true };
+  });
+
+/** Updates the owner password only inside the email-verified Auth session. */
+export const finishAdminRecovery = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ username: usernameSchema, password: passwordSchema }).parse(input))
+  .handler(async ({ context, data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: profile, error: profileError } = await supabaseAdmin
+      .from("admin_profiles")
+      .select("user_id")
+      .eq("normalized_username", normalizeAdminUsername(data.username))
+      .maybeSingle();
+    if (profileError || !profile || profile.user_id !== context.userId) {
+      throw new Error("The recovery code does not match this admin username.");
+    }
+    const { data: userData, error: userError } = await context.supabase.auth.getUser();
+    if (userError || !userData.user || userData.user.id !== context.userId || !isVerifiedAdminAccount(userData.user.email, userData.user.email_confirmed_at)) {
+      throw new Error("Verify the authorised email before updating this password.");
+    }
+    const { error } = await context.supabase.auth.updateUser({ password: data.password });
+    if (error) throw new Error("Could not update the admin password. Please try again.");
+    return { ok: true };
+  });
+
+/** Username-to-owner identity lookup never returns the Auth email to the UI. */
 export const signInAdmin = createServerFn({ method: "POST" })
   .inputValidator((input) =>
     z.object({ username: usernameSchema, password: passwordSchema }).parse(input),
@@ -86,27 +122,18 @@ export const signInAdmin = createServerFn({ method: "POST" })
     const { data: profile, error: profileError } = await supabaseAdmin
       .from("admin_profiles")
       .select("user_id, username")
-      .eq("normalized_username", normalizedUsername(data.username))
+      .eq("normalized_username", normalizeAdminUsername(data.username))
       .maybeSingle();
     if (profileError || !profile) throw invalidCredentials();
 
     const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(profile.user_id);
-    const email = userData.user?.email;
-    if (userError || !email) throw invalidCredentials();
+    if (userError || !isVerifiedAdminAccount(userData.user?.email, userData.user?.email_confirmed_at)) throw invalidCredentials();
 
     const { data: authData, error: authError } = await supabaseAdmin.auth.signInWithPassword({
-      email,
+      email: ADMIN_OWNER_EMAIL,
       password: data.password,
     });
-    if (authError || !authData.session || !authData.user) {
-      if (authError?.message && /confirm|verify/i.test(authError.message)) {
-        throw new Error("EMAIL_NOT_VERIFIED: Verify the admin email before signing in.");
-      }
-      throw invalidCredentials();
-    }
-    if (!authData.user.email_confirmed_at) {
-      throw new Error("EMAIL_NOT_VERIFIED: Verify the admin email before signing in.");
-    }
+    if (authError || !authData.session || !authData.user || !isVerifiedAdminAccount(authData.user.email, authData.user.email_confirmed_at)) throw invalidCredentials();
 
     const { error: roleError } = await supabaseAdmin
       .from("user_roles")
@@ -121,61 +148,65 @@ export const resendAdminVerification = createServerFn({ method: "POST" })
     z.object({ username: usernameSchema, adminEmail: adminEmailSchema }).parse(input),
   )
   .handler(async ({ data }) => {
-    const acceptedEmail = "baloindia2015@gmail.com";
-    if (data.adminEmail.trim().toLowerCase() !== acceptedEmail) {
+    if (!isAdminEmail(data.adminEmail)) {
       throw new Error("Only the authorised admin email can be verified.");
     }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: profile } = await supabaseAdmin
+    const { data: profile, error: profileError } = await supabaseAdmin
       .from("admin_profiles")
       .select("user_id")
-      .eq("normalized_username", normalizedUsername(data.username))
+      .eq("normalized_username", normalizeAdminUsername(data.username))
       .maybeSingle();
-    if (!profile) throw new Error("We could not verify those admin details.");
-    const { error } = await supabaseAdmin.auth.resend({ type: "signup", email: acceptedEmail });
-    if (error) throw new Error("Could not resend the verification email.");
+    if (profileError || !profile) throw new Error("We could not verify those admin details.");
+    const { createAdminOtpClient } = await import("@/lib/admin-auth.server");
+    const { error } = await createAdminOtpClient().auth.signInWithOtp({ email: ADMIN_OWNER_EMAIL, options: { shouldCreateUser: false } });
+    if (error) throw new Error("Could not resend the verification code.");
     return { ok: true };
   });
 
-/**
- * Recovery is verified by the username-to-Auth identity mapping and the
- * authorised admin email. The password is written only through Auth's admin
- * API; it is never stored or returned by this application.
- */
-export const recoverAdminPassword = createServerFn({ method: "POST" })
+/** A recovery challenge is sent only if the submitted username belongs to the owner. */
+export const requestAdminRecoveryOtp = createServerFn({ method: "POST" })
   .inputValidator((input) =>
     z.object({
       username: usernameSchema,
       adminEmail: adminEmailSchema,
-      password: passwordSchema,
     }).parse(input),
   )
   .handler(async ({ data }) => {
-    const acceptedEmail = "baloindia2015@gmail.com";
-    if (data.adminEmail.trim().toLowerCase() !== acceptedEmail) {
+    if (!isAdminEmail(data.adminEmail)) {
       throw new Error("We could not verify those admin details.");
     }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: profile } = await supabaseAdmin
+    const { data: profile, error: profileError } = await supabaseAdmin
       .from("admin_profiles")
-      .select("user_id")
-      .eq("normalized_username", normalizedUsername(data.username))
+      .select("user_id, username")
+      .eq("normalized_username", normalizeAdminUsername(data.username))
       .maybeSingle();
-    if (!profile) throw new Error("We could not verify those admin details.");
-
-    const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(profile.user_id);
-    if (userError || userData.user?.email?.toLowerCase() !== acceptedEmail) {
+    if (profileError || !profile) {
       throw new Error("We could not verify those admin details.");
     }
-    const { error } = await supabaseAdmin.auth.admin.updateUserById(profile.user_id, { password: data.password });
-    if (error) throw new Error("Could not update the admin password.");
+    const { data: authData, error: userError } = await supabaseAdmin.auth.admin.getUserById(profile.user_id);
+    if (userError || !isVerifiedAdminAccount(authData.user?.email, authData.user?.email_confirmed_at)) {
+      throw new Error("We could not verify those admin details.");
+    }
+    const { createAdminOtpClient } = await import("@/lib/admin-auth.server");
+    const { error } = await createAdminOtpClient().auth.signInWithOtp({ email: ADMIN_OWNER_EMAIL, options: { shouldCreateUser: false } });
+    if (error) throw new Error("Could not send the recovery code. Please wait a moment and try again.");
     return { ok: true };
   });
+
+function isAdminEmail(value: string) {
+  return value.trim().toLowerCase() === ADMIN_OWNER_EMAIL;
+}
 
 // Returns the current session's role and username. Email is intentionally not returned.
 export const getAdminStatus = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    const { data: user, error: userError } = await context.supabase.auth.getUser();
+    if (userError || !user.user || !isVerifiedAdminAccount(user.user.email, user.user.email_confirmed_at)) {
+      return { isAdmin: false, username: null };
+    }
     const { data: role, error: roleError } = await context.supabase
       .from("user_roles")
       .select("role")
