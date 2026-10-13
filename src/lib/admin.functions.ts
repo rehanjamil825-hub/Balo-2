@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { getRequestUrl } from "@tanstack/react-start/server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { ADMIN_OWNER_EMAIL, isVerifiedAdminAccount, normalizeAdminUsername } from "@/lib/admin-auth-rules";
 
@@ -17,10 +18,8 @@ function invalidCredentials() {
   return new Error("Invalid username or password.");
 }
 
-const emailOtpInput = z.object({ email: adminEmailSchema, token: z.string().trim().regex(/^\d{6}$/, "Enter the 6-digit email code.") });
-
-/** Sends an email OTP only to the single approved owner identity. */
-export const requestAdminRegistrationOtp = createServerFn({ method: "POST" })
+/** Sends an Auth-managed confirmation link, returning only to this app's login page. */
+export const sendAdminVerificationLink = createServerFn({ method: "POST" })
   .inputValidator((input) =>
     z.object({
       email: adminEmailSchema,
@@ -33,27 +32,13 @@ export const requestAdminRegistrationOtp = createServerFn({ method: "POST" })
     const { createAdminOtpClient } = await import("@/lib/admin-auth.server");
     const { error } = await createAdminOtpClient().auth.signInWithOtp({
       email: ADMIN_OWNER_EMAIL,
-      options: { shouldCreateUser: false },
+      options: {
+        shouldCreateUser: false,
+        emailRedirectTo: new URL("/admin-login?admin-verify=signup", getRequestUrl()).toString(),
+      },
     });
-    if (error) throw new Error("Could not send a verification code. Please wait a moment and try again.");
+    if (error) throw new Error("Could not send the verification email. Please wait a moment and try again.");
     return { ok: true };
-  });
-
-/** OTP verification returns an Auth session only after Auth accepts the email code. */
-export const verifyAdminEmailOtp = createServerFn({ method: "POST" })
-  .inputValidator((input) => emailOtpInput.parse(input))
-  .handler(async ({ data }) => {
-    if (!isAdminEmail(data.email)) throw new Error("The verification code is invalid or expired.");
-    const { createAdminOtpClient } = await import("@/lib/admin-auth.server");
-    const { data: authData, error } = await createAdminOtpClient().auth.verifyOtp({
-      email: ADMIN_OWNER_EMAIL,
-      token: data.token,
-      type: "email",
-    });
-    if (error || !authData.user || !authData.session || !isVerifiedAdminAccount(authData.user.email, authData.user.email_confirmed_at)) {
-      throw new Error("The verification code is invalid or expired.");
-    }
-    return { session: authData.session };
   });
 
 /**
@@ -169,8 +154,14 @@ export const requestAdminRecoveryOtp = createServerFn({ method: "POST" })
       throw new Error("We could not verify those admin details.");
     }
     const { createAdminOtpClient } = await import("@/lib/admin-auth.server");
-    const { error } = await createAdminOtpClient().auth.signInWithOtp({ email: ADMIN_OWNER_EMAIL, options: { shouldCreateUser: false } });
-    if (error) throw new Error("Could not send the recovery code. Please wait a moment and try again.");
+    const { error } = await createAdminOtpClient().auth.signInWithOtp({
+      email: ADMIN_OWNER_EMAIL,
+      options: {
+        shouldCreateUser: false,
+        emailRedirectTo: new URL("/admin-login?admin-verify=recovery", getRequestUrl()).toString(),
+      },
+    });
+    if (error) throw new Error("Could not send the recovery email. Please wait a moment and try again.");
     return { ok: true };
   });
 
