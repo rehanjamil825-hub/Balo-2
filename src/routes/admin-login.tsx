@@ -10,7 +10,6 @@ import {
   getAdminStatus,
   requestAdminRecoveryOtp,
   requestAdminRegistrationOtp,
-  resendAdminVerification,
   signInAdmin,
   verifyAdminEmailOtp,
 } from "@/lib/admin.functions";
@@ -36,7 +35,6 @@ function AdminLoginPage() {
   const finishRegistration = useServerFn(finishAdminRegistration);
   const finishRecovery = useServerFn(finishAdminRecovery);
   const signIn = useServerFn(signInAdmin);
-  const resend = useServerFn(resendAdminVerification);
 
   const [username, setUsername] = useState("");
   const [adminEmail, setAdminEmail] = useState("");
@@ -130,7 +128,7 @@ function AdminLoginPage() {
     setBusy(true);
     setMsg(null);
     try {
-      await resend({ data: { username, adminEmail } });
+      await registerOtp({ data: { email: adminEmail } });
       setMsg({ kind: "ok", text: "A new verification code was sent to the authorised email." });
     } catch (error) {
       setMsg({ kind: "err", text: errorMessage(error, "Could not resend the verification code.") });
