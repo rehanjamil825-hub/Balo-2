@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,8 @@ import {
   finishAdminRegistration,
   getAdminStatus,
   requestAdminRecoveryOtp,
-  requestAdminRegistrationOtp,
+  sendAdminVerificationLink,
   signInAdmin,
-  verifyAdminEmailOtp,
 } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin-login")({
@@ -20,7 +19,7 @@ export const Route = createFileRoute("/admin-login")({
 });
 
 type Mode = "signin" | "signup" | "reset";
-type Stage = "form" | "otp" | "finish";
+type Stage = "form" | "waiting" | "finish";
 
 function errorMessage(error: unknown, fallback: string) {
   return error instanceof Error ? error.message : fallback;
@@ -29,9 +28,8 @@ function errorMessage(error: unknown, fallback: string) {
 function AdminLoginPage() {
   const navigate = useNavigate();
   const checkAdmin = useServerFn(getAdminStatus);
-  const registerOtp = useServerFn(requestAdminRegistrationOtp);
+  const sendVerification = useServerFn(sendAdminVerificationLink);
   const recoveryOtp = useServerFn(requestAdminRecoveryOtp);
-  const verifyOtp = useServerFn(verifyAdminEmailOtp);
   const finishRegistration = useServerFn(finishAdminRegistration);
   const finishRecovery = useServerFn(finishAdminRecovery);
   const signIn = useServerFn(signInAdmin);
@@ -40,7 +38,6 @@ function AdminLoginPage() {
   const [adminEmail, setAdminEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [otp, setOtp] = useState("");
   const [mode, setMode] = useState<Mode>("signin");
   const [stage, setStage] = useState<Stage>("form");
   const [showPassword, setShowPassword] = useState(false);
@@ -48,10 +45,34 @@ function AdminLoginPage() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ kind: "err" | "ok"; text: string } | null>(null);
 
+  useEffect(() => {
+    let mounted = true;
+    const url = new URL(window.location.href);
+    const verificationMode = url.searchParams.get("admin-verify");
+    if (verificationMode === "signup" || verificationMode === "recovery") {
+      const modeForLink: Mode = verificationMode === "signup" ? "signup" : "reset";
+      void supabase.auth.getSession().then(({ data, error }) => {
+        if (!mounted) return;
+        if (error || !data.session) {
+          setMsg({ kind: "err", text: "The email verification link is invalid or expired. Request a new one." });
+          setMode(modeForLink);
+          setStage("form");
+          return;
+        }
+        setMode(modeForLink);
+        setStage("finish");
+        setAdminEmail(data.session.user.email ?? "");
+        setMsg({ kind: "ok", text: "Email verified. Finish setting up your admin account." });
+        url.searchParams.delete("admin-verify");
+        window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+      });
+    }
+    return () => { mounted = false; };
+  }, []);
+
   function changeMode(next: Mode) {
     setMode(next);
     setStage("form");
-    setOtp("");
     setPassword("");
     setConfirmPassword("");
     setMsg(null);
@@ -62,31 +83,13 @@ function AdminLoginPage() {
     if (mode === "signup" && password !== confirmPassword) throw new Error("Passwords do not match.");
     if (mode === "reset" && (password || confirmPassword)) throw new Error("Request a recovery code before choosing a new password.");
     if (mode === "signup") {
-      await registerOtp({ data: { email: adminEmail } });
-      setMsg({ kind: "ok", text: "A six-digit verification code was sent to the authorised email." });
+      await sendVerification({ data: { email: adminEmail } });
+      setMsg({ kind: "ok", text: "A secure verification link was sent to the authorised email. Open it in this browser to continue." });
     } else {
       await recoveryOtp({ data: { username, adminEmail } });
-      setMsg({ kind: "ok", text: "A six-digit recovery code was sent to the authorised email." });
+      setMsg({ kind: "ok", text: "A secure recovery link was sent to the authorised email. Open it in this browser to continue." });
     }
-    setStage("otp");
-  }
-
-  async function verifyCode() {
-    if (!/^\d{6}$/.test(otp)) throw new Error("Enter the six-digit code from the email.");
-    const result = await verifyOtp({ data: { email: adminEmail, token: otp } });
-    const { error } = await supabase.auth.setSession(result.session);
-    if (error) throw new Error("The verification session could not be started. Request a new code.");
-    if (mode === "signup") {
-      await finishRegistration({ data: { username, password } });
-      const status = await checkAdmin();
-      if (!status.isAdmin) throw new Error("Email verified, but admin access could not be confirmed.");
-      navigate({ to: "/admin", replace: true });
-      return;
-    }
-    setStage("finish");
-    setPassword("");
-    setConfirmPassword("");
-    setMsg({ kind: "ok", text: "Email verified. Choose a new password." });
+    setStage("waiting");
   }
 
   async function submit(e: FormEvent<HTMLFormElement>) {
@@ -106,11 +109,16 @@ function AdminLoginPage() {
         navigate({ to: "/admin", replace: true });
       } else if (stage === "form") {
         await sendOtp();
-      } else if (stage === "otp") {
-        await verifyCode();
-      } else {
+      } else if (stage === "waiting") {
+        throw new Error("Open the secure link sent to the authorised email to continue.");
+      } else if (stage === "finish") {
         if (password !== confirmPassword) throw new Error("Passwords do not match.");
-        if (mode === "reset") {
+        if (mode === "signup") {
+          await finishRegistration({ data: { username, password } });
+          const status = await checkAdmin();
+          if (!status.isAdmin) throw new Error("Email verified, but admin access could not be confirmed.");
+          navigate({ to: "/admin", replace: true });
+        } else if (mode === "reset") {
           await finishRecovery({ data: { username, password } });
           await supabase.auth.signOut();
           changeMode("signin");
@@ -128,8 +136,8 @@ function AdminLoginPage() {
     setBusy(true);
     setMsg(null);
     try {
-      await registerOtp({ data: { email: adminEmail } });
-      setMsg({ kind: "ok", text: "A new verification code was sent to the authorised email." });
+      await sendVerification({ data: { email: adminEmail } });
+      setMsg({ kind: "ok", text: "A new verification link was sent to the authorised email." });
     } catch (error) {
       setMsg({ kind: "err", text: errorMessage(error, "Could not resend the verification code.") });
     } finally {
@@ -138,39 +146,40 @@ function AdminLoginPage() {
   }
 
   const title = mode === "signin" ? "Admin sign in" : mode === "signup" ? "Create admin account" : "Recover admin access";
-  const isPasswordStage = mode === "signin" || (mode === "signup" && stage === "form") || (mode === "reset" && stage === "finish");
+  const isPasswordStage = mode === "signin" || stage === "finish";
 
   return (
     <main className="grid min-h-[70vh] place-items-center bg-background px-5 py-12 sm:py-16">
       <section className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-soft sm:p-8" aria-labelledby="admin-login-title">
         <div className="mb-5 grid size-11 place-items-center rounded-xl bg-primary/10 text-primary"><Lock className="size-5" /></div>
         <h1 id="admin-login-title" className="text-2xl font-bold text-foreground">
-          {stage === "otp" ? "Check the authorised email" : stage === "finish" ? "Choose a new password" : title}
+          {stage === "waiting" ? "Check the authorised email" : stage === "finish" ? mode === "signup" ? "Finish admin registration" : "Choose a new password" : title}
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
           {mode === "signin" && "Sign in with your admin username and password."}
-          {mode === "signup" && stage === "form" && "Create an admin username and password. The approved email must be verified before access is granted."}
-          {mode === "signup" && stage === "otp" && "Enter the six-digit code sent to the approved admin email to finish account setup."}
+          {mode === "signup" && stage === "form" && "Choose a username and password. The approved email must be verified before access is granted."}
+          {mode === "signup" && stage === "waiting" && "Open the secure verification link from the approved email in this browser."}
+          {mode === "signup" && stage === "finish" && "The approved email is verified. Confirm your username and set the account password."}
           {mode === "reset" && stage === "form" && "Enter your admin username and the approved email to request a recovery code."}
-          {mode === "reset" && stage === "otp" && "Enter the six-digit recovery code sent to the approved admin email."}
+          {mode === "reset" && stage === "waiting" && "Open the secure recovery link from the approved email in this browser."}
           {mode === "reset" && stage === "finish" && "Your email is verified. Set a new password for the admin account."}
         </p>
 
         <form onSubmit={submit} className="mt-6 space-y-4">
-          {stage !== "finish" && (
+          {stage !== "waiting" && (
             <label className="block">
               <span className="text-xs font-semibold text-foreground">Username</span>
               <div className="relative mt-1">
                 <UserRound className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <input type="text" required autoComplete="username" minLength={3} maxLength={32} value={username}
                   onChange={(event) => { setUsername(event.target.value); setMsg(null); }}
-                  disabled={stage === "otp"} className="w-full rounded-md border border-input bg-background py-2.5 pl-9 pr-3 text-sm disabled:opacity-70"
+                  disabled={false} className="w-full rounded-md border border-input bg-background py-2.5 pl-9 pr-3 text-sm"
                   placeholder="your username" />
               </div>
             </label>
           )}
 
-          {(mode !== "signin" && stage !== "otp") && (
+          {(mode !== "signin" && stage !== "waiting") && (
             <label className="block">
               <span className="text-xs font-semibold text-foreground">Admin email</span>
               <div className="relative mt-1">
@@ -180,15 +189,6 @@ function AdminLoginPage() {
                   disabled={stage === "finish"} className="w-full rounded-md border border-input bg-background py-2.5 pl-9 pr-3 text-sm disabled:opacity-70"
                   placeholder="authorised admin email" />
               </div>
-            </label>
-          )}
-
-          {stage === "otp" && (
-            <label className="block">
-              <span className="text-xs font-semibold text-foreground">Six-digit code</span>
-              <input type="text" inputMode="numeric" autoComplete="one-time-code" required pattern="[0-9]{6}" maxLength={6} value={otp}
-                onChange={(event) => { setOtp(event.target.value.replace(/\D/g, "").slice(0, 6)); setMsg(null); }}
-                className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm tracking-[0.3em]" placeholder="000000" />
             </label>
           )}
 
@@ -224,14 +224,15 @@ function AdminLoginPage() {
 
           {msg && <p role="alert" className={`rounded-md p-3 text-sm ${msg.kind === "err" ? "bg-destructive/10 text-destructive" : "bg-primary/10 text-foreground"}`}>{msg.text}</p>}
 
-          <Button type="submit" disabled={busy} className="w-full">
-            {busy ? "Please wait…" : stage === "otp" ? "Verify code" : mode === "signin" ? "Sign in" : mode === "signup" ? stage === "form" ? "Send verification code" : "Create account" : stage === "form" ? "Send recovery code" : "Update password"}
+          {stage !== "waiting" && <Button type="submit" disabled={busy} className="w-full">
+            {busy ? "Please wait…" : mode === "signin" ? "Sign in" : mode === "signup" ? stage === "form" ? "Send verification link" : "Create account" : stage === "form" ? "Send recovery link" : "Update password"}
           </Button>
+          }
         </form>
 
-        {stage === "otp" && mode === "signup" && (
+        {stage === "waiting" && (
           <Button type="button" variant="outline" disabled={busy} onClick={resendVerification} className="mt-3 w-full">
-            <RefreshCw /> Resend verification code
+            <RefreshCw /> Resend secure link
           </Button>
         )}
 
@@ -244,7 +245,7 @@ function AdminLoginPage() {
           ) : (
             <Button type="button" variant="link" className="h-auto p-0" onClick={() => changeMode("signin")}>Back to sign in</Button>
           )}
-          {stage !== "form" && <Button type="button" variant="link" className="h-auto p-0" onClick={() => { setStage("form"); setOtp(""); setMsg(null); }}>Change details</Button>}
+          {stage !== "form" && <Button type="button" variant="link" className="h-auto p-0" onClick={() => { setStage("form"); setMsg(null); }}>Change details</Button>}
         </div>
       </section>
     </main>
