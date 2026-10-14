@@ -8,7 +8,7 @@ import {
   finishAdminRecovery,
   finishAdminRegistration,
   getAdminStatus,
-  requestAdminRecoveryOtp,
+  requestAdminRecoveryLink,
   sendAdminVerificationLink,
   signInAdmin,
 } from "@/lib/admin.functions";
@@ -29,7 +29,7 @@ function AdminLoginPage() {
   const navigate = useNavigate();
   const checkAdmin = useServerFn(getAdminStatus);
   const sendVerification = useServerFn(sendAdminVerificationLink);
-  const recoveryOtp = useServerFn(requestAdminRecoveryOtp);
+  const recoveryLink = useServerFn(requestAdminRecoveryLink);
   const finishRegistration = useServerFn(finishAdminRegistration);
   const finishRecovery = useServerFn(finishAdminRecovery);
   const signIn = useServerFn(signInAdmin);
@@ -51,21 +51,28 @@ function AdminLoginPage() {
     const verificationMode = url.searchParams.get("admin-verify");
     if (verificationMode === "signup" || verificationMode === "recovery") {
       const modeForLink: Mode = verificationMode === "signup" ? "signup" : "reset";
-      void supabase.auth.getSession().then(({ data, error }) => {
+      const acceptAuthLink = () => {
         if (!mounted) return;
-        if (error || !data.session) {
-          setMsg({ kind: "err", text: "The email verification link is invalid or expired. Request a new one." });
-          setMode(modeForLink);
-          setStage("form");
-          return;
-        }
         setMode(modeForLink);
         setStage("finish");
-        setAdminEmail(data.session.user.email ?? "");
         setMsg({ kind: "ok", text: "Email verified. Finish setting up your admin account." });
         url.searchParams.delete("admin-verify");
         window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+      };
+      const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
+        if ((event === "SIGNED_IN" || event === "PASSWORD_RECOVERY") && session?.user.email_confirmed_at) acceptAuthLink();
       });
+      void supabase.auth.getSession().then(({ data, error }) => {
+        if (error || !data.session) {
+          setMode(modeForLink);
+          setStage("form");
+          setMsg({ kind: "err", text: "The verification link is invalid or expired. Request a new one." });
+        } else if (data.session.user.email_confirmed_at) acceptAuthLink();
+      });
+      return () => {
+        mounted = false;
+        subscription.subscription.unsubscribe();
+      };
     }
     return () => { mounted = false; };
   }, []);
@@ -78,16 +85,16 @@ function AdminLoginPage() {
     setMsg(null);
   }
 
-  async function sendOtp() {
+  async function requestVerificationLink() {
     if (!username.trim() || !adminEmail.trim()) throw new Error("Enter your username and authorised admin email.");
     if (mode === "signup" && password !== confirmPassword) throw new Error("Passwords do not match.");
-    if (mode === "reset" && (password || confirmPassword)) throw new Error("Request a recovery code before choosing a new password.");
+    if (mode === "reset" && (password || confirmPassword)) throw new Error("Request a recovery link before choosing a new password.");
     if (mode === "signup") {
       await sendVerification({ data: { email: adminEmail } });
       setMsg({ kind: "ok", text: "A secure verification link was sent to the authorised email. Open it in this browser to continue." });
     } else {
-      await recoveryOtp({ data: { username, adminEmail } });
-      setMsg({ kind: "ok", text: "A secure recovery link was sent to the authorised email. Open it in this browser to continue." });
+      await recoveryLink({ data: { username, adminEmail } });
+      setMsg({ kind: "ok", text: "If those details match, a recovery link will be sent to the authorised email." });
     }
     setStage("waiting");
   }
@@ -108,7 +115,7 @@ function AdminLoginPage() {
         }
         navigate({ to: "/admin", replace: true });
       } else if (stage === "form") {
-        await sendOtp();
+        await requestVerificationLink();
       } else if (stage === "waiting") {
         throw new Error("Open the secure link sent to the authorised email to continue.");
       } else if (stage === "finish") {
@@ -160,7 +167,7 @@ function AdminLoginPage() {
           {mode === "signup" && stage === "form" && "Choose a username and password. The approved email must be verified before access is granted."}
           {mode === "signup" && stage === "waiting" && "Open the secure verification link from the approved email in this browser."}
           {mode === "signup" && stage === "finish" && "The approved email is verified. Confirm your username and set the account password."}
-          {mode === "reset" && stage === "form" && "Enter your admin username and the approved email to request a recovery code."}
+          {mode === "reset" && stage === "form" && "Enter your admin username and the authorised email to request a recovery link."}
           {mode === "reset" && stage === "waiting" && "Open the secure recovery link from the approved email in this browser."}
           {mode === "reset" && stage === "finish" && "Your email is verified. Set a new password for the admin account."}
         </p>
