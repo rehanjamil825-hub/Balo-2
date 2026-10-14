@@ -132,7 +132,8 @@ export const signInAdmin = createServerFn({ method: "POST" })
     const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(profile.user_id);
     if (userError || !isVerifiedAdminAccount(userData.user?.email, userData.user?.email_confirmed_at)) throw invalidCredentials();
 
-    const { data: authData, error: authError } = await supabaseAdmin.auth.signInWithPassword({
+    const { createAdminOtpClient } = await import("@/lib/admin-auth.server");
+    const { data: authData, error: authError } = await createAdminOtpClient().auth.signInWithPassword({
       email: ADMIN_OWNER_EMAIL,
       password: data.password,
     });
@@ -147,7 +148,13 @@ export const signInAdmin = createServerFn({ method: "POST" })
     if (roleError) throw roleError;
     if (!role) throw invalidCredentials();
 
-    return { session: authData.session, username: profile.username };
+    return {
+      session: {
+        access_token: authData.session.access_token,
+        refresh_token: authData.session.refresh_token,
+      },
+      username: profile.username,
+    };
   });
 
 /** Sends a native Auth password-recovery link only for the existing owner identity. */

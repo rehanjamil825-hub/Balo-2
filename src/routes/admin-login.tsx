@@ -153,8 +153,13 @@ function AdminLoginPage() {
     setBusy(true);
     setMsg(null);
     try {
-      await sendVerification({ data: { email: adminEmail } });
-      setMsg({ kind: "ok", text: "A new verification link was sent to the authorised email." });
+      if (mode === "reset") {
+        await recoveryLink({ data: { username, adminEmail } });
+        setMsg({ kind: "ok", text: "If those details match, a new recovery link will be sent to the authorised email." });
+      } else {
+        await sendVerification({ data: { email: adminEmail } });
+        setMsg({ kind: "ok", text: "A new verification link was sent to the authorised email." });
+      }
     } catch (error) {
       setMsg({ kind: "err", text: errorMessage(error, "Could not resend the verification code.") });
     } finally {
