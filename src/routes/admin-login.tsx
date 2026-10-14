@@ -15,6 +15,16 @@ import {
 
 export const Route = createFileRoute("/admin-login")({
   ssr: false,
+  head: () => ({
+    meta: [
+      { title: "Admin sign in — BALO English Medium School" },
+      { name: "description", content: "Secure administrator access for BALO English Medium School." },
+      { property: "og:title", content: "Admin sign in — BALO English Medium School" },
+      { property: "og:description", content: "Secure administrator access for BALO English Medium School." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: AdminLoginPage,
 });
 

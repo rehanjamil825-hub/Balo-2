@@ -18,6 +18,18 @@ function invalidCredentials() {
   return new Error("Invalid username or password.");
 }
 
+function adminAuthRedirect(kind: "signup" | "recovery") {
+  const requestUrl = new URL(getRequestUrl());
+  const allowedOrigins = new Set([
+    "http://localhost:8080",
+    "https://id-preview--260bd6c6-afdc-4219-9095-bec95a6b4f9d.lovable.app",
+  ]);
+  if (!allowedOrigins.has(requestUrl.origin)) {
+    throw new Error("Admin email links are not configured for this website address.");
+  }
+  return new URL(`/admin-login?admin-verify=${kind}`, requestUrl.origin).toString();
+}
+
 /** Sends an Auth-managed confirmation link, returning only to this app's login page. */
 export const sendAdminVerificationLink = createServerFn({ method: "POST" })
   .inputValidator((input) =>
@@ -34,7 +46,7 @@ export const sendAdminVerificationLink = createServerFn({ method: "POST" })
       email: ADMIN_OWNER_EMAIL,
       options: {
         shouldCreateUser: false,
-        emailRedirectTo: new URL("/admin-login?admin-verify=signup", getRequestUrl()).toString(),
+        emailRedirectTo: adminAuthRedirect("signup"),
       },
     });
     if (error) throw new Error("Could not send the verification email. Please wait a moment and try again.");
@@ -158,7 +170,7 @@ export const requestAdminRecoveryLink = createServerFn({ method: "POST" })
       if (!userError && isVerifiedAdminAccount(authData.user?.email, authData.user?.email_confirmed_at)) {
         const { createAdminOtpClient } = await import("@/lib/admin-auth.server");
         const { error } = await createAdminOtpClient().auth.resetPasswordForEmail(ADMIN_OWNER_EMAIL, {
-          redirectTo: new URL("/admin-login?admin-verify=recovery", getRequestUrl()).toString(),
+          redirectTo: adminAuthRedirect("recovery"),
         });
         if (error) throw new Error("Could not send a recovery email. Please try again shortly.");
       }
