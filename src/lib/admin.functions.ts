@@ -18,6 +18,18 @@ function invalidCredentials() {
   return new Error("Invalid username or password.");
 }
 
+function adminAuthRedirect(kind: "signup" | "recovery") {
+  const requestUrl = new URL(getRequestUrl());
+  const allowedOrigins = new Set([
+    "http://localhost:8080",
+    "https://id-preview--260bd6c6-afdc-4219-9095-bec95a6b4f9d.lovable.app",
+  ]);
+  if (!allowedOrigins.has(requestUrl.origin)) {
+    throw new Error("Admin email links are not configured for this website address.");
+  }
+  return new URL(`/admin-login?admin-verify=${kind}`, requestUrl.origin).toString();
+}
+
 /** Sends an Auth-managed confirmation link, returning only to this app's login page. */
 export const sendAdminVerificationLink = createServerFn({ method: "POST" })
   .inputValidator((input) =>
@@ -34,7 +46,7 @@ export const sendAdminVerificationLink = createServerFn({ method: "POST" })
       email: ADMIN_OWNER_EMAIL,
       options: {
         shouldCreateUser: false,
-        emailRedirectTo: new URL("/admin-login?admin-verify=signup", getRequestUrl()).toString(),
+        emailRedirectTo: adminAuthRedirect("signup"),
       },
     });
     if (error) throw new Error("Could not send the verification email. Please wait a moment and try again.");
@@ -42,8 +54,7 @@ export const sendAdminVerificationLink = createServerFn({ method: "POST" })
   });
 
 /**
- * Assigns the admin role only to the owner identity after email OTP has
- * produced the current authenticated session.
+ * Assigns the admin role only to the owner identity after Auth verifies email.
  */
 export const finishAdminRegistration = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -54,9 +65,14 @@ export const finishAdminRegistration = createServerFn({ method: "POST" })
       throw new Error("Verify the authorised email before finishing admin registration.");
     }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error: passwordError } = await supabaseAdmin.auth.admin.updateUserById(context.userId, { password: data.password });
-    if (passwordError) throw new Error("Could not set the admin password. Please verify the code again and retry.");
     const normalized = normalizeAdminUsername(data.username);
+    const { data: existing, error: lookupError } = await supabaseAdmin
+      .from("admin_profiles")
+      .select("user_id")
+      .eq("normalized_username", normalized)
+      .maybeSingle();
+    if (lookupError) throw new Error("Could not check that username. Please try again.");
+    if (existing && existing.user_id !== context.userId) throw new Error("That username is already registered.");
     const { error: profileError } = await supabaseAdmin.from("admin_profiles").upsert({
       user_id: context.userId,
       username: data.username.trim(),
@@ -66,6 +82,8 @@ export const finishAdminRegistration = createServerFn({ method: "POST" })
       if (profileError.code === "23505") throw new Error("That username is already registered.");
       throw new Error("Could not save the admin username. Please try again.");
     }
+    const { error: passwordError } = await supabaseAdmin.auth.admin.updateUserById(context.userId, { password: data.password });
+    if (passwordError) throw new Error("Could not set the admin password. Please verify the email again and retry.");
     const { error: roleError } = await supabaseAdmin.from("user_roles").upsert(
       { user_id: context.userId, role: "admin" },
       { onConflict: "user_id,role" },
@@ -92,7 +110,7 @@ export const finishAdminRecovery = createServerFn({ method: "POST" })
     if (userError || !userData.user || userData.user.id !== context.userId || !isVerifiedAdminAccount(userData.user.email, userData.user.email_confirmed_at)) {
       throw new Error("Verify the authorised email before updating this password.");
     }
-    const { error } = await supabaseAdmin.auth.admin.updateUserById(context.userId, { password: data.password });
+    const { error } = await context.supabase.auth.updateUser({ password: data.password });
     if (error) throw new Error("Could not update the admin password. Please try again.");
     return { ok: true };
   });
@@ -114,22 +132,33 @@ export const signInAdmin = createServerFn({ method: "POST" })
     const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(profile.user_id);
     if (userError || !isVerifiedAdminAccount(userData.user?.email, userData.user?.email_confirmed_at)) throw invalidCredentials();
 
-    const { data: authData, error: authError } = await supabaseAdmin.auth.signInWithPassword({
+    const { createAdminOtpClient } = await import("@/lib/admin-auth.server");
+    const { data: authData, error: authError } = await createAdminOtpClient().auth.signInWithPassword({
       email: ADMIN_OWNER_EMAIL,
       password: data.password,
     });
     if (authError || !authData.session || !authData.user || !isVerifiedAdminAccount(authData.user.email, authData.user.email_confirmed_at)) throw invalidCredentials();
 
-    const { error: roleError } = await supabaseAdmin
+    const { data: role, error: roleError } = await supabaseAdmin
       .from("user_roles")
-      .upsert({ user_id: profile.user_id, role: "admin" }, { onConflict: "user_id,role" });
+      .select("role")
+      .eq("user_id", profile.user_id)
+      .eq("role", "admin")
+      .maybeSingle();
     if (roleError) throw roleError;
+    if (!role) throw invalidCredentials();
 
-    return { session: authData.session, username: profile.username };
+    return {
+      session: {
+        access_token: authData.session.access_token,
+        refresh_token: authData.session.refresh_token,
+      },
+      username: profile.username,
+    };
   });
 
-/** A recovery challenge is sent only if the submitted username belongs to the owner. */
-export const requestAdminRecoveryOtp = createServerFn({ method: "POST" })
+/** Sends a native Auth password-recovery link only for the existing owner identity. */
+export const requestAdminRecoveryLink = createServerFn({ method: "POST" })
   .inputValidator((input) =>
     z.object({
       username: usernameSchema,
@@ -137,31 +166,23 @@ export const requestAdminRecoveryOtp = createServerFn({ method: "POST" })
     }).parse(input),
   )
   .handler(async ({ data }) => {
-    if (!isAdminEmail(data.adminEmail)) {
-      throw new Error("We could not verify those admin details.");
-    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: profile, error: profileError } = await supabaseAdmin
+    const { data: profile } = await supabaseAdmin
       .from("admin_profiles")
-      .select("user_id, username")
+      .select("user_id")
       .eq("normalized_username", normalizeAdminUsername(data.username))
       .maybeSingle();
-    if (profileError || !profile) {
-      throw new Error("We could not verify those admin details.");
+    if (isAdminEmail(data.adminEmail) && profile) {
+      const { data: authData, error: userError } = await supabaseAdmin.auth.admin.getUserById(profile.user_id);
+      if (!userError && isVerifiedAdminAccount(authData.user?.email, authData.user?.email_confirmed_at)) {
+        const { createAdminOtpClient } = await import("@/lib/admin-auth.server");
+        const { error } = await createAdminOtpClient().auth.resetPasswordForEmail(ADMIN_OWNER_EMAIL, {
+          redirectTo: adminAuthRedirect("recovery"),
+        });
+        if (error) throw new Error("Could not send a recovery email. Please try again shortly.");
+      }
     }
-    const { data: authData, error: userError } = await supabaseAdmin.auth.admin.getUserById(profile.user_id);
-    if (userError || !isVerifiedAdminAccount(authData.user?.email, authData.user?.email_confirmed_at)) {
-      throw new Error("We could not verify those admin details.");
-    }
-    const { createAdminOtpClient } = await import("@/lib/admin-auth.server");
-    const { error } = await createAdminOtpClient().auth.signInWithOtp({
-      email: ADMIN_OWNER_EMAIL,
-      options: {
-        shouldCreateUser: false,
-        emailRedirectTo: new URL("/admin-login?admin-verify=recovery", getRequestUrl()).toString(),
-      },
-    });
-    if (error) throw new Error("Could not send the recovery email. Please wait a moment and try again.");
+    // Avoid revealing whether either submitted value matched the admin account.
     return { ok: true };
   });
 
