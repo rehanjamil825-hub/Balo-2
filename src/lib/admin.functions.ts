@@ -42,8 +42,7 @@ export const sendAdminVerificationLink = createServerFn({ method: "POST" })
   });
 
 /**
- * Assigns the admin role only to the owner identity after email OTP has
- * produced the current authenticated session.
+ * Assigns the admin role only to the owner identity after Auth verifies email.
  */
 export const finishAdminRegistration = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -54,9 +53,14 @@ export const finishAdminRegistration = createServerFn({ method: "POST" })
       throw new Error("Verify the authorised email before finishing admin registration.");
     }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error: passwordError } = await supabaseAdmin.auth.admin.updateUserById(context.userId, { password: data.password });
-    if (passwordError) throw new Error("Could not set the admin password. Please verify the code again and retry.");
     const normalized = normalizeAdminUsername(data.username);
+    const { data: existing, error: lookupError } = await supabaseAdmin
+      .from("admin_profiles")
+      .select("user_id")
+      .eq("normalized_username", normalized)
+      .maybeSingle();
+    if (lookupError) throw new Error("Could not check that username. Please try again.");
+    if (existing && existing.user_id !== context.userId) throw new Error("That username is already registered.");
     const { error: profileError } = await supabaseAdmin.from("admin_profiles").upsert({
       user_id: context.userId,
       username: data.username.trim(),
@@ -66,6 +70,8 @@ export const finishAdminRegistration = createServerFn({ method: "POST" })
       if (profileError.code === "23505") throw new Error("That username is already registered.");
       throw new Error("Could not save the admin username. Please try again.");
     }
+    const { error: passwordError } = await supabaseAdmin.auth.admin.updateUserById(context.userId, { password: data.password });
+    if (passwordError) throw new Error("Could not set the admin password. Please verify the email again and retry.");
     const { error: roleError } = await supabaseAdmin.from("user_roles").upsert(
       { user_id: context.userId, role: "admin" },
       { onConflict: "user_id,role" },
@@ -151,9 +157,10 @@ export const requestAdminRecoveryLink = createServerFn({ method: "POST" })
       const { data: authData, error: userError } = await supabaseAdmin.auth.admin.getUserById(profile.user_id);
       if (!userError && isVerifiedAdminAccount(authData.user?.email, authData.user?.email_confirmed_at)) {
         const { createAdminOtpClient } = await import("@/lib/admin-auth.server");
-        await createAdminOtpClient().auth.resetPasswordForEmail(ADMIN_OWNER_EMAIL, {
+        const { error } = await createAdminOtpClient().auth.resetPasswordForEmail(ADMIN_OWNER_EMAIL, {
           redirectTo: new URL("/admin-login?admin-verify=recovery", getRequestUrl()).toString(),
         });
+        if (error) throw new Error("Could not send a recovery email. Please try again shortly.");
       }
     }
     // Avoid revealing whether either submitted value matched the admin account.
