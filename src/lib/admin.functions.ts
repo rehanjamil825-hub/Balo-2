@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { getRequestUrl } from "@tanstack/react-start/server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { ADMIN_OWNER_EMAIL, isVerifiedAdminAccount, normalizeAdminUsername } from "@/lib/admin-auth-rules";
+import { ADMIN_OWNER_EMAIL, isAllowedAdminAuthOrigin, isVerifiedAdminAccount, normalizeAdminUsername } from "@/lib/admin-auth-rules";
 
 const usernameSchema = z
   .string()
@@ -20,11 +20,7 @@ function invalidCredentials() {
 
 function adminAuthRedirect(kind: "signup" | "recovery") {
   const requestUrl = new URL(getRequestUrl());
-  const allowedOrigins = new Set([
-    "http://localhost:8080",
-    "https://id-preview--260bd6c6-afdc-4219-9095-bec95a6b4f9d.lovable.app",
-  ]);
-  if (!allowedOrigins.has(requestUrl.origin)) {
+  if (!isAllowedAdminAuthOrigin(requestUrl.origin)) {
     throw new Error("Admin email links are not configured for this website address.");
   }
   return new URL(`/admin-login?admin-verify=${kind}`, requestUrl.origin).toString();
@@ -137,7 +133,7 @@ export const signInAdmin = createServerFn({ method: "POST" })
       email: ADMIN_OWNER_EMAIL,
       password: data.password,
     });
-    if (authError || !authData.session || !authData.user || !isVerifiedAdminAccount(authData.user.email, authData.user.email_confirmed_at)) throw invalidCredentials();
+    if (authError || !authData.session || !authData.user || authData.user.id !== profile.user_id || !isVerifiedAdminAccount(authData.user.email, authData.user.email_confirmed_at)) throw invalidCredentials();
 
     const { data: role, error: roleError } = await supabaseAdmin
       .from("user_roles")

@@ -168,7 +168,7 @@ function AdminLoginPage() {
   }
 
   const title = mode === "signin" ? "Admin sign in" : mode === "signup" ? "Create admin account" : "Recover admin access";
-  const isPasswordStage = mode === "signin" || stage === "finish";
+  const isPasswordStage = mode === "signin" || stage === "finish" || (mode === "signup" && stage === "form");
 
   return (
     <main className="grid min-h-[70vh] place-items-center bg-background px-5 py-12 sm:py-16">

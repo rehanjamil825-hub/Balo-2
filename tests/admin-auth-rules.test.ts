@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   isAuthorizedAdminEmail,
+  isAllowedAdminAuthOrigin,
   isVerifiedAdminAccount,
   normalizeAdminUsername,
 } from "../src/lib/admin-auth-rules";
@@ -19,5 +20,11 @@ describe("admin authentication rules", () => {
 
   test("username lookup uses a normalized handle", () => {
     expect(normalizeAdminUsername("  School.Owner_1 ")).toBe("school.owner_1");
+  });
+
+  test("admin email links only return to the local preview or this project's preview", () => {
+    expect(isAllowedAdminAuthOrigin("http://localhost:8080")).toBe(true);
+    expect(isAllowedAdminAuthOrigin("https://id-preview--260bd6c6-afdc-4219-9095-bec95a6b4f9d.lovable.app")).toBe(true);
+    expect(isAllowedAdminAuthOrigin("https://attacker.example")).toBe(false);
   });
 });
