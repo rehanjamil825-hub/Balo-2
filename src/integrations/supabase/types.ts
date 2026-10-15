@@ -56,6 +56,27 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_auth_challenges: {
+        Row: {
+          created_at: string
+          expires_at: string
+          purpose: string
+          token_hash: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          purpose: string
+          token_hash: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          purpose?: string
+          token_hash?: string
+        }
+        Relationships: []
+      }
       admin_emails: {
         Row: {
           created_at: string

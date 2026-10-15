@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { getRequestUrl } from "@tanstack/react-start/server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { ADMIN_OWNER_EMAIL, isVerifiedAdminAccount, normalizeAdminUsername } from "@/lib/admin-auth-rules";
+import { ADMIN_OWNER_EMAIL, isAllowedAdminAuthOrigin, isVerifiedAdminAccount, normalizeAdminUsername } from "@/lib/admin-auth-rules";
 
 const usernameSchema = z
   .string()
@@ -18,16 +18,32 @@ function invalidCredentials() {
   return new Error("Invalid username or password.");
 }
 
-function adminAuthRedirect(kind: "signup" | "recovery") {
+function adminAuthRedirect(kind: "signup" | "recovery", challenge: string) {
   const requestUrl = new URL(getRequestUrl());
-  const allowedOrigins = new Set([
-    "http://localhost:8080",
-    "https://id-preview--260bd6c6-afdc-4219-9095-bec95a6b4f9d.lovable.app",
-  ]);
-  if (!allowedOrigins.has(requestUrl.origin)) {
+  if (!isAllowedAdminAuthOrigin(requestUrl.origin)) {
     throw new Error("Admin email links are not configured for this website address.");
   }
-  return new URL(`/admin-login?admin-verify=${kind}`, requestUrl.origin).toString();
+  const callback = new URL("/admin-login", requestUrl.origin);
+  callback.searchParams.set("admin-verify", kind);
+  callback.searchParams.set("challenge", challenge);
+  return callback.toString();
+}
+
+async function consumeAdminAuthChallenge(purpose: "signup" | "recovery", challenge: string) {
+  if (!/^[a-f0-9]{64}$/.test(challenge)) throw new Error("This verification link is invalid or expired. Request a new one.");
+  const [{ supabaseAdmin }, { hashAdminAuthChallenge }] = await Promise.all([
+    import("@/integrations/supabase/client.server"),
+    import("@/lib/admin-auth.server"),
+  ]);
+  const { data, error } = await supabaseAdmin
+    .from("admin_auth_challenges")
+    .delete()
+    .eq("purpose", purpose)
+    .eq("token_hash", await hashAdminAuthChallenge(challenge))
+    .gt("expires_at", new Date().toISOString())
+    .select("purpose")
+    .maybeSingle();
+  if (error || !data) throw new Error("This verification link is invalid or expired. Request a new one.");
 }
 
 /** Sends an Auth-managed confirmation link, returning only to this app's login page. */
@@ -41,15 +57,28 @@ export const sendAdminVerificationLink = createServerFn({ method: "POST" })
     if (!isAdminEmail(data.email)) {
       throw new Error("Only the authorised admin email can register an administrator.");
     }
-    const { createAdminOtpClient } = await import("@/lib/admin-auth.server");
+    const challenge = (await import("@/lib/admin-auth.server")).createAdminAuthChallenge();
+    const [{ createAdminOtpClient, hashAdminAuthChallenge }, { supabaseAdmin }] = await Promise.all([
+      import("@/lib/admin-auth.server"),
+      import("@/integrations/supabase/client.server"),
+    ]);
+    const { error: challengeError } = await supabaseAdmin.from("admin_auth_challenges").upsert({
+      purpose: "signup",
+      token_hash: await hashAdminAuthChallenge(challenge),
+      expires_at: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
+    }, { onConflict: "purpose" });
+    if (challengeError) throw new Error("Could not prepare admin email verification. Please try again.");
     const { error } = await createAdminOtpClient().auth.signInWithOtp({
       email: ADMIN_OWNER_EMAIL,
       options: {
         shouldCreateUser: false,
-        emailRedirectTo: adminAuthRedirect("signup"),
+        emailRedirectTo: adminAuthRedirect("signup", challenge),
       },
     });
-    if (error) throw new Error("Could not send the verification email. Please wait a moment and try again.");
+    if (error) {
+      await supabaseAdmin.from("admin_auth_challenges").delete().eq("purpose", "signup");
+      throw new Error("Could not send the verification email. Please wait a moment and try again.");
+    }
     return { ok: true };
   });
 
@@ -58,12 +87,13 @@ export const sendAdminVerificationLink = createServerFn({ method: "POST" })
  */
 export const finishAdminRegistration = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ username: usernameSchema, password: passwordSchema }).parse(input))
+  .inputValidator((input) => z.object({ username: usernameSchema, password: passwordSchema, challenge: z.string() }).parse(input))
   .handler(async ({ context, data }) => {
     const { data: authData, error: authError } = await context.supabase.auth.getUser();
     if (authError || !authData.user || authData.user.id !== context.userId || !isVerifiedAdminAccount(authData.user.email, authData.user.email_confirmed_at)) {
       throw new Error("Verify the authorised email before finishing admin registration.");
     }
+    await consumeAdminAuthChallenge("signup", data.challenge);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const normalized = normalizeAdminUsername(data.username);
     const { data: existing, error: lookupError } = await supabaseAdmin
@@ -95,7 +125,7 @@ export const finishAdminRegistration = createServerFn({ method: "POST" })
 /** Updates the owner password only inside the email-verified Auth session. */
 export const finishAdminRecovery = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ username: usernameSchema, password: passwordSchema }).parse(input))
+  .inputValidator((input) => z.object({ username: usernameSchema, password: passwordSchema, challenge: z.string() }).parse(input))
   .handler(async ({ context, data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: profile, error: profileError } = await supabaseAdmin
@@ -110,6 +140,7 @@ export const finishAdminRecovery = createServerFn({ method: "POST" })
     if (userError || !userData.user || userData.user.id !== context.userId || !isVerifiedAdminAccount(userData.user.email, userData.user.email_confirmed_at)) {
       throw new Error("Verify the authorised email before updating this password.");
     }
+    await consumeAdminAuthChallenge("recovery", data.challenge);
     const { error } = await context.supabase.auth.updateUser({ password: data.password });
     if (error) throw new Error("Could not update the admin password. Please try again.");
     return { ok: true };
@@ -137,7 +168,7 @@ export const signInAdmin = createServerFn({ method: "POST" })
       email: ADMIN_OWNER_EMAIL,
       password: data.password,
     });
-    if (authError || !authData.session || !authData.user || !isVerifiedAdminAccount(authData.user.email, authData.user.email_confirmed_at)) throw invalidCredentials();
+    if (authError || !authData.session || !authData.user || authData.user.id !== profile.user_id || !isVerifiedAdminAccount(authData.user.email, authData.user.email_confirmed_at)) throw invalidCredentials();
 
     const { data: role, error: roleError } = await supabaseAdmin
       .from("user_roles")
@@ -175,11 +206,24 @@ export const requestAdminRecoveryLink = createServerFn({ method: "POST" })
     if (isAdminEmail(data.adminEmail) && profile) {
       const { data: authData, error: userError } = await supabaseAdmin.auth.admin.getUserById(profile.user_id);
       if (!userError && isVerifiedAdminAccount(authData.user?.email, authData.user?.email_confirmed_at)) {
-        const { createAdminOtpClient } = await import("@/lib/admin-auth.server");
+        const [{ createAdminOtpClient, hashAdminAuthChallenge }, { supabaseAdmin: writer }] = await Promise.all([
+          import("@/lib/admin-auth.server"),
+          import("@/integrations/supabase/client.server"),
+        ]);
+        const challenge = (await import("@/lib/admin-auth.server")).createAdminAuthChallenge();
+        const { error: challengeError } = await writer.from("admin_auth_challenges").upsert({
+          purpose: "recovery",
+          token_hash: await hashAdminAuthChallenge(challenge),
+          expires_at: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
+        }, { onConflict: "purpose" });
+        if (challengeError) throw new Error("Could not prepare password recovery. Please try again.");
         const { error } = await createAdminOtpClient().auth.resetPasswordForEmail(ADMIN_OWNER_EMAIL, {
-          redirectTo: adminAuthRedirect("recovery"),
+          redirectTo: adminAuthRedirect("recovery", challenge),
         });
-        if (error) throw new Error("Could not send a recovery email. Please try again shortly.");
+        if (error) {
+          await writer.from("admin_auth_challenges").delete().eq("purpose", "recovery");
+          throw new Error("Could not send a recovery email. Please try again shortly.");
+        }
       }
     }
     // Avoid revealing whether either submitted value matched the admin account.

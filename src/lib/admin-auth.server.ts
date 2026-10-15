@@ -1,6 +1,17 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 
+export function createAdminAuthChallenge() {
+  const bytes = crypto.getRandomValues(new Uint8Array(32));
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+export async function hashAdminAuthChallenge(challenge: string) {
+  const bytes = new TextEncoder().encode(challenge);
+  const hash = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(hash), (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
 function withPublishableKey(key: string): typeof fetch {
   return (input, init) => {
     const headers = new Headers(

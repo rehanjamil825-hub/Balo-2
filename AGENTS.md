@@ -9,4 +9,4 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Keep admin OTP verification in a server-only auth helper using the publishable client; this prevents service-role credentials and verification internals from reaching browser code.
+- Keep admin email-link initiation in a server-only auth helper using the publishable client, while privileged profile and role writes remain handler-local; this separates email verification from admin-only database access.
