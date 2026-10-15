@@ -201,7 +201,7 @@ function AdminLoginPage() {
             </label>
           )}
 
-          {(mode !== "signin" && stage !== "waiting") && (
+          {(mode === "reset" && stage === "form") && (
             <label className="block">
               <span className="text-xs font-semibold text-foreground">Admin email</span>
               <div className="relative mt-1">
@@ -242,6 +242,19 @@ function AdminLoginPage() {
                 </label>
               )}
             </>
+          )}
+
+          {mode === "signup" && stage !== "waiting" && (
+            <label className="block">
+              <span className="text-xs font-semibold text-foreground">Admin email</span>
+              <div className="relative mt-1">
+                <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <input type="email" required autoComplete="email" value={adminEmail}
+                  onChange={(event) => { setAdminEmail(event.target.value); setMsg(null); }}
+                  disabled={stage === "finish"} className="w-full rounded-md border border-input bg-background py-2.5 pl-9 pr-3 text-sm disabled:opacity-70"
+                  placeholder="authorised admin email" />
+              </div>
+            </label>
           )}
 
           {msg && <p role="alert" className={`rounded-md p-3 text-sm ${msg.kind === "err" ? "bg-destructive/10 text-destructive" : "bg-primary/10 text-foreground"}`}>{msg.text}</p>}
