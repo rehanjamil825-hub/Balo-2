@@ -9,125 +9,35 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WelfareSocietyRouteImport } from './routes/welfare-society'
-import { Route as VolunteersRouteImport } from './routes/volunteers'
-import { Route as VirtualTourRouteImport } from './routes/virtual-tour'
-import { Route as SubjectsRouteImport } from './routes/subjects'
-import { Route as StaffRouteImport } from './routes/staff'
-import { Route as RulesRouteImport } from './routes/rules'
-import { Route as LifeAtBaloRouteImport } from './routes/life-at-balo'
-import { Route as GalleryRouteImport } from './routes/gallery'
-import { Route as FaqRouteImport } from './routes/faq'
-import { Route as FacilitiesRouteImport } from './routes/facilities'
-import { Route as ExtracurricularRouteImport } from './routes/extracurricular'
-import { Route as EventsRouteImport } from './routes/events'
-import { Route as EnquiryRouteImport } from './routes/enquiry'
-import { Route as DevelopersRouteImport } from './routes/developers'
-import { Route as CalendarRouteImport } from './routes/calendar'
-import { Route as BaloAiRouteImport } from './routes/balo-ai'
-import { Route as AdminResetPasswordRouteImport } from './routes/admin-reset-password'
-import { Route as AdminLoginRouteImport } from './routes/admin-login'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AdminLoginRouteImport } from './routes/admin-login'
+import { Route as AdminResetPasswordRouteImport } from './routes/admin-reset-password'
+import { Route as BaloAiRouteImport } from './routes/balo-ai'
+import { Route as CalendarRouteImport } from './routes/calendar'
+import { Route as DevelopersRouteImport } from './routes/developers'
+import { Route as EnquiryRouteImport } from './routes/enquiry'
+import { Route as EventsRouteImport } from './routes/events'
+import { Route as ExtracurricularRouteImport } from './routes/extracurricular'
+import { Route as FacilitiesRouteImport } from './routes/facilities'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as LifeAtBaloRouteImport } from './routes/life-at-balo'
+import { Route as RulesRouteImport } from './routes/rules'
+import { Route as StaffRouteImport } from './routes/staff'
+import { Route as SubjectsRouteImport } from './routes/subjects'
+import { Route as VirtualTourRouteImport } from './routes/virtual-tour'
+import { Route as VolunteersRouteImport } from './routes/volunteers'
+import { Route as WelfareSocietyRouteImport } from './routes/welfare-society'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as ApiChatRouteImport } from './routes/api/chat'
-import { Route as AdminKnowledgeRouteImport } from './routes/admin.knowledge'
 import { Route as AdminAiRouteImport } from './routes/admin.ai'
+import { Route as AdminKnowledgeRouteImport } from './routes/admin.knowledge'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 
-const WelfareSocietyRoute = WelfareSocietyRouteImport.update({
-  id: '/welfare-society',
-  path: '/welfare-society',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const VolunteersRoute = VolunteersRouteImport.update({
-  id: '/volunteers',
-  path: '/volunteers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const VirtualTourRoute = VirtualTourRouteImport.update({
-  id: '/virtual-tour',
-  path: '/virtual-tour',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SubjectsRoute = SubjectsRouteImport.update({
-  id: '/subjects',
-  path: '/subjects',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StaffRoute = StaffRouteImport.update({
-  id: '/staff',
-  path: '/staff',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RulesRoute = RulesRouteImport.update({
-  id: '/rules',
-  path: '/rules',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LifeAtBaloRoute = LifeAtBaloRouteImport.update({
-  id: '/life-at-balo',
-  path: '/life-at-balo',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GalleryRoute = GalleryRouteImport.update({
-  id: '/gallery',
-  path: '/gallery',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FacilitiesRoute = FacilitiesRouteImport.update({
-  id: '/facilities',
-  path: '/facilities',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExtracurricularRoute = ExtracurricularRouteImport.update({
-  id: '/extracurricular',
-  path: '/extracurricular',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EventsRoute = EventsRouteImport.update({
-  id: '/events',
-  path: '/events',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EnquiryRoute = EnquiryRouteImport.update({
-  id: '/enquiry',
-  path: '/enquiry',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DevelopersRoute = DevelopersRouteImport.update({
-  id: '/developers',
-  path: '/developers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CalendarRoute = CalendarRouteImport.update({
-  id: '/calendar',
-  path: '/calendar',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BaloAiRoute = BaloAiRouteImport.update({
-  id: '/balo-ai',
-  path: '/balo-ai',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminResetPasswordRoute = AdminResetPasswordRouteImport.update({
-  id: '/admin-reset-password',
-  path: '/admin-reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminLoginRoute = AdminLoginRouteImport.update({
-  id: '/admin-login',
-  path: '/admin-login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -135,9 +45,99 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin-login',
+  path: '/admin-login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminResetPasswordRoute = AdminResetPasswordRouteImport.update({
+  id: '/admin-reset-password',
+  path: '/admin-reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BaloAiRoute = BaloAiRouteImport.update({
+  id: '/balo-ai',
+  path: '/balo-ai',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalendarRoute = CalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevelopersRoute = DevelopersRouteImport.update({
+  id: '/developers',
+  path: '/developers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnquiryRoute = EnquiryRouteImport.update({
+  id: '/enquiry',
+  path: '/enquiry',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExtracurricularRoute = ExtracurricularRouteImport.update({
+  id: '/extracurricular',
+  path: '/extracurricular',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FacilitiesRoute = FacilitiesRouteImport.update({
+  id: '/facilities',
+  path: '/facilities',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LifeAtBaloRoute = LifeAtBaloRouteImport.update({
+  id: '/life-at-balo',
+  path: '/life-at-balo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RulesRoute = RulesRouteImport.update({
+  id: '/rules',
+  path: '/rules',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StaffRoute = StaffRouteImport.update({
+  id: '/staff',
+  path: '/staff',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubjectsRoute = SubjectsRouteImport.update({
+  id: '/subjects',
+  path: '/subjects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VirtualTourRoute = VirtualTourRouteImport.update({
+  id: '/virtual-tour',
+  path: '/virtual-tour',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VolunteersRoute = VolunteersRouteImport.update({
+  id: '/volunteers',
+  path: '/volunteers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WelfareSocietyRoute = WelfareSocietyRouteImport.update({
+  id: '/welfare-society',
+  path: '/welfare-society',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -145,20 +145,20 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const ApiChatRoute = ApiChatRouteImport.update({
-  id: '/api/chat',
-  path: '/api/chat',
-  getParentRoute: () => rootRouteImport,
+const AdminAiRoute = AdminAiRouteImport.update({
+  id: '/ai',
+  path: '/ai',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminKnowledgeRoute = AdminKnowledgeRouteImport.update({
   id: '/knowledge',
   path: '/knowledge',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminAiRoute = AdminAiRouteImport.update({
-  id: '/ai',
-  path: '/ai',
-  getParentRoute: () => AdminRoute,
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -352,137 +352,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/welfare-society': {
-      id: '/welfare-society'
-      path: '/welfare-society'
-      fullPath: '/welfare-society'
-      preLoaderRoute: typeof WelfareSocietyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/volunteers': {
-      id: '/volunteers'
-      path: '/volunteers'
-      fullPath: '/volunteers'
-      preLoaderRoute: typeof VolunteersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/virtual-tour': {
-      id: '/virtual-tour'
-      path: '/virtual-tour'
-      fullPath: '/virtual-tour'
-      preLoaderRoute: typeof VirtualTourRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/subjects': {
-      id: '/subjects'
-      path: '/subjects'
-      fullPath: '/subjects'
-      preLoaderRoute: typeof SubjectsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/staff': {
-      id: '/staff'
-      path: '/staff'
-      fullPath: '/staff'
-      preLoaderRoute: typeof StaffRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/rules': {
-      id: '/rules'
-      path: '/rules'
-      fullPath: '/rules'
-      preLoaderRoute: typeof RulesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/life-at-balo': {
-      id: '/life-at-balo'
-      path: '/life-at-balo'
-      fullPath: '/life-at-balo'
-      preLoaderRoute: typeof LifeAtBaloRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/gallery': {
-      id: '/gallery'
-      path: '/gallery'
-      fullPath: '/gallery'
-      preLoaderRoute: typeof GalleryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/facilities': {
-      id: '/facilities'
-      path: '/facilities'
-      fullPath: '/facilities'
-      preLoaderRoute: typeof FacilitiesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/extracurricular': {
-      id: '/extracurricular'
-      path: '/extracurricular'
-      fullPath: '/extracurricular'
-      preLoaderRoute: typeof ExtracurricularRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/events': {
-      id: '/events'
-      path: '/events'
-      fullPath: '/events'
-      preLoaderRoute: typeof EventsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/enquiry': {
-      id: '/enquiry'
-      path: '/enquiry'
-      fullPath: '/enquiry'
-      preLoaderRoute: typeof EnquiryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/developers': {
-      id: '/developers'
-      path: '/developers'
-      fullPath: '/developers'
-      preLoaderRoute: typeof DevelopersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/calendar': {
-      id: '/calendar'
-      path: '/calendar'
-      fullPath: '/calendar'
-      preLoaderRoute: typeof CalendarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/balo-ai': {
-      id: '/balo-ai'
-      path: '/balo-ai'
-      fullPath: '/balo-ai'
-      preLoaderRoute: typeof BaloAiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin-reset-password': {
-      id: '/admin-reset-password'
-      path: '/admin-reset-password'
-      fullPath: '/admin-reset-password'
-      preLoaderRoute: typeof AdminResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin-login': {
-      id: '/admin-login'
-      path: '/admin-login'
-      fullPath: '/admin-login'
-      preLoaderRoute: typeof AdminLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -492,11 +366,137 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin-login': {
+      id: '/admin-login'
+      path: '/admin-login'
+      fullPath: '/admin-login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin-reset-password': {
+      id: '/admin-reset-password'
+      path: '/admin-reset-password'
+      fullPath: '/admin-reset-password'
+      preLoaderRoute: typeof AdminResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/balo-ai': {
+      id: '/balo-ai'
+      path: '/balo-ai'
+      fullPath: '/balo-ai'
+      preLoaderRoute: typeof BaloAiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calendar': {
+      id: '/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof CalendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/developers': {
+      id: '/developers'
+      path: '/developers'
+      fullPath: '/developers'
+      preLoaderRoute: typeof DevelopersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/enquiry': {
+      id: '/enquiry'
+      path: '/enquiry'
+      fullPath: '/enquiry'
+      preLoaderRoute: typeof EnquiryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/extracurricular': {
+      id: '/extracurricular'
+      path: '/extracurricular'
+      fullPath: '/extracurricular'
+      preLoaderRoute: typeof ExtracurricularRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/facilities': {
+      id: '/facilities'
+      path: '/facilities'
+      fullPath: '/facilities'
+      preLoaderRoute: typeof FacilitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/life-at-balo': {
+      id: '/life-at-balo'
+      path: '/life-at-balo'
+      fullPath: '/life-at-balo'
+      preLoaderRoute: typeof LifeAtBaloRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rules': {
+      id: '/rules'
+      path: '/rules'
+      fullPath: '/rules'
+      preLoaderRoute: typeof RulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/staff': {
+      id: '/staff'
+      path: '/staff'
+      fullPath: '/staff'
+      preLoaderRoute: typeof StaffRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subjects': {
+      id: '/subjects'
+      path: '/subjects'
+      fullPath: '/subjects'
+      preLoaderRoute: typeof SubjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/virtual-tour': {
+      id: '/virtual-tour'
+      path: '/virtual-tour'
+      fullPath: '/virtual-tour'
+      preLoaderRoute: typeof VirtualTourRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/volunteers': {
+      id: '/volunteers'
+      path: '/volunteers'
+      fullPath: '/volunteers'
+      preLoaderRoute: typeof VolunteersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/welfare-society': {
+      id: '/welfare-society'
+      path: '/welfare-society'
+      fullPath: '/welfare-society'
+      preLoaderRoute: typeof WelfareSocietyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -506,12 +506,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/api/chat': {
-      id: '/api/chat'
-      path: '/api/chat'
-      fullPath: '/api/chat'
-      preLoaderRoute: typeof ApiChatRouteImport
-      parentRoute: typeof rootRouteImport
+    '/admin/ai': {
+      id: '/admin/ai'
+      path: '/ai'
+      fullPath: '/admin/ai'
+      preLoaderRoute: typeof AdminAiRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/knowledge': {
       id: '/admin/knowledge'
@@ -520,12 +520,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminKnowledgeRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/ai': {
-      id: '/admin/ai'
-      path: '/ai'
-      fullPath: '/admin/ai'
-      preLoaderRoute: typeof AdminAiRouteImport
-      parentRoute: typeof AdminRoute
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
