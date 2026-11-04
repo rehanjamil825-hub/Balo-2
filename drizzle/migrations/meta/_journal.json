@@ -8,20 +8,6 @@
       "when": 1788410969853,
       "tag": "0000_create_admin_profiles",
       "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1791795480619,
-      "tag": "0001_secure_admin_auth_profiles",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1792047468849,
-      "tag": "0002_admin_auth_verification_challenges",
-      "breakpoints": true
     }
   ]
 }
