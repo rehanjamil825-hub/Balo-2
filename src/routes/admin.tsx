@@ -1,9 +1,7 @@
-import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
-import { useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
 import { getAdminStatus } from "@/lib/admin.functions";
 import { LogOut, LayoutDashboard, ShieldAlert, UserCircle2 } from "lucide-react";
 
@@ -14,7 +12,6 @@ export const Route = createFileRoute("/admin")({
 
 function AdminLayout() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const checkAdmin = useServerFn(getAdminStatus);
   const [state, setState] = useState<
     { kind: "loading" } | { kind: "signed-out" } | { kind: "not-admin"; username: string | null } | { kind: "admin"; username: string | null }
@@ -41,22 +38,11 @@ function AdminLayout() {
     return () => { mounted = false; sub.subscription.unsubscribe(); };
   }, [checkAdmin]);
 
-  useEffect(() => {
-    if (state.kind === "signed-out") navigate({ to: "/admin-login", replace: true });
-  }, [navigate, state.kind]);
-
-  async function handleSignOut() {
-    await queryClient.cancelQueries();
-    queryClient.clear();
-    await supabase.auth.signOut();
-    navigate({ to: "/admin-login", replace: true });
-  }
-
   if (state.kind === "loading") {
     return <div className="min-h-screen grid place-items-center bg-background text-muted-foreground">Checking access…</div>;
   }
   if (state.kind === "signed-out") {
-    return <div className="min-h-screen grid place-items-center bg-background text-muted-foreground">Returning to admin sign in…</div>;
+    throw redirect({ to: "/admin-login" });
   }
   if (state.kind === "not-admin") {
     return (
@@ -67,9 +53,12 @@ function AdminLayout() {
           <p className="mt-2 text-muted-foreground text-sm">
             {state.username ?? "This account"} is not an admin. Sign in with an administrator account.
           </p>
-          <Button onClick={handleSignOut} className="mt-6">
+          <button
+            onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/admin-login" }); }}
+            className="mt-6 inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium"
+          >
             Sign out
-          </Button>
+          </button>
         </div>
       </div>
     );
@@ -93,9 +82,12 @@ function AdminLayout() {
                 {state.username ?? "Admin"}
               </span>
             </div>
-            <Button variant="outline" onClick={handleSignOut} className="h-auto py-1.5">
+            <button
+              onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/admin-login" }); }}
+              className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 hover:bg-muted"
+            >
               <LogOut className="size-4" /> Sign out
-            </Button>
+            </button>
           </div>
         </div>
       </header>

@@ -1,38 +1,65 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
-export function createAdminAuthChallenge() {
-  const bytes = crypto.getRandomValues(new Uint8Array(32));
-  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+export const OWNER_EMAIL = "baloindia2015@gmail.com";
+
+function isNewSupabaseApiKey(value: string): boolean {
+  return value.startsWith("sb_publishable_") || value.startsWith("sb_secret_");
 }
 
-export async function hashAdminAuthChallenge(challenge: string) {
-  const bytes = new TextEncoder().encode(challenge);
-  const hash = await crypto.subtle.digest("SHA-256", bytes);
-  return Array.from(new Uint8Array(hash), (byte) => byte.toString(16).padStart(2, "0")).join("");
-}
-
-function withPublishableKey(key: string): typeof fetch {
+function createSupabaseFetch(supabaseKey: string): typeof fetch {
   return (input, init) => {
     const headers = new Headers(
       typeof Request !== "undefined" && input instanceof Request ? input.headers : undefined,
     );
-    if (init?.headers) new Headers(init.headers).forEach((value, name) => headers.set(name, value));
-    if (key.startsWith("sb_") && headers.get("Authorization") === `Bearer ${key}`) {
+    if (init?.headers) {
+      new Headers(init.headers).forEach((value, key) => headers.set(key, value));
+    }
+    if (isNewSupabaseApiKey(supabaseKey) && headers.get("Authorization") === `Bearer ${supabaseKey}`) {
       headers.delete("Authorization");
     }
-    headers.set("apikey", key);
+    headers.set("apikey", supabaseKey);
     return fetch(input, { ...init, headers });
   };
 }
 
-export function createAdminOtpClient() {
-  const url = process.env["SUPABASE_URL"];
-  const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
-  if (!url || !key) throw new Error("Admin sign-in is temporarily unavailable.");
-
+/** Anon/publishable client for password grant. Never reuse the service-role singleton for this. */
+export function createPasswordAuthClient() {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) {
+    throw new Error("Missing Supabase environment variable(s): SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY");
+  }
   return createClient<Database>(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false },
-    global: { fetch: withPublishableKey(key) },
+    global: { fetch: createSupabaseFetch(key) },
+    auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
   });
+}
+
+export function redirectToAdminLogin(origin?: string) {
+  if (origin && /^https?:\/\//i.test(origin)) {
+    return `${origin.replace(/\/$/, "")}/admin-login`;
+  }
+  return undefined;
+}
+
+export async function findAuthUserByEmail(email: string) {
+  const target = email.toLowerCase();
+  let page = 1;
+  for (;;) {
+    const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 200 });
+    if (error) throw error;
+    const match = data.users.find((user) => user.email?.toLowerCase() === target);
+    if (match) return match;
+    if (data.users.length < 200) return null;
+    page += 1;
+    if (page > 20) return null;
+  }
+}
+
+export async function passwordGrant(email: string, password: string) {
+  const auth = createPasswordAuthClient();
+  const { data, error } = await auth.auth.signInWithPassword({ email, password });
+  return { data, error };
 }
