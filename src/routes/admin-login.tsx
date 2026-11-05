@@ -10,7 +10,6 @@ import {
   resendAdminVerification,
   signInAdmin,
 } from "@/lib/admin.functions";
-import { OWNER_EMAIL } from "@/lib/admin-owner";
 
 export const Route = createFileRoute("/admin-login")({
   ssr: false,
@@ -28,7 +27,7 @@ function AdminLoginPage() {
   const recover = useServerFn(recoverAdminPassword);
 
   const [username, setUsername] = useState("");
-  const [adminEmail, setAdminEmail] = useState(OWNER_EMAIL);
+  const [adminEmail, setAdminEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [mode, setMode] = useState<Mode>("signin");
@@ -111,9 +110,9 @@ function AdminLoginPage() {
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
           {mode === "signin" && "Sign in with your username and password."}
-          {mode === "signup" && `Create an admin username. The verification code is sent to ${OWNER_EMAIL}.`}
-          {mode === "reset" && `Verify your username and ${OWNER_EMAIL}, then choose a new password.`}
-          {mode === "verify-sent" && `We sent a verification code to ${OWNER_EMAIL}. Verify it, then return here to sign in.`}
+          {mode === "signup" && "Create an admin username and verify the authorised admin email."}
+          {mode === "reset" && "Verify your username and authorised admin email, then choose a new password."}
+          {mode === "verify-sent" && "We sent a verification code to the authorised admin email. Verify it, then return here to sign in."}
         </p>
 
         {mode === "verify-sent" ? (
@@ -158,9 +157,8 @@ function AdminLoginPage() {
                 <span className="text-xs font-semibold text-muted-foreground">Admin Email</span>
                 <div className="mt-1 relative">
                   <Mail className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  <input type="email" required value={adminEmail} onChange={(e) => { setAdminEmail(e.target.value); setMsg(null); }} className="w-full rounded-md border border-input bg-background pl-9 pr-3 py-2 text-sm" placeholder={OWNER_EMAIL} autoComplete="email" />
+                  <input type="email" required value={adminEmail} onChange={(e) => { setAdminEmail(e.target.value); setMsg(null); }} className="w-full rounded-md border border-input bg-background pl-9 pr-3 py-2 text-sm" placeholder="authorised admin email" autoComplete="email" />
                 </div>
-                <p className="mt-1 text-[11px] text-muted-foreground">Verification code is sent to {OWNER_EMAIL}.</p>
               </label>
             )}
             <label className="block">
