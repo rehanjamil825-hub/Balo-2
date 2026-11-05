@@ -15,13 +15,13 @@ export function BaloAiWordmark({
   const sizes = {
     sm: "h-5 sm:h-6",
     md: "h-7 sm:h-8",
-    lg: "h-14 sm:h-[4.75rem]",
+    lg: "h-16 sm:h-20",
   };
   return (
     <img
       src={wordmark}
       alt="balo AI"
-      className={cn("w-auto object-contain object-left", sizes[size], className)}
+      className={cn("block w-auto object-contain object-left", sizes[size], className)}
     />
   );
 }
