@@ -210,6 +210,34 @@ function DevelopersPage() {
       </section>
 
       <section className="py-24 px-6 bg-card">
+        <div className="max-w-5xl mx-auto">
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp} className="max-w-2xl mb-12">
+            <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">
+              How We Learned
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-balance leading-tight">
+              From classrooms to code editors.
+            </h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-1 gap-6 max-w-2xl">
+            <motion.div
+              initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp}
+              className="p-8 rounded-3xl bg-background border border-border shadow-soft"
+            >
+              <div className="size-12 rounded-2xl bg-accent/10 text-accent grid place-items-center mb-4">
+                <Sparkles className="size-6" />
+              </div>
+              <h3 className="font-display text-2xl font-bold mb-3">Weekly Sessions with Mr Samuel Clay</h3>
+              <p className="text-muted-foreground leading-relaxed text-sm">
+                We are mentored by <strong>Mr Samuel Clay</strong>, a software engineer at Amazon based in the United Kingdom. Every week, he takes time out of his schedule to run live sessions with us — reviewing code, teaching engineering best practices, and patiently answering every question. His weekly guidance has shaped how we think, build, and ship software.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 px-6">
         <div className="mx-auto max-w-5xl">
           <motion.div
             initial="hidden"

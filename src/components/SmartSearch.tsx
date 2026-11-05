@@ -19,7 +19,7 @@ const INDEX: Entry[] = [
   { title: "Notices & Events", href: "/events", section: "School", keywords: "notice board news events announcements holidays updates circular" },
   { title: "About Us", href: "/about", section: "About", keywords: "about founder elizabetta ravoili director rehana khatoon principal roshan ara history mission volunteers italy ireland usa malaysia" },
   { title: "Staff", href: "/staff", section: "About", keywords: "staff teachers faculty manager ranjit mishra teaching team" },
-  { title: "Developers", href: "/developers", section: "About", keywords: "developers coding web development students rehan jamil shahil sharma shibran khatoon samuel clay from students to developers stories" },
+  { title: "Developers", href: "/developers", section: "About", keywords: "developers coding web development students rehan jamil shahil sharma shibran khatoon samuel clay weekly sessions amazon from students to developers stories" },
   { title: "Facilities", href: "/facilities", section: "Academics", keywords: "library computer lab science laboratory smart class ac classrooms infrastructure" },
   { title: "Academics & Subjects", href: "/subjects", section: "Academics", keywords: "subjects curriculum syllabus mathematics english grammar literature hindi physics chemistry biology history geography computer commercial applications economics political science class" },
   { title: "Extracurricular", href: "/extracurricular", section: "Academics", keywords: "sports day summer camp rugby fun fiesta activities clubs games" },
