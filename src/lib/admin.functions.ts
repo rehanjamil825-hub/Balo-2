@@ -1,8 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-
-const OWNER_EMAIL = "baloindia2015@gmail.com";
+import { OWNER_EMAIL } from "@/lib/admin-owner";
 
 const usernameSchema = z
   .string()
@@ -42,7 +41,7 @@ export const registerAdmin = createServerFn({ method: "POST" })
     }).parse(input),
   )
   .handler(async ({ data }) => {
-    const acceptedEmail = "baloindia2015@gmail.com";
+    const acceptedEmail = OWNER_EMAIL;
     if (data.adminEmail.trim().toLowerCase() !== acceptedEmail) {
       throw new Error("Only the authorised admin email can register an administrator.");
     }
@@ -127,7 +126,7 @@ export const resendAdminVerification = createServerFn({ method: "POST" })
     z.object({ username: usernameSchema, adminEmail: adminEmailSchema }).parse(input),
   )
   .handler(async ({ data }) => {
-    const acceptedEmail = "baloindia2015@gmail.com";
+    const acceptedEmail = OWNER_EMAIL;
     if (data.adminEmail.trim().toLowerCase() !== acceptedEmail) {
       throw new Error("Only the authorised admin email can be verified.");
     }
@@ -161,7 +160,7 @@ export const recoverAdminPassword = createServerFn({ method: "POST" })
     }).parse(input),
   )
   .handler(async ({ data }) => {
-    const acceptedEmail = "baloindia2015@gmail.com";
+    const acceptedEmail = OWNER_EMAIL;
     if (data.adminEmail.trim().toLowerCase() !== acceptedEmail) {
       throw new Error("We could not verify those admin details.");
     }
