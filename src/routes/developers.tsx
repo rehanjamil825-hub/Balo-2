@@ -145,7 +145,7 @@ function DevelopersPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: false, amount: 0.2 }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.9 }}
             className="relative"
           >
@@ -159,14 +159,14 @@ function DevelopersPage() {
             />
             <motion.div
               animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 4, repeat: Infinity }}
+              transition={{ duration: 4, repeat: 3 }}
               className="absolute -top-4 -right-4 bg-card rounded-2xl p-4 shadow-card border border-border"
             >
               <Sparkles className="size-6 text-accent" />
             </motion.div>
           </motion.div>
 
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp}>
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp}>
             <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">
               The Team
             </div>
@@ -183,7 +183,7 @@ function DevelopersPage() {
                   key={m.name}
                   initial="hidden"
                   whileInView="show"
-                  viewport={{ once: false, amount: 0.2 }}
+                  viewport={{ once: true, amount: 0.2 }}
                   variants={fadeUp}
                   custom={i}
                   whileHover={{ scale: 1.05, y: -4 }}
@@ -215,7 +215,7 @@ function DevelopersPage() {
 
       <section className="py-24 px-6 bg-card">
         <div className="max-w-5xl mx-auto">
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp} className="max-w-2xl mb-12">
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp} className="max-w-2xl mb-12">
             <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">
               How We Learned
             </div>
@@ -226,7 +226,7 @@ function DevelopersPage() {
 
           <div className="grid md:grid-cols-1 gap-6 max-w-2xl">
             <motion.div
-              initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp}
+              initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp}
               className="p-8 rounded-3xl bg-background border border-border shadow-soft"
             >
               <div className="size-12 rounded-2xl bg-accent/10 text-accent grid place-items-center mb-4">
@@ -246,7 +246,7 @@ function DevelopersPage() {
           <motion.div
             initial="hidden"
             whileInView="show"
-            viewport={{ once: false, amount: 0.2 }}
+            viewport={{ once: true, amount: 0.2 }}
             variants={fadeUp}
             className="mb-16 max-w-2xl"
           >
@@ -267,7 +267,7 @@ function DevelopersPage() {
                 key={story.name}
                 initial="hidden"
                 whileInView="show"
-                viewport={{ once: false, amount: 0.15 }}
+                viewport={{ once: true, amount: 0.15 }}
                 variants={fadeUp}
                 custom={i}
                 className={`grid items-start gap-8 lg:grid-cols-[minmax(0,0.9fr)_1.1fr] ${

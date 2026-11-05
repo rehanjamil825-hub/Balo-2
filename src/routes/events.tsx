@@ -262,7 +262,7 @@ function EventsPage() {
               key={p.title}
               initial="hidden"
               whileInView="show"
-              viewport={{ once: false, amount: 0.2 }}
+              viewport={{ once: true, amount: 0.2 }}
               variants={fadeUp}
               custom={i}
               whileHover={{ y: -8, scale: 1.02 }}
@@ -302,7 +302,7 @@ function EventsPage() {
 
       <section className="py-20 px-6 bg-card">
         <motion.div
-          initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp}
+          initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp}
           className="max-w-3xl mx-auto text-center"
         >
           <MapPin className="size-8 mx-auto text-accent mb-4" />

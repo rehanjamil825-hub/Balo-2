@@ -100,7 +100,7 @@ function Leadership() {
         <motion.div
           initial="hidden"
           whileInView="show"
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.2 }}
           variants={fadeUp}
           className="text-center max-w-3xl mx-auto mb-16"
         >
@@ -121,7 +121,7 @@ function Leadership() {
               key={leader.name}
               initial="hidden"
               whileInView="show"
-              viewport={{ once: false, amount: 0.2 }}
+              viewport={{ once: true, amount: 0.2 }}
               variants={fadeUp}
               custom={i}
               whileHover={{ y: -8 }}
@@ -134,7 +134,7 @@ function Leadership() {
                   width={1024}
                   height={1024}
                   loading="lazy"
-                  className="size-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  className="size-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
                 />
               </div>
               <div className="p-6">
@@ -169,7 +169,7 @@ function Mission() {
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.8 }}
         >
           <img
@@ -184,7 +184,7 @@ function Mission() {
         <motion.div
           initial="hidden"
           whileInView="show"
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.2 }}
           variants={fadeUp}
         >
           <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">
@@ -202,7 +202,7 @@ function Mission() {
                 key={v.title}
                 initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false, amount: 0.2 }}
+                viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.5, delay: i * 0.06 }}
                 whileHover={{ scale: 1.05, y: -4 }}
                 className="flex gap-3 p-4 rounded-2xl bg-background border border-border cursor-default shadow-soft"
@@ -232,7 +232,7 @@ function ImpactQuote() {
         <motion.div
           initial="hidden"
           whileInView="show"
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.2 }}
           variants={fadeUp}
         >
           <Quote className="size-12 mx-auto opacity-60" />

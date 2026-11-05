@@ -186,7 +186,7 @@ function Hero() {
         </div>
       </div>
 
-      <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity }}
+      <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 2, repeat: 3 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/70 text-xs tracking-widest uppercase">
         Scroll
       </motion.div>
@@ -209,7 +209,7 @@ function Stats() {
             key={s.l}
             initial="hidden"
             whileInView="show"
-            viewport={{ once: false, amount: 0.2 }}
+            viewport={{ once: true, amount: 0.2 }}
             variants={fadeUp}
             custom={i}
             whileHover={{ scale: 1.05 }}
@@ -230,11 +230,11 @@ function About() {
   return (
     <section id="about" className="py-28 px-6">
       <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-        <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false, amount: 0.2 }} transition={{ duration: 0.8 }}
+        <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.8 }}
           className="relative">
           <img src={story} alt="Teacher at Balo English Medium School" width={1200} height={900} loading="lazy"
             className="rounded-3xl shadow-card w-full aspect-[4/5] object-cover" />
-          <motion.div animate={{ rotate: [0, 3, 0, -3, 0] }} transition={{ duration: 8, repeat: Infinity }}
+          <motion.div animate={{ rotate: [0, 3, 0, -3, 0] }} transition={{ duration: 8, repeat: 3 }}
             className="absolute -bottom-8 -right-4 md:-right-12 bg-card rounded-2xl p-6 shadow-card max-w-xs">
             <Quote className="size-7 text-accent mb-2" />
             <p className="text-sm italic">"Education is the spark that lights up an entire neighborhood."</p>
@@ -242,7 +242,7 @@ function About() {
           </motion.div>
         </motion.div>
 
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp}>
+        <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp}>
           <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">Our Story</div>
           <h2 className="text-balance text-4xl md:text-5xl font-bold leading-tight">
             A neighborhood school built on love, run by hope.
@@ -264,7 +264,7 @@ function About() {
                 key={f.t}
                 initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false, amount: 0.2 }}
+                viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.5, delay: i * 0.06 }}
                 whileHover={{ scale: 1.05, y: -4 }}
                 className="flex gap-3 p-4 rounded-2xl bg-card border border-border cursor-default shadow-soft"
@@ -293,13 +293,13 @@ function Programs() {
   return (
     <section id="programs" className="py-28 px-6 bg-card">
       <div className="max-w-7xl mx-auto">
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp} className="max-w-2xl">
+        <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp} className="max-w-2xl">
           <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">What We Do</div>
           <h2 className="text-4xl md:text-5xl font-bold">Programs that meet children where they are.</h2>
         </motion.div>
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {items.map((it, i) => (
-            <motion.article key={it.t} initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp} custom={i}
+            <motion.article key={it.t} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp} custom={i}
               whileHover={{ y: -8 }}
               className="group rounded-3xl overflow-hidden bg-background border border-border shadow-soft">
               <div className="aspect-[4/3] overflow-hidden">
@@ -335,7 +335,7 @@ function Gallery() {
   return (
     <section id="gallery" className="py-28 px-6">
       <div className="max-w-7xl mx-auto">
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp} className="flex items-end justify-between flex-wrap gap-6 mb-12">
+        <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp} className="flex items-end justify-between flex-wrap gap-6 mb-12">
           <div>
             <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">Gallery</div>
             <h2 className="text-4xl md:text-5xl font-bold max-w-xl text-balance">Moments from our classrooms.</h2>
@@ -348,7 +348,7 @@ function Gallery() {
             <motion.div key={i}
               initial={{ opacity: 0, scale: 0.92 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: false, amount: 0.2 }}
+              viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.6, delay: i * 0.05 }}
               whileHover={{ scale: 1.02 }}
               onClick={() => lightbox.open(im.src, im.a)}
@@ -390,7 +390,7 @@ function Impact() {
         backgroundSize: "40px 40px, 60px 60px",
       }} />
       <div className="relative max-w-5xl mx-auto text-center">
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp}>
+        <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp}>
           <div className="text-xs uppercase tracking-[0.25em] text-secondary font-bold mb-5">Voices from the Community</div>
           <Quote className="size-12 mx-auto opacity-60" />
           <p className="mt-6 text-2xl md:text-4xl font-display font-medium text-balance leading-snug">
@@ -406,13 +406,13 @@ function Impact() {
 function Donate() {
   return (
     <section id="donate" className="py-28 px-6">
-      <motion.div initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp}
+      <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp}
         className="max-w-5xl mx-auto rounded-[2rem] gradient-warm border border-border p-10 md:p-16 text-center shadow-card">
         <div className="inline-flex items-center gap-2 rounded-full bg-accent/10 text-accent px-4 py-1.5 text-xs font-semibold mb-6">
           <HandHeart className="size-4" /> Be part of the story
         </div>
         <h2 className="text-4xl md:text-6xl font-bold text-balance leading-tight">
-          ₹500 sends a child to school for <span className="text-accent italic">a whole month.</span>
+          Help a child keep learning, eating, and belonging <span className="text-accent italic">this month.</span>
         </h2>
         <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
           Your gift funds books, uniforms, a warm meal, and a teacher who shows up every single day. 100% of your donation reaches our classrooms.
@@ -434,7 +434,7 @@ function Contact() {
   return (
     <section id="contact" className="py-28 px-6 bg-card">
       <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16">
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp}>
+        <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp}>
           <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">Visit · Call · Write</div>
           <h2 className="text-4xl md:text-5xl font-bold mb-8 text-balance">Come see our school, anytime.</h2>
           <div className="space-y-6">
@@ -455,7 +455,7 @@ function Contact() {
             ))}
           </div>
         </motion.div>
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: false, amount: 0.2 }} transition={{ duration: 0.7 }}
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.7 }}
           className="rounded-3xl overflow-hidden shadow-card aspect-square lg:aspect-auto">
           <iframe
             title="Balo English Medium School location"
@@ -477,7 +477,7 @@ function Banner() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.8 }}
           className="text-center mb-8"
         >
@@ -487,7 +487,7 @@ function Banner() {
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.9 }}
           className="rounded-3xl overflow-hidden shadow-card"
         >
