@@ -22,6 +22,12 @@ function invalidCredentials() {
   return new Error("Invalid username or password.");
 }
 
+/** Live site origin for verification emails. Set SITE_URL on AWS, e.g. https://balo.example.com */
+function adminEmailRedirectTo() {
+  const site = process.env.SITE_URL?.trim().replace(/\/$/, "");
+  return site ? `${site}/admin-login` : "";
+}
+
 /**
  * Public server boundary for registration. The Auth identity and profile are
  * created on the server so the internal Auth email never reaches the browser.
@@ -54,7 +60,7 @@ export const registerAdmin = createServerFn({ method: "POST" })
     const { data: authData, error: authError } = await supabaseAdmin.auth.signUp({
       email: acceptedEmail,
       password: data.password,
-      options: { emailRedirectTo: "" },
+      options: { emailRedirectTo: adminEmailRedirectTo() },
     });
     if (authError) {
       throw new Error("This admin email is already registered or could not be registered.");
@@ -132,7 +138,11 @@ export const resendAdminVerification = createServerFn({ method: "POST" })
       .eq("normalized_username", normalizedUsername(data.username))
       .maybeSingle();
     if (!profile) throw new Error("We could not verify those admin details.");
-    const { error } = await supabaseAdmin.auth.resend({ type: "signup", email: acceptedEmail });
+    const { error } = await supabaseAdmin.auth.resend({
+      type: "signup",
+      email: acceptedEmail,
+      options: { emailRedirectTo: adminEmailRedirectTo() },
+    });
     if (error) throw new Error("Could not resend the verification email.");
     return { ok: true };
   });

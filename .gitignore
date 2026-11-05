@@ -1,3 +1,8 @@
+# Secrets — never commit a live .env (Gemini keys, service role)
+.env
+.env.*
+!.env.example
+
 # Logs
 logs
 *.log
