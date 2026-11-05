@@ -176,7 +176,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
         <LoadingScreen />
-        {!isAdminShellRoute && <Nav />}
+        {!isAdminShellRoute && !isChatRoute && <Nav />}
         {!isBare && !isAdminLogin && <AnnouncementBanner />}
         <HashScroller />
         <div className={isBare ? "" : isAdminLogin ? "pt-[72px]" : "pt-9"}>
