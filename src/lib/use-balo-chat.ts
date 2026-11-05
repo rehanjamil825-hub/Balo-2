@@ -15,7 +15,7 @@ export const STARTERS: Record<Mode, string[]> = {
     "Explain photosynthesis simply",
     "Solve: 2x + 5 = 17, step by step",
     "Help me revise the water cycle",
-    "Give me 5 practice sums on fractions",
+    "Help me understand calculus",
   ],
 };
 
