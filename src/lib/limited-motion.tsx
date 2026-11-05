@@ -22,11 +22,14 @@ function wrap(Comp: any) {
     const viewport = hasWhileInView
       ? { amount: 0.2, ...props.viewport, once: userOnce === true ? true : frozen }
       : props.viewport;
+    // After the cap, never go back to the hidden initial state.
+    const initial = frozen && hasWhileInView ? false : props.initial;
 
     return (
       <Comp
         ref={ref}
         {...props}
+        initial={initial}
         transition={capRepeat(props.transition)}
         viewport={viewport}
         onViewportEnter={(e: any) => {

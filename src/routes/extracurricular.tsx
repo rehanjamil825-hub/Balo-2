@@ -164,7 +164,7 @@ function ActivitiesGrid() {
         <motion.div
           initial="hidden"
           whileInView="show"
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.2 }}
           variants={fadeUp}
           className="max-w-3xl mb-16"
         >
@@ -185,7 +185,7 @@ function ActivitiesGrid() {
               key={a.title}
               initial="hidden"
               whileInView="show"
-              viewport={{ once: false, amount: 0.2 }}
+              viewport={{ once: true, amount: 0.2 }}
               variants={fadeUp}
               custom={i}
               whileHover={{ y: -6 }}
@@ -249,7 +249,7 @@ function JoinCTA() {
       <motion.div
         initial="hidden"
         whileInView="show"
-        viewport={{ once: false, amount: 0.2 }}
+        viewport={{ once: true, amount: 0.2 }}
         variants={fadeUp}
         className="max-w-5xl mx-auto rounded-[2rem] gradient-warm border border-border p-10 md:p-16 text-center shadow-card"
       >
