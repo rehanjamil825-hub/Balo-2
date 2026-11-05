@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { Eye, EyeOff, KeyRound, Lock, Mail, RefreshCw, UserRound } from "lucide-react";
@@ -36,6 +36,21 @@ function AdminLoginPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ kind: "err" | "ok"; text: string } | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!mounted || !data.session) return;
+      try {
+        const status = await checkAdmin();
+        if (mounted && status.isAdmin) navigate({ to: "/admin" });
+      } catch {
+        /* stay on the login form */
+      }
+    })();
+    return () => { mounted = false; };
+  }, [checkAdmin, navigate]);
 
   async function resendVerification() {
     if (!username || !adminEmail) {
