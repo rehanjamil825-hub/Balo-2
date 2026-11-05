@@ -6,6 +6,7 @@ import {
   type ContextSection,
 } from "@/lib/balo-assistant.server";
 import { generateStudentAnswer, type StudentTurn } from "@/lib/balo-student.server";
+import { prepareChatHistory } from "@/lib/balo-history.server";
 
 type Mode = "assistant" | "student";
 
@@ -223,11 +224,11 @@ export const Route = createFileRoute("/api/chat")({
             ? 'The CURRENT question asks who powers you. Answer clearly: "No, I am BALO AI, powered by Google." Do not name a model unless specifically asked which model.'
             : "The CURRENT question does not ask about your provider. Never mention Google, Gemini, a model, a provider, an API, or earlier provider-related conversation.";
           const context = used.map((s) => `[${s.title}]\n${s.body}`).join("\n\n---\n\n").slice(0, 40000);
-          const system = `${settings?.system_instructions?.trim() || ASSISTANT_IDENTITY_RULES}\n\n${ASSISTANT_IDENTITY_RULES}\n\n${providerRule}\n\nAnswer only from this verified school context:\n${context}`;
+          const system = `${settings?.system_instructions?.trim() || ASSISTANT_IDENTITY_RULES}\n\n${ASSISTANT_IDENTITY_RULES}\n\n${providerRule}\n\nAnswer ONLY the latest user message. Do not repeat or recap earlier answers. If this is a new topic, ignore earlier topics.\n\nAnswer only from this verified school context:\n${context}`;
           try {
             const result = await generateStudentAnswer({
               system,
-              history,
+              history: prepareChatHistory(history, message),
               message,
               imageDataUrl: null,
               model: settings?.model ?? null,
@@ -294,7 +295,7 @@ Rules you must never break:
         try {
           const { answer, model, attempts } = await generateStudentAnswer({
             system,
-            history,
+            history: prepareChatHistory(history, message),
             message,
             imageDataUrl: image,
             model: settings?.model ?? null,
