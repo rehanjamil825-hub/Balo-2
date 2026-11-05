@@ -7,11 +7,12 @@
  */
 export const SITE_FACTS = `
 === WEBSITE PAGE MAP ===
- The website (Balo India) has these pages: Home (/), Leadership (/about), Volunteers (/volunteers),
- Academics (/subjects), Facilities (/facilities), Extracurricular (/extracurricular),
- Notice & Events (/events), Gallery (/gallery), Virtual Tour (/virtual-tour), Rules (/rules),
- Calendar (/calendar), Life at BALO (/life-at-balo), Balo Welfare Society (/welfare-society),
- Staff (/staff), Developers (/developers), FAQ (/faq), Enquiry (/enquiry), BALO AI (/balo-ai).
+ The website (Balo India) has these pages: Home (/), Life at BALO (/life-at-balo),
+ Balo Welfare Society (/welfare-society), Notice & Events (/events), Leadership (/about),
+ Volunteers (/volunteers), Staff (/staff), Developers (/developers), Facilities (/facilities),
+ Academics (/subjects), Extracurricular (/extracurricular), Gallery (/gallery),
+ Virtual Tour (/virtual-tour), Rules (/rules), Calendar (/calendar), Enquiry (/enquiry),
+ FAQ (/faq), BALO AI (/balo-ai). Contact is on the home page (#contact).
 The Donate button links to https://www.balousa.org/donation-confirmation/.
 
 === HOME ===
@@ -127,13 +128,132 @@ telephone number must be reported to the office. Students whose parents live
 outside Howrah must have a registered local guardian. For orphaned children the
 registered legal guardian holds full authority and receives all school communication.
 
-=== NOTICE & EVENTS ===
-The Notice & Events page has a live Notice Board plus an events timeline. Recent and
-upcoming items include Sports Day 2026 (December), Summer Camp 2026 (June),
-Color Storm 2026 (inter-school drawing and painting competition), the school Picnic
-(January 2024) and Women's Day (March 2023). Notices and announcements published by
-the school office appear live on the site — the current live ones are listed in the
-LIVE DATA section of this context.
+=== NOTICE & EVENTS (/events) ===
+The Notice & Events page has a live Notice Board (current office notices) plus an
+events timeline. Notices published by the school office appear live — see LIVE DATA.
+Published event stories:
+- Sports Day 2026 (December, upcoming): races, games, music, mock drill, farewell for
+  leaving students; guests, parents, volunteers and ex-students.
+- Summer Camp 2026 (June): five days, drawing, art and craft, talent show, movie day,
+  non-fire cooking, smart-class presentations.
+- Color Storm 2026 (March): inter-school drawing and painting competition plus a
+  handmade art exhibition.
+- Fun Fiesta (December 2025): student-led stalls selling food, games and handmade
+  objects; a community fair teaching teamwork and responsibility.
+- Summer Camp 2025 (May): drawing, crafts, talent shows, movie day, non-fire cooking,
+  conversation circles and outdoor games.
+- Picnic 2024 (January): a day outside school, train travel, games and shared food.
+- Women's Day Celebration 2023 (March): performances and posters honouring women.
+- Boys' football match (March 2022): students played with international volunteers.
+- Sports Day 2022 (January): 480 children; races, sack race, spoon race and more.
+- Harmonium / music classes (ongoing weekly).
+
+=== LIFE AT BALO (/life-at-balo) ===
+A school day: morning assembly, prayer, national pledge, thought for the day and
+student news in the hall; then eight periods of about 40 minutes, roughly 10:00 AM
+to 3:40 PM, English-medium ICSE lessons; breaktime for tiffin in the foyer play area;
+music (vocals and harmonium) and dance; science and computer practicals; a weekly
+written reflection on good and bad actions; then a free hot lunch for every student.
+Awareness programmes for students and parents: nutrition (including fruit such as
+bananas), personal hygiene, and the importance of clean drinking water.
+Yoga Day (21 June): whole-school asanas and breathing.
+Other yearly activities: students' clean-neighbourhood rally in Pilkhana and
+Babudanga; Result Day with parents; free book and stationery distribution at the
+start of the year; alumni reunion; farewell party for board-exam students; gift
+distribution so every participant in sports and cultural events is recognised.
+
+=== VIRTUAL TOUR (/virtual-tour) ===
+Room-by-room campus tour: Hall Room (morning assembly, prayer, competitions);
+Staff Room (lesson planning and academic coordination); Computer Room (typing,
+coding, spreadsheets, presentations, safe internet — always teacher-supervised);
+Science Lab (physics, chemistry, biology practicals); Kitchen (hot meal for 480+
+students every school day); Classrooms (ten bright, ventilated, air-conditioned
+rooms); Reception (enquiries, appointments, diaries, notices). Visitors who cannot
+come in person can use this page.
+
+=== GALLERY (/gallery) ===
+Photographs of real school days: classrooms, reading time, assembly, sports, cultural
+performances, practical sessions, break time and community days. Tap any photo to
+preview. Direct people here when they ask to see pictures of the school.
+
+=== STAFF (/staff) ===
+More than twenty teachers, coordinators, cooks, helpers and volunteers share one
+school day for 480 children.
+Manager: Mr. Ranjit Mishra — day-to-day running (admissions, records, staff,
+meals, supplies, maintenance). He also teaches Hindi. Parents know him as someone
+who listens first — uniform, books, medical need, or a child who has stopped coming.
+Teaching staff: full ICSE English-medium curriculum; they plan together, run unit
+tests, take lab and computer practicals, and give extra time to any child who needs it.
+Non-teaching staff: cook and serve the daily hot meal, keep classrooms, lab,
+bathrooms and kitchen clean, manage supplies and help the youngest children.
+
+=== VOLUNTEERS (/volunteers) ===
+International volunteers from Italy, Ireland, the USA, Malaysia and beyond teach,
+mentor and stand beside students. Named volunteers on the page: Amanda (Italy),
+Liam (Ireland), Albi, Sofia, Giovanna, Daniel, Barbara, Andrew (Italy), Julie
+(Malaysia). They run classroom workshops, laptop mentoring, circle games, reading
+time and confidence-building. To volunteer, send an enquiry or email the office.
+
+=== WELFARE SOCIETY (/welfare-society) ===
+BALO Welfare Society supports children of Pilkhana and Fakir Bagan Lane beyond the
+classroom. Activities: Annual Sports & Cultural Competitions; Consumer Awareness
+Camp at Fresh Buds School, Howrah; Human Rights workshops; community outreach
+together with the school.
+Global family: Elisabetta "Betta" Ravaioli — founder of Balo Italia, began after
+volunteering with Mother Teresa's Missionaries of Charity in Kolkata in 2005.
+Liam Ashe — chairperson of Balo Children Ireland, former teacher at St. Flannan's
+College, Ennis; coordinates fundraising and visits Kolkata.
+Anne "Anna" Leache — Seattle teacher, Balo USA coordinator, involved since 2005.
+Sister sites: https://balo.ie/ (Ireland), https://www.balousa.org/ (USA),
+https://www.balo.it/en/ (Italia).
+
+=== CALENDAR (/calendar) ===
+Important days BALO observes (exact movable dates confirmed on the notice board):
+January — Republic Day (26 Jan), Martyrs' Day (30 Jan).
+March — International Women's Day (8 Mar), Commonwealth Day (second Monday).
+April — World Health Day (7 Apr), Earth Day (22 Apr).
+May — Labour Day (1 May), World Red Cross Day (8 May), Mother's Day (second Sunday).
+June — World Environment Day (5 Jun), International Yoga Day (21 Jun), Father's Day
+(third Sunday), International Day Against Drug Abuse (26 Jun).
+July/August — Friendship Day (first Sunday of August), Independence Day (15 Aug),
+National Sports Day (29 Aug).
+September — Teachers' Day (5 Sep), World Literacy Day (8 Sep).
+October/November — World Food Day (16 Oct), Children's Day (14 Nov).
+December — World AIDS Day (1 Dec), Human Rights Day (10 Dec), Kisan Diwas (23 Dec).
+The academic year has three terms with unit tests between them.
+
+=== FAQ (/faq) ===
+Admissions: open from January for the new session; mid-year seats can open. Pre-primary
+to Class 12. Walk in to 55, Madar Talla Lane, Salkia with birth certificate and last
+report card. Youngest classes have no entrance test; from Class 3 a short English and
+Maths check is for placement, not filtering — nobody is turned away for a low score.
+Children from Bengali or Hindi medium schools are welcome; extra reading/spelling help
+is given, and Hindi and Bengali continue as taught languages.
+Fees & sponsorship: fees are kept low; no admitted child is removed for want of money.
+Sister organisations fund sponsored places, books, uniforms and meals. A sponsor covers
+one child's year (tuition, uniform, books); the child stays with their family; sponsors
+get progress updates. Speak privately to the office.
+Timings: weekday mornings with a mid-morning break; primary/senior and summer/winter
+times can differ — see the calendar and the notice board at the gate.
+Uniform is compulsory (see Rules). Safety: supervised gate, children released only to
+a listed guardian, attendance every session, lab and computer always teacher-supervised.
+BALO AI: Assistant mode answers from school records; Student mode tutors step by step
+and can read a photo of a textbook question. It does not replace the teacher and does
+not simply do homework.
+Help: sponsor a child, donate via Balo USA, or volunteer for focused weeks. Visitors
+are welcome in school hours; or use Virtual Tour and Gallery first.
+
+=== ENQUIRY (/enquiry) ===
+Families, volunteers and donors send admissions, volunteering, donation or general
+questions through the Enquiry form (name, email, optional phone, subject, message).
+The school office replies by email. Address: 55, Madar Talla Ln, Babudanga, Pilkhana,
+Salkia, Howrah, West Bengal 711101. Email: baloindia2015@gmail.com.
+
+=== BALO AI (/balo-ai) ===
+BALO AI is the school's own helper on this website. Assistant mode answers questions
+about the school from verified records. Student mode is an ICSE study tutor for BALO
+students (class, subject and topic can be chosen; a photo of a question can be uploaded).
+It was built by the BALO student developer team.
 
 === DEVELOPERS (who built this website) ===
 This website was designed and built by the BALO student developer team:
