@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "@/lib/limited-motion";
+import { useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Code2, Code, Heart, Sparkles } from "lucide-react";
 
@@ -111,16 +112,19 @@ const stories: {
 function DevelopersPage() {
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, 150]);
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
   return (
-    <main className="pt-24">
-      <section ref={heroRef} className="relative min-h-[55vh] flex items-center py-20 px-6 text-white overflow-hidden">
-        <motion.img style={{ scale: heroScale }}
-          src={banner}
-          alt="Developer workstation with code on screen"
-          className="absolute inset-0 size-full object-cover origin-center"
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/75 to-accent/80" />
+    <main>
+      <section ref={heroRef} className="relative min-h-[55vh] flex items-center overflow-hidden px-6 py-20 pt-24 text-white">
+        <motion.div style={{ y, scale: heroScale }} className="absolute inset-0 -z-10 will-change-transform">
+          <img
+            src={banner}
+            alt="Developer workstation with code on screen"
+            className="size-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/75 to-accent/80" />
+        </motion.div>
         <div className="relative max-w-5xl mx-auto text-center">
           <motion.div initial="hidden" animate="show" variants={fadeUp}>
             <div className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur px-4 py-1.5 text-xs font-semibold mb-6">
