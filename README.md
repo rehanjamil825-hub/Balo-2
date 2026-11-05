@@ -35,10 +35,13 @@ npm run dev
 You will need Supabase environment variables for enquiry, admin, and AI features (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, and the matching server-side keys). Ask a maintainer for a local `.env` rather than committing secrets.
 
 ```bash
-npm run build    # production build
+npm run build    # production build (Node server for AWS)
+npm start        # run the production server (after build)
 npm run preview  # preview the build
 npm run lint
 ```
+
+To host on **AWS Lightsail** (BALO AI + admin login included), follow **[LIGHTSAIL.md](./LIGHTSAIL.md)** — written for a first-time deploy.
 
 This project is also connected to [Lovable](https://lovable.dev). Keep the default branch in a working state; avoid rewriting published git history.
 
