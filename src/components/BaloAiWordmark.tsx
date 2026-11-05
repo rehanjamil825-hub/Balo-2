@@ -1,8 +1,9 @@
 import { cn } from "@/lib/utils";
+import wordmark from "@/assets/balo-ai-wordmark.png";
 
 /**
- * BALO AI wordmark: lowercase teal "balo" + orange "AI", matching the
- * official lettering (Quicksand, rounded geometric sans).
+ * Official BALO AI lettering: the uploaded teal "balo" + orange "AI"
+ * mark with the cream background removed.
  */
 export function BaloAiWordmark({
   className,
@@ -12,17 +13,15 @@ export function BaloAiWordmark({
   size?: "sm" | "md" | "lg";
 }) {
   const sizes = {
-    sm: "text-[1.05rem] leading-none",
-    md: "text-[1.35rem] leading-none sm:text-[1.5rem]",
-    lg: "text-5xl leading-none sm:text-6xl",
+    sm: "h-5 sm:h-6",
+    md: "h-7 sm:h-8",
+    lg: "h-14 sm:h-[4.75rem]",
   };
   return (
-    <span
-      className={cn("balo-ai-wordmark inline-flex items-baseline", sizes[size], className)}
-      aria-label="balo AI"
-    >
-      <span className="balo-ai-wordmark-name">balo</span>
-      <span className="balo-ai-wordmark-ai">AI</span>
-    </span>
+    <img
+      src={wordmark}
+      alt="balo AI"
+      className={cn("w-auto object-contain object-left", sizes[size], className)}
+    />
   );
 }
