@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import baloLogo from "@/assets/balo-logo.jpg";
 import { useLang, type Lang } from "@/lib/i18n";
 import { useUnreadNotices } from "@/lib/notices";
+import { useAdminSession } from "@/lib/use-admin-session";
 
 type NavItem = {
   key: string;
@@ -72,6 +73,7 @@ const navGroups: NavGroup[] = [
       { key: "nav.contact", href: "/", hash: "contact" },
       { key: "nav.enquiry", href: "/enquiry" },
       { key: "nav.faq", href: "/faq" },
+      { key: "nav.admin", href: "/admin-login" },
     ],
   },
 ];
@@ -151,6 +153,7 @@ export function Nav() {
 
   const { t } = useLang();
   const hasUnreadNotices = useUnreadNotices();
+  const admin = useAdminSession();
 
   const currentGroupKey =
     navGroups.find((g) =>
@@ -204,7 +207,11 @@ export function Nav() {
     mobile = false,
     inMenu = false,
   ) => {
-    const isCurrent = !item.hash && item.href === pathname;
+    const itemHref = item.key === "nav.admin" ? admin.href : item.href;
+    const itemLabel = item.key === "nav.admin"
+      ? t(admin.signedIn ? "nav.admin" : "nav.adminLogin")
+      : t(item.key);
+    const isCurrent = !item.hash && itemHref === pathname;
 
     const className = mobile
       ? `block text-sm font-medium cursor-pointer ${
@@ -245,7 +252,7 @@ export function Nav() {
     return (
       <Link
         key={item.key}
-        to={item.href}
+        to={itemHref}
         className={`${className} relative`}
         activeProps={{
           className: `${className} relative text-foreground font-semibold`,
@@ -257,7 +264,14 @@ export function Nav() {
           setMobileOpen(false);
         }}
       >
-        {t(item.key)}
+        {item.key === "nav.admin" ? (
+          <span className="inline-flex items-center gap-2">
+            <UserCircle2 className="size-4" />
+            {itemLabel}
+          </span>
+        ) : (
+          itemLabel
+        )}
         {dot}
       </Link>
     );
@@ -365,15 +379,6 @@ export function Nav() {
 
           <LangSwitcher />
 
-          <Link
-            to="/admin-login"
-            aria-label="Admin login"
-            title="Admin login"
-            className="grid size-9 place-items-center rounded-full border border-border text-foreground/70 transition-colors hover:bg-muted hover:text-foreground"
-          >
-            <UserCircle2 className="size-5" />
-          </Link>
-
           <a
             href={DONATE_URL}
             target="_blank"
@@ -387,14 +392,6 @@ export function Nav() {
 
         {/* Mobile account and menu actions */}
         <div className="flex items-center gap-1 lg:hidden">
-          <Link
-            to="/admin-login"
-            aria-label="Admin login"
-            title="Admin login"
-            className="grid size-9 place-items-center rounded-full border border-border text-foreground/70 transition-colors hover:bg-muted hover:text-foreground"
-          >
-            <UserCircle2 className="size-5" />
-          </Link>
           <button
             className="relative rounded-lg p-2 transition-colors hover:bg-muted"
             onClick={() => {
@@ -491,12 +488,12 @@ export function Nav() {
               </div>
 
               <Link
-                to="/admin-login"
+                to={admin.href}
                 onClick={() => setMobileOpen(false)}
                 className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-semibold"
               >
                 <UserCircle2 className="size-4" />
-                Admin login
+                {admin.label}
               </Link>
 
               <div className="pt-2">
