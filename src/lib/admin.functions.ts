@@ -47,6 +47,7 @@ export const registerAdmin = createServerFn({ method: "POST" })
     const acceptedEmail = OWNER_EMAIL;
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { createPasswordAuthClient } = await import("@/lib/admin-auth.server");
     const normalized = normalizedUsername(data.username);
     const { data: existingProfile, error: profileLookupError } = await supabaseAdmin
       .from("admin_profiles")
@@ -56,7 +57,9 @@ export const registerAdmin = createServerFn({ method: "POST" })
     if (profileLookupError) throw profileLookupError;
     if (existingProfile) throw new Error("That username is already registered.");
 
-    const { data: authData, error: authError } = await supabaseAdmin.auth.signUp({
+    // Sign up on the anon client so the service-role singleton never holds a user session.
+    const auth = createPasswordAuthClient();
+    const { data: authData, error: authError } = await auth.auth.signUp({
       email: acceptedEmail,
       password: data.password,
       options: { emailRedirectTo: adminEmailRedirectTo() },
@@ -88,6 +91,7 @@ export const signInAdmin = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { passwordGrant } = await import("@/lib/admin-auth.server");
     const { data: profile, error: profileError } = await supabaseAdmin
       .from("admin_profiles")
       .select("user_id, username")
@@ -99,10 +103,10 @@ export const signInAdmin = createServerFn({ method: "POST" })
     const email = userData.user?.email;
     if (userError || !email) throw invalidCredentials();
 
-    const { data: authData, error: authError } = await supabaseAdmin.auth.signInWithPassword({
-      email,
-      password: data.password,
-    });
+    // Password grant on a separate anon client. Signing in on supabaseAdmin would
+    // attach the user JWT to the service-role singleton and RLS would block the
+    // user_roles insert ("new row violates row-level security policy").
+    const { data: authData, error: authError } = await passwordGrant(email, data.password);
     if (authError || !authData.session || !authData.user) {
       if (authError?.message && /confirm|verify/i.test(authError.message)) {
         throw new Error("EMAIL_NOT_VERIFIED: Verify the admin email before signing in.");
