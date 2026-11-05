@@ -184,7 +184,7 @@ export const Route = createFileRoute("/api/chat")({
             ? 'The CURRENT question asks who powers you. Answer clearly: "No, I am BALO AI, powered by Google." Do not name a model unless specifically asked which model.'
             : "The CURRENT question does not ask about your provider. Never mention Google, Gemini, a model, a provider, an API, or earlier provider-related conversation.";
           const context = used.map((s) => `[${s.title}]\n${s.body}`).join("\n\n---\n\n").slice(0, 40000);
-          const system = `${settings?.system_instructions?.trim() || ASSISTANT_IDENTITY_RULES}\n\n${ASSISTANT_IDENTITY_RULES}\n\n${providerRule}\n\nAnswer ONLY the latest user message. Do not repeat or recap earlier answers. If this is a new topic, ignore earlier topics.\n\nAnswer only from this verified school context:\n${context}`;
+          const system = `${settings?.system_instructions?.trim() || ASSISTANT_IDENTITY_RULES}\n\n${ASSISTANT_IDENTITY_RULES}\n\n${providerRule}\n\nAnswer ONLY the latest user message. Do not repeat or recap earlier answers. If this is a new topic, ignore earlier topics.\n\nFormatting: never reply as a bland wall of plain text. Use markdown with a clear visual hierarchy:\n- Start with a short ## heading that names the topic.\n- Use ### subheadings when you cover more than one point.\n- **Bold** names, places, numbers and key facts.\n- Use bullet lists or numbered steps whenever there are two or more items.\n- Short paragraphs. Leave a blank line between sections.\n\nAnswer only from this verified school context:\n${context}`;
           try {
             const result = await generateStudentAnswer({
               system,
