@@ -9,6 +9,7 @@ import {
 describe("admin authentication rules", () => {
   test("only the authorised owner email is accepted, without case sensitivity", () => {
     expect(isAuthorizedAdminEmail(" ShahrehShi@gmail.com ")).toBe(true);
+    expect(isAuthorizedAdminEmail("baloindia2015@gmail.com")).toBe(true);
     expect(isAuthorizedAdminEmail("someone@example.com")).toBe(false);
   });
 
