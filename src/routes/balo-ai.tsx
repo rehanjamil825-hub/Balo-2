@@ -201,11 +201,12 @@ function BaloAiPage() {
             <ArrowLeft className="size-4" />
           </Link>
 
-          <BaloAiMark className="size-8 shrink-0 sm:size-9" alt="" />
-
-          <div className="min-w-0 leading-tight">
-            <BaloAiWordmark size="sm" />
-            <div className="hidden text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:block">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <BaloAiMark className="size-8 shrink-0 sm:size-9" alt="" />
+              <BaloAiWordmark size="sm" />
+            </div>
+            <div className="mt-0.5 hidden pl-10 text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:block sm:pl-11">
               Balo English Medium School
             </div>
           </div>
@@ -305,15 +306,17 @@ function BaloAiPage() {
               transition={{ duration: 0.4, ease }}
               className="mx-auto flex min-h-full w-full max-w-2xl flex-col items-center justify-center px-4 py-10"
             >
-              <HeroLogo />
-              <motion.h1
+              <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.12, duration: 0.4, ease }}
-                className="mt-6"
+                transition={{ delay: 0.08, duration: 0.4, ease }}
+                className="flex items-center gap-4 sm:gap-5"
               >
-                <BaloAiWordmark size="lg" />
-              </motion.h1>
+                <HeroLogo />
+                <h1>
+                  <BaloAiWordmark size="lg" />
+                </h1>
+              </motion.div>
               <motion.p
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
