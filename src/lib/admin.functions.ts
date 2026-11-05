@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { OWNER_EMAIL } from "@/lib/admin-owner";
+import { isAuthorizedAdminEmail, OWNER_EMAIL } from "@/lib/admin-owner";
 
 const usernameSchema = z
   .string()
@@ -41,10 +41,10 @@ export const registerAdmin = createServerFn({ method: "POST" })
     }).parse(input),
   )
   .handler(async ({ data }) => {
-    const acceptedEmail = OWNER_EMAIL;
-    if (data.adminEmail.trim().toLowerCase() !== acceptedEmail) {
-      throw new Error("Only the authorised admin email can register an administrator.");
+    if (!isAuthorizedAdminEmail(data.adminEmail)) {
+      throw new Error(`Use ${OWNER_EMAIL} — that is the authorised admin email.`);
     }
+    const acceptedEmail = OWNER_EMAIL;
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const normalized = normalizedUsername(data.username);
@@ -126,10 +126,10 @@ export const resendAdminVerification = createServerFn({ method: "POST" })
     z.object({ username: usernameSchema, adminEmail: adminEmailSchema }).parse(input),
   )
   .handler(async ({ data }) => {
-    const acceptedEmail = OWNER_EMAIL;
-    if (data.adminEmail.trim().toLowerCase() !== acceptedEmail) {
-      throw new Error("Only the authorised admin email can be verified.");
+    if (!isAuthorizedAdminEmail(data.adminEmail)) {
+      throw new Error(`Use ${OWNER_EMAIL} — that is the authorised admin email.`);
     }
+    const acceptedEmail = OWNER_EMAIL;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: profile } = await supabaseAdmin
       .from("admin_profiles")
@@ -160,8 +160,7 @@ export const recoverAdminPassword = createServerFn({ method: "POST" })
     }).parse(input),
   )
   .handler(async ({ data }) => {
-    const acceptedEmail = OWNER_EMAIL;
-    if (data.adminEmail.trim().toLowerCase() !== acceptedEmail) {
+    if (!isAuthorizedAdminEmail(data.adminEmail)) {
       throw new Error("We could not verify those admin details.");
     }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -173,7 +172,7 @@ export const recoverAdminPassword = createServerFn({ method: "POST" })
     if (!profile) throw new Error("We could not verify those admin details.");
 
     const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(profile.user_id);
-    if (userError || userData.user?.email?.toLowerCase() !== acceptedEmail) {
+    if (userError || !userData.user?.email || !isAuthorizedAdminEmail(userData.user.email)) {
       throw new Error("We could not verify those admin details.");
     }
     const { error } = await supabaseAdmin.auth.admin.updateUserById(profile.user_id, { password: data.password });
