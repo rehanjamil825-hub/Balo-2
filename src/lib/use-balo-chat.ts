@@ -127,7 +127,6 @@ export function useBaloChat(_active = true) {
           answer?: string;
           error?: string;
           engine?: string;
-          context?: { title: string; body: string }[];
         } = {};
         try {
           payload = raw ? JSON.parse(raw) : {};
@@ -139,21 +138,9 @@ export function useBaloChat(_active = true) {
           throw new Error(payload.error || "BALO AI could not answer that. Please try again.");
         }
 
-        let answer = (payload.answer ?? "").trim();
+        const answer = (payload.answer ?? "").trim();
         if (!answer) {
           throw new Error(payload.error || "BALO AI could not answer that. Please try again.");
-        }
-
-        if (mode === "assistant" && payload.context?.length) {
-          try {
-            const { onDeviceAiAvailable, rewriteWithOnDeviceAi } = await import("@/lib/on-device-ai");
-            if (await onDeviceAiAvailable()) {
-              const local = await rewriteWithOnDeviceAi(question, payload.context);
-              if (local) answer = local;
-            }
-          } catch {
-            /* keep the server answer */
-          }
         }
 
         setMsgs((p) => {

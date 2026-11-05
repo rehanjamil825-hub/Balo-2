@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ASSISTANT_IDENTITY_RULES, SITE_FACTS, STUDENT_IDENTITY_RULES } from "@/lib/site-facts.server";
+import { SITE_FACTS, STUDENT_IDENTITY_RULES } from "@/lib/site-facts.server";
 import {
   composeAssistantAnswer,
   splitSiteFacts,
@@ -96,18 +96,77 @@ export const Route = createFileRoute("/api/chat")({
           );
         }
 
-        // ---- Build verified context -------------------------------------
+        const json = (payload: Record<string, unknown>, status = 200) =>
+          new Response(JSON.stringify(payload), {
+            status,
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              "Cache-Control": "no-store",
+            },
+          });
+
+        // ASSISTANT MODE — local school knowledge only. No Gemini, no document dump.
+        if (mode === "assistant") {
+          const nowIso = new Date().toISOString();
+          const [{ data: knowledge }, { data: notices }, { data: anns }] = await Promise.all([
+            supabaseAdmin
+              .from("ai_knowledge")
+              .select("category, title, content")
+              .eq("mode", "assistant")
+              .eq("is_active", true)
+              .limit(50),
+            supabaseAdmin
+              .from("notices")
+              .select("title, body, publish_at")
+              .eq("is_published", true)
+              .lte("publish_at", nowIso)
+              .order("publish_at", { ascending: false })
+              .limit(25),
+            supabaseAdmin
+              .from("announcements")
+              .select("message, publish_at")
+              .eq("is_published", true)
+              .lte("publish_at", nowIso)
+              .order("publish_at", { ascending: false })
+              .limit(15),
+          ]);
+
+          const dbSections: ContextSection[] = [];
+          for (const k of knowledge ?? []) {
+            dbSections.push({ title: `${k.title} (${k.category})`, body: k.content });
+          }
+          if (notices?.length) {
+            dbSections.unshift({
+              title: "Notice board — current notices",
+              body: notices
+                .map((n) => `- ${new Date(n.publish_at).toDateString()}: ${n.title} — ${n.body}`)
+                .join("\n"),
+            });
+          }
+          if (anns?.length) {
+            dbSections.unshift({
+              title: "Announcements",
+              body: anns.map((a) => `- ${a.message}`).join("\n"),
+            });
+          }
+
+          const sections: ContextSection[] = [...dbSections, ...splitSiteFacts(SITE_FACTS)];
+          const { answer } = composeAssistantAnswer(message, sections);
+          return json({ answer, engine: "balo-assistant" });
+        }
+
+        // ---- Student context: knowledge + study documents ----------------
         const [{ data: knowledge }, { data: docs }] = await Promise.all([
           supabaseAdmin
             .from("ai_knowledge")
             .select("category, title, content")
-            .eq("mode", mode)
+            .eq("mode", "student")
             .eq("is_active", true)
             .limit(50),
           supabaseAdmin
             .from("ai_documents")
             .select("title, doc_type, extracted_text")
-            .eq("mode", mode)
+            .eq("mode", "student")
             .eq("is_active", true)
             .limit(40),
         ]);
@@ -125,80 +184,8 @@ export const Route = createFileRoute("/api/chat")({
           }
         }
 
-        if (mode === "assistant") {
-          const nowIso = new Date().toISOString();
-          const [{ data: notices }, { data: anns }] = await Promise.all([
-            supabaseAdmin
-              .from("notices")
-              .select("title, body, publish_at")
-              .eq("is_published", true)
-              .lte("publish_at", nowIso)
-              .order("publish_at", { ascending: false })
-              .limit(25),
-            supabaseAdmin
-              .from("announcements")
-              .select("message, publish_at")
-              .eq("is_published", true)
-              .lte("publish_at", nowIso)
-              .order("publish_at", { ascending: false })
-              .limit(15),
-          ]);
-          if (notices?.length) {
-            dbSections.unshift({
-              title: "Notice board — current notices",
-              body: notices
-                .map((n) => `- ${new Date(n.publish_at).toDateString()}: ${n.title} — ${n.body}`)
-                .join("\n"),
-            });
-          }
-          if (anns?.length) {
-            dbSections.unshift({
-              title: "Announcements",
-              body: anns.map((a) => `- ${a.message}`).join("\n"),
-            });
-          }
-        }
-
         // History lives only in this browser tab. Nothing is written to the database.
         const history = parseClientHistory(body.history);
-
-        const json = (payload: Record<string, unknown>, status = 200) =>
-          new Response(JSON.stringify(payload), {
-            status,
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-              "Cache-Control": "no-store",
-            },
-          });
-
-        // ASSISTANT MODE — its own backend keys, models and verified school context.
-        if (mode === "assistant") {
-          const sections: ContextSection[] = [...dbSections, ...splitSiteFacts(SITE_FACTS)];
-          const { used } = composeAssistantAnswer(message, sections);
-          const assistantKeys = secretList("BALO_ASSISTANT_API_KEY", "BALO_ASSISTANT_API_KEY_BACKUP");
-          if (!assistantKeys.length) return errorJson("The school assistant is not configured yet. Please inform the school office.", 500);
-
-          const providerRule = asksAboutProvider(message)
-            ? 'The CURRENT question asks who powers you. Answer clearly: "No, I am BALO AI, powered by Google." Do not name a model unless specifically asked which model.'
-            : "The CURRENT question does not ask about your provider. Never mention Google, Gemini, a model, a provider, an API, or earlier provider-related conversation.";
-          const context = used.map((s) => `[${s.title}]\n${s.body}`).join("\n\n---\n\n").slice(0, 40000);
-          const system = `${settings?.system_instructions?.trim() || ASSISTANT_IDENTITY_RULES}\n\n${ASSISTANT_IDENTITY_RULES}\n\n${providerRule}\n\nAnswer ONLY the latest user message. Do not repeat or recap earlier answers. If this is a new topic, ignore earlier topics.\n\nAnswer only from this verified school context:\n${context}`;
-          try {
-            const result = await generateStudentAnswer({
-              system,
-              history: prepareChatHistory(history, message),
-              message,
-              imageDataUrl: null,
-              model: settings?.model ?? null,
-              fallbackModels: settings?.fallback_models ?? null,
-              apiKeys: assistantKeys,
-            });
-            return json({ answer: result.answer, engine: "balo-assistant" });
-          } catch (error) {
-            console.error("[balo-ai] assistant backend failed", error);
-            return errorJson("The school assistant is temporarily unavailable. Please try again shortly.", 503);
-          }
-        }
 
         // =================================================================
         // STUDENT MODE — direct Google Gemini with automatic model fallback.
