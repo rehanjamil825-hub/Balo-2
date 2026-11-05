@@ -25,6 +25,7 @@
   --color-ring: var(--ring);
   --font-display: "Fraunces", Georgia, serif;
   --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-balo-ai: "Quicksand", "Nunito", ui-rounded, sans-serif;
 }
 
 :root {
@@ -101,6 +102,24 @@
   color: var(--muted-foreground);
 }
 .balo-md a { text-decoration: underline; }
+
+/* Official BALO AI lettering: teal "balo" + orange "AI" */
+.balo-ai-wordmark {
+  font-family: var(--font-balo-ai);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+}
+.balo-ai-wordmark-name {
+  color: #1a6b67;
+}
+.balo-ai-wordmark-ai {
+  color: #ee5a22;
+  margin-left: 0.22em;
+  font-size: 0.78em;
+  letter-spacing: 0.02em;
+  font-weight: 700;
+}
 
 /* Thin, quiet scrollbar on the BALO AI transcript */
 .balo-ai-scroll {

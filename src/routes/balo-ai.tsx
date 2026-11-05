@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { BaloAiMark } from "@/components/BaloAiMark";
+import { BaloAiWordmark } from "@/components/BaloAiWordmark";
 import { useBaloChat, STARTERS, type Mode, type Msg } from "@/lib/use-balo-chat";
 
 export const Route = createFileRoute("/balo-ai")({
@@ -200,12 +201,10 @@ function BaloAiPage() {
             <ArrowLeft className="size-4" />
           </Link>
 
-          <BaloAiMark className="size-8 shrink-0 sm:size-9" alt="BALO AI" />
+          <BaloAiMark className="size-8 shrink-0 sm:size-9" alt="" />
 
           <div className="min-w-0 leading-tight">
-            <div className="font-display text-sm font-semibold tracking-tight sm:text-[15px]">
-              BALO <span className="text-primary">AI</span>
-            </div>
+            <BaloAiWordmark size="sm" />
             <div className="hidden text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:block">
               Balo English Medium School
             </div>
@@ -311,9 +310,9 @@ function BaloAiPage() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.12, duration: 0.4, ease }}
-                className="mt-6 font-display text-3xl font-semibold tracking-tight sm:text-4xl"
+                className="mt-6"
               >
-                BALO <span className="text-primary">AI</span>
+                <BaloAiWordmark size="lg" />
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0, y: 8 }}
