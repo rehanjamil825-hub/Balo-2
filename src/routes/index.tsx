@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useLightbox, TapHint } from "@/components/page-kit";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "@/lib/limited-motion";
+import { useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import {
   BookOpen, Heart, Users, Star, MapPin, Phone, Mail, ArrowRight,
@@ -82,7 +83,13 @@ function HeroCarousel() {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
+    let plays = 0;
     const timer = window.setInterval(() => {
+      plays += 1;
+      if (plays > 3) {
+        window.clearInterval(timer);
+        return;
+      }
       setActive((current) => (current + 1) % heroSlides.length);
     }, 3500);
 
@@ -139,7 +146,7 @@ function Hero() {
 
   return (
     <section ref={ref} id="top" className="relative min-h-screen flex items-center overflow-hidden pt-24">
-      <motion.div style={{ y, scale }} className="absolute inset-0 -z-10">
+      <motion.div style={{ y, scale }} className="absolute inset-0 -z-10 will-change-transform">
         <img src={hero} alt="Children at Balo English Medium School" className="size-full object-cover" width={1600} height={1024} />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/85 via-primary/60 to-accent/70" />
       </motion.div>

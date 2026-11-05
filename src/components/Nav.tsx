@@ -152,8 +152,12 @@ export function Nav() {
   const { t } = useLang();
   const hasUnreadNotices = useUnreadNotices();
 
+  const currentGroupKey =
+    navGroups.find((g) =>
+      g.items.some((i) => !i.hash && i.href === pathname),
+    )?.key ?? null;
+
   useEffect(() => {
-    setOpenGroup(null);
     setMobileOpen(false);
   }, [pathname]);
 
@@ -200,10 +204,20 @@ export function Nav() {
     mobile = false,
     inMenu = false,
   ) => {
+    const isCurrent = !item.hash && item.href === pathname;
+
     const className = mobile
-      ? "block text-sm font-medium text-foreground/70 hover:text-foreground cursor-pointer"
+      ? `block text-sm font-medium cursor-pointer ${
+          isCurrent
+            ? "font-semibold text-foreground"
+            : "text-foreground/70 hover:text-foreground"
+        }`
       : inMenu
-        ? "rounded-xl px-3 py-2 text-sm font-medium text-foreground/75 hover:bg-muted hover:text-foreground cursor-pointer"
+        ? `rounded-xl px-3 py-2 text-sm font-medium cursor-pointer ${
+            isCurrent
+              ? "bg-accent/15 font-semibold text-foreground"
+              : "text-foreground/75 hover:bg-muted hover:text-foreground"
+          }`
         : linkClasses;
 
     const showDot = item.notice && hasUnreadNotices;
@@ -241,7 +255,6 @@ export function Nav() {
         }}
         onClick={() => {
           setMobileOpen(false);
-          setOpenGroup(null);
         }}
       >
         {t(item.key)}
@@ -307,7 +320,7 @@ export function Nav() {
                   }
                   className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
                     groupActive
-                      ? "font-semibold text-foreground"
+                      ? "bg-accent/10 font-semibold text-foreground"
                       : "text-foreground/70 hover:text-foreground"
                   }`}
                 >
@@ -384,7 +397,12 @@ export function Nav() {
           </Link>
           <button
             className="relative rounded-lg p-2 transition-colors hover:bg-muted"
-            onClick={() => setMobileOpen(!mobileOpen)}
+            onClick={() => {
+              setMobileOpen((open) => {
+                if (!open) setOpenGroup(currentGroupKey);
+                return !open;
+              });
+            }}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
           >
             {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
@@ -420,7 +438,11 @@ export function Nav() {
                           : group.key,
                       )
                     }
-                    className="flex w-full items-center justify-between px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground"
+                    className={`flex w-full items-center justify-between px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-[0.2em] ${
+                      currentGroupKey === group.key
+                        ? "text-accent"
+                        : "text-muted-foreground"
+                    }`}
                     aria-expanded={
                       openGroup === group.key
                     }
