@@ -41,6 +41,7 @@ const navGroups: NavGroup[] = [
     key: "navgroup.about",
     items: [
       { key: "nav.about", href: "/about" },
+      { key: "nav.staff", href: "/staff" },
       { key: "nav.volunteers", href: "/volunteers" },
       { key: "nav.developers", href: "/developers" },
     ],
