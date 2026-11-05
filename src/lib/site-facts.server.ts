@@ -154,8 +154,10 @@ student news in the hall; then eight periods of about 40 minutes, roughly 10:00 
 to 3:40 PM, English-medium ICSE lessons; breaktime for tiffin in the foyer play area;
 music (vocals and harmonium) and dance; science and computer practicals; a weekly
 written reflection on good and bad actions; then a free hot lunch for every student.
-Awareness programmes for students and parents: nutrition (including fruit such as
-bananas), personal hygiene, and the importance of clean drinking water.
+Nurturing Hope: BALO started a Nurturing Hope programme for nutrition, cleanliness
+and overall development for students, beside studies. It includes nutrition (fruit
+such as bananas), personal hygiene, and the importance of clean drinking water.
+Students and parents learn together.
 Yoga Day (21 June): whole-school asanas and breathing.
 Other yearly activities: students' clean-neighbourhood rally in Pilkhana and
 Babudanga; Result Day with parents; free book and stationery distribution at the
@@ -256,14 +258,26 @@ students (class, subject and topic can be chosen; a photo of a question can be u
 It was built by the BALO student developer team.
 
 === DEVELOPERS (who built this website) ===
-This website was designed and built by the BALO student developer team:
-- Rehan Jamil — front-end and design.
-- Shahil Sharma — design and development.
-- Shibran Khatoon — design and gallery management.
-They are mentored by Mr Samuel Clay, a software engineer at Amazon based in the
-United Kingdom, who runs weekly live sessions with them — reviewing code, teaching
-engineering best practices and answering their questions. The team also built BALO AI
-for this website. Italian contributors and volunteers are credited on the About page.
+This website was designed and built by three BALO students — not outsiders.
+The Developers page has a section called "From students to developers" with each
+person's photograph and their own story.
+Rehan Jamil — front-end and design. He joined BALO at age 6. The school taught him
+everything; teachers are very helpful. He loves science, technology, and solving
+difficult problems in mathematics and coding. Director Rehana Khatoon and Principal
+Roshan Ara gave him the chance to attend workshops and seminars with great
+personalities. Most important: the team was mentored by Mr Samuel Clay from the UK.
+Shahil Sharma — design and development. He joined BALO at age 14. He was strong at
+calculations and precision, and liked technology and problem-solving. Rehana Miss
+and Principal Roshan Ara Miss also gave him workshop and seminar opportunities.
+Most important: mentored by Mr Samuel Clay from the UK.
+Shibran Khatoon — design and gallery management. She joined at age 8, very small and
+shy, knowing nothing; she is now in Class 12, nearly 10–11 years at BALO. The school
+taught her to read, write, speak and believe in herself. The website is a thank-you
+from students who arrived too small to hold a pencil and whose fingers are now on
+the keyboard. Most important: mentored by Mr Samuel Clay from the UK.
+The team also built BALO AI. When asked only "who built the website / who built you",
+name the three students first; share these life stories if asked how they grew up
+at BALO or about "from students to developers".
 
 === CONTACT ===
 Email: baloindia2015@gmail.com. Sister organisation websites: balo.it (Balo Italia)
