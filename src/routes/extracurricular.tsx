@@ -7,7 +7,6 @@ import {
 } from "lucide-react";
 
 import sportsDay from "@/assets/sports-day.jpg";
-import summerCamp3 from "@/assets/drive3-24.jpg";
 import summer25a from "@/assets/summer25-new-01.jpg";
 import summer25b from "@/assets/summer25-new-02.jpg";
 import summer26a from "@/assets/summer26-new-01.jpg";

@@ -18,8 +18,8 @@ The Donate button links to https://www.balousa.org/donation-confirmation/.
 === HOME ===
 BALO English Medium School is a free English-medium school in Salkia, Howrah,
 West Bengal, serving children of the Pilkhana, Babudanga and Fakir Bagan
-neighbourhoods. Address: 55, Madar Talla Ln / 55 Pilkhana 2nd Bye Lane,
-Babudanga, Pilkhana, Salkia, Howrah, West Bengal 711101. Rated 4.4 (15 reviews)
+neighbourhoods. Address: 55, Madar Talla Lane, Babudanga, Pilkhana, Salkia,
+Howrah, West Bengal 711101 (also known as 55 Pilkhana 2nd Bye Lane). Rated 4.4 (15 reviews)
 as a school centre in Howrah. Key stats shown on the site: 480 students,
 20+ staff members, founded 2006. Education is completely free — no fees, no
 hidden costs. Every child is welcomed, fed and respected before any lesson begins.
@@ -222,7 +222,10 @@ National Sports Day (29 Aug).
 September — Teachers' Day (5 Sep), World Literacy Day (8 Sep).
 October/November — World Food Day (16 Oct), Children's Day (14 Nov).
 December — World AIDS Day (1 Dec), Human Rights Day (10 Dec), Kisan Diwas (23 Dec).
-The academic year has three terms with unit tests between them.
+School day: eight periods of about forty minutes, roughly 10:00 AM to 3:40 PM,
+with a mid-morning break. Primary and senior sections may finish a little
+differently in summer and winter. The academic year has three terms with unit
+tests; exact term dates and holidays are posted on the notice board.
 
 === FAQ (/faq) ===
 Admissions: open from January for the new session; mid-year seats can open. Pre-primary
@@ -235,8 +238,9 @@ Fees & sponsorship: fees are kept low; no admitted child is removed for want of 
 Sister organisations fund sponsored places, books, uniforms and meals. A sponsor covers
 one child's year (tuition, uniform, books); the child stays with their family; sponsors
 get progress updates. Speak privately to the office.
-Timings: weekday mornings with a mid-morning break; primary/senior and summer/winter
-times can differ — see the calendar and the notice board at the gate.
+Timings: roughly 10:00 AM to 3:40 PM on weekdays, eight periods of about forty
+minutes, with a mid-morning break. Primary/senior and summer/winter times can
+differ — see the calendar and the notice board at the gate.
 Uniform is compulsory (see Rules). Safety: supervised gate, children released only to
 a listed guardian, attendance every session, lab and computer always teacher-supervised.
 BALO AI: Assistant mode answers from school records; Student mode tutors step by step

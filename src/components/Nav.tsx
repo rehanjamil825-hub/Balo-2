@@ -185,7 +185,7 @@ export function Nav() {
         if (!el) return;
 
         const top =
-          el.getBoundingClientRect().top + window.scrollY - 80;
+          el.getBoundingClientRect().top + window.scrollY - 130;
 
         window.scrollTo({
           top,
