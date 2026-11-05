@@ -5,7 +5,7 @@ import { motion } from "@/lib/limited-motion";
 import { useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import {
-  BookOpen, Heart, Users, Star, MapPin, Phone, Mail, ArrowRight,
+  BookOpen, Heart, Users, Star, MapPin, Mail, ArrowRight, Send,
   Sparkles, HandHeart, Quote,
 } from "lucide-react";
 
@@ -13,7 +13,6 @@ import hero from "@/assets/hero-classroom.jpg";
 import reading from "@/assets/classroom-reading.jpg";
 import teacher from "@/assets/activities7.jpeg";
 import story from "@/assets/teacher-board.jpg";
-import group from "@/assets/group-students.jpg";
 import portrait from "@/assets/student-portrait.jpg";
 import playground from "@/assets/playground.jpg";
 import hands from "@/assets/raised-hands.jpg";
@@ -57,7 +56,7 @@ export const Route = createFileRoute("/")({
         "@context": "https://schema.org",
         "@type": "School",
         name: "Balo English Medium School",
-        address: { "@type": "PostalAddress", streetAddress: "55 Pilkhana 2nd Bye Lane", addressLocality: "Howrah Salkia", addressRegion: "West Bengal", postalCode: "711101", addressCountry: "IN" },
+        address: { "@type": "PostalAddress", streetAddress: "55, Madar Talla Lane, Babudanga, Pilkhana", addressLocality: "Salkia, Howrah", addressRegion: "West Bengal", postalCode: "711101", addressCountry: "IN" },
         aggregateRating: { "@type": "AggregateRating", ratingValue: "4.4", reviewCount: "15" },
       }),
     }],
@@ -160,7 +159,7 @@ function Hero() {
             Every child deserves <span className="italic text-secondary">a chance to dream.</span>
           </motion.h1>
           <motion.p initial="hidden" animate="show" variants={fadeUp} custom={2} className="mt-6 text-lg md:text-xl text-white/85 max-w-xl">
-            Balo English Medium School is a worldwide community-run NGO delivering free, quality English-medium education to the children of Babudanga, Pilkhana — one classroom, one bright future at a time.
+            Balo English Medium School is a community-run NGO delivering free, quality English-medium education to the children of Babudanga and Pilkhana — one classroom, one bright future at a time.
           </motion.p>
           <motion.div initial="hidden" animate="show" variants={fadeUp} custom={3} className="mt-9 flex flex-wrap gap-4">
             <a href="#donate" className="group inline-flex items-center gap-2 rounded-full bg-white text-primary px-7 py-3.5 font-semibold shadow-soft hover:bg-secondary hover:text-secondary-foreground transition-all">
@@ -171,8 +170,17 @@ function Hero() {
             </a>
           </motion.div>
           <motion.div initial="hidden" animate="show" variants={fadeUp} custom={4} className="mt-10 flex items-center gap-6">
-            <div className="flex">
-              {[0,1,2,3,4].map(i => <Star key={i} className="size-5 fill-secondary text-secondary" />)}
+            <div className="flex" aria-label="4.4 out of 5 stars">
+              {[0, 1, 2, 3].map((i) => (
+                <Star key={i} className="size-5 fill-secondary text-secondary" />
+              ))}
+              <span className="relative size-5">
+                <Star className="size-5 text-secondary/35" />
+                <Star
+                  className="absolute inset-0 size-5 fill-secondary text-secondary"
+                  style={{ clipPath: "inset(0 60% 0 0)" }}
+                />
+              </span>
             </div>
             <div className="text-sm text-white/80"><span className="font-bold text-white">4.4</span> · 15 Google reviews</div>
           </motion.div>
@@ -405,7 +413,7 @@ function Impact() {
 
 function Donate() {
   return (
-    <section id="donate" className="py-28 px-6">
+    <section id="donate" className="scroll-mt-32 py-28 px-6">
       <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp}
         className="max-w-5xl mx-auto rounded-[2rem] gradient-warm border border-border p-10 md:p-16 text-center shadow-card">
         <div className="inline-flex items-center gap-2 rounded-full bg-accent/10 text-accent px-4 py-1.5 text-xs font-semibold mb-6">
@@ -432,27 +440,45 @@ function Donate() {
 
 function Contact() {
   return (
-    <section id="contact" className="py-28 px-6 bg-card">
+    <section id="contact" className="scroll-mt-32 py-28 px-6 bg-card">
       <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16">
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp}>
-          <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">Visit · Call · Write</div>
+          <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">Visit · Write · Enquire</div>
           <h2 className="text-4xl md:text-5xl font-bold mb-8 text-balance">Come see our school, anytime.</h2>
           <div className="space-y-6">
-            {[
-              { icon: MapPin, t: "Our Address", d: "55 Pilkhana 2nd Bye Lane, Howrah Salkia 711101" },
-              { icon: Phone, t: "Call Us", d: "Reach out to schedule a visit or learn more." },
-              { icon: Mail, t: "Email", d: "baloindia2015@gmail.com" },
-            ].map((c) => (
-              <div key={c.t} className="flex gap-4">
-                <div className="size-12 rounded-2xl bg-primary/10 text-primary grid place-items-center shrink-0">
-                  <c.icon className="size-5" />
-                </div>
-                <div>
-                  <div className="font-semibold">{c.t}</div>
-                  <div className="text-muted-foreground text-sm mt-1 max-w-sm">{c.d}</div>
+            <div className="flex gap-4">
+              <div className="size-12 rounded-2xl bg-primary/10 text-primary grid place-items-center shrink-0">
+                <MapPin className="size-5" />
+              </div>
+              <div>
+                <div className="font-semibold">Our Address</div>
+                <div className="text-muted-foreground text-sm mt-1 max-w-sm">
+                  55, Madar Talla Lane, Babudanga, Pilkhana, Salkia, Howrah, West Bengal 711101
                 </div>
               </div>
-            ))}
+            </div>
+            <div className="flex gap-4">
+              <div className="size-12 rounded-2xl bg-primary/10 text-primary grid place-items-center shrink-0">
+                <Mail className="size-5" />
+              </div>
+              <div>
+                <div className="font-semibold">Email</div>
+                <a href="mailto:baloindia2015@gmail.com" className="text-muted-foreground text-sm mt-1 max-w-sm block hover:text-primary underline-offset-2 hover:underline">
+                  baloindia2015@gmail.com
+                </a>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="size-12 rounded-2xl bg-primary/10 text-primary grid place-items-center shrink-0">
+                <Send className="size-5" />
+              </div>
+              <div>
+                <div className="font-semibold">Send an enquiry</div>
+                <Link to="/enquiry" className="text-muted-foreground text-sm mt-1 max-w-sm block hover:text-primary underline-offset-2 hover:underline">
+                  Admissions, volunteering or a visit — the office replies by email.
+                </Link>
+              </div>
+            </div>
           </div>
         </motion.div>
         <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.7 }}

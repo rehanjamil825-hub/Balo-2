@@ -2,7 +2,7 @@ import { Megaphone } from "lucide-react";
 import { useLiveAnnouncements } from "@/lib/public-content";
 
 const FALLBACK = [
-  "🇮🇳 Visit us at 55 Pilkhana 2nd Bye Lane, Salkia",
+  "🇮🇳 Visit us at 55, Madar Talla Lane, Salkia, Howrah",
   "📅 Sports Day 2026 arrives this December — save the date",
   "💛 Support a child today — books, a meal, and a classroom that welcomes them",
 ];

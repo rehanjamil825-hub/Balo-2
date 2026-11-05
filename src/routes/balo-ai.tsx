@@ -89,7 +89,7 @@ function HeroLogo() {
         aria-hidden
         className="absolute size-40 rounded-full bg-secondary/30 blur-3xl sm:size-48"
         animate={{ opacity: [0.35, 0.7, 0.35], scale: [0.94, 1.06, 0.94] }}
-        transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut" }}
+        transition={{ duration: 4.8, repeat: 3, ease: "easeInOut" }}
       />
       <motion.div
         initial={{ scale: 0.78, opacity: 0 }}
