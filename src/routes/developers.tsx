@@ -5,12 +5,15 @@ import { Code2, Code, Heart, Sparkles } from "lucide-react";
 
 import developers from "@/assets/developers-new.jpg";
 import banner from "@/assets/developers-banner-code.jpg";
+import rehanPhoto from "@/assets/developer-rehan-jamil.jpg";
+import shahilPhoto from "@/assets/developer-shahil-sharma.jpg";
+import shibranPhoto from "@/assets/developer-shibran-khatoon.jpg";
 
 export const Route = createFileRoute("/developers")({
   head: () => ({
     meta: [
       { title: "Developers — Balo English Medium School" },
-      { name: "description", content: "Meet the developers behind the Balo English Medium School website: Rehan Jamil, Shahil Sharma, and Shibran Khatoon." },
+      { name: "description", content: "From students to developers: Rehan Jamil, Shahil Sharma and Shibran Khatoon — BALO students who built this website for their school." },
       { property: "og:title", content: "Developers — Balo English Medium School" },
       { property: "og:description", content: "The team that built this website with love for Balo English Medium School." },
       { property: "og:image", content: developers },
@@ -39,14 +42,69 @@ const team = [
   {
     name: "Shahil Sharma",
     role: "Developer",
-    note: "The one in the white and brown shirt —Designing and developement.",
+    note: "The one in the white and brown shirt — design and development.",
     color: "from-accent to-secondary",
   },
   {
     name: "Shibran Khatoon",
     role: "Developer",
-    note: "The one in the brown dress — Designing and gallery Management.",
+    note: "The one in the brown dress — design and gallery management.",
     color: "from-secondary to-primary",
+  },
+];
+
+const stories: {
+  name: string;
+  photo: string;
+  alt: string;
+  paragraphs: string[];
+}[] = [
+  {
+    name: "Rehan Jamil",
+    photo: rehanPhoto,
+    alt: "Rehan Jamil, student developer at Balo English Medium School",
+    paragraphs: [
+      "I am Rehan Jamil, a student of Balo English Medium School — a boy who grew up in these classrooms, with a mind that loves science, technology, and hard problems.",
+      "I joined this school when I was just six years old. I was little. I knew almost nothing.",
+      "Balo taught me everything. How to read. How to write. How to think. The teachers here are very helpful; they never let a child feel left behind.",
+      "I was always interested in science and technology. I liked sitting with a difficult question in mathematics or in coding until it opened — the more complex it was, the more I wanted to solve it.",
+      "Director Rehana Miss and Principal Roshan Ara Miss gave me the chance to attend many workshops and seminars with great personalities. Those doors changed my life.",
+      "And most important of all: we were mentored by Mr Samuel Clay from the United Kingdom. His weekly guidance taught us how to build with care.",
+      "This website is our thank you to the school that made us who we are.",
+    ],
+  },
+  {
+    name: "Shahil Sharma",
+    photo: shahilPhoto,
+    alt: "Shahil Sharma, student developer at Balo English Medium School",
+    paragraphs: [
+      "I am Shahil Sharma, a student of Balo English Medium School. I came here later than some of my friends, but this school became my home just the same.",
+      "I joined BALO when I was fourteen years old. I was already good at calculations and precision — numbers made sense to me — and I also loved technology and problem-solving.",
+      "Balo's teachers are very helpful. They gave me a place to grow what I was already good at, and to learn what I did not yet know.",
+      "Director Rehana Miss and Principal Roshan Ara Miss gave me the opportunity to attend workshops and seminars with great personalities — the same doors they opened for my teammates.",
+      "And most important of all: we were mentored by Mr Samuel Clay from the United Kingdom. He taught us how to think like builders, not just students.",
+      "We made this website with love, as a small thank you to the school that shaped us.",
+    ],
+  },
+  {
+    name: "Shibran Khatoon",
+    photo: shibranPhoto,
+    alt: "Shibran Khatoon, student developer at Balo English Medium School",
+    paragraphs: [
+      "I am Shibran Khatoon, a student of Balo English Medium School — a girl with a mind full of thoughts, courage, and big dreams.",
+      "I joined this school when I was just eight years old. I was so small, so shy, and I knew nothing.",
+      "And now, I am in Class 12.",
+      "Almost ten or eleven years… I have grown up here. This school has seen me grow from a small child to a young woman.",
+      "This school taught me how to read, how to write, how to speak, and how to believe in myself. The most special thing about this website is that it is not made by outsiders.",
+      "It is made by the students of this very school. And not students who joined just a few years ago. We are the ones who came here with our little feet, when we did not even know how to hold a pencil.",
+      "And today, by God's grace, those same small fingers are always on the keyboard.",
+      "Director Rehana Miss and Principal Roshan Ara Miss opened doors for us — workshops and seminars with great personalities.",
+      "And most important of all: we were mentored by Mr Samuel Clay from the United Kingdom.",
+      "So we made this website with all our love, as a small thank you to our school.",
+      "We are really grateful, and we are so proud to be a part of this.",
+      "It is not just a website. It is our love for the school that made us who we are today.",
+      "With all my love.",
+    ],
   },
 ];
 
@@ -72,7 +130,7 @@ function DevelopersPage() {
               Meet the <span className="italic text-secondary">developers.</span>
             </h1>
             <p className="mt-6 text-lg md:text-xl text-white/85 max-w-2xl mx-auto">
-              Students and contributors from India who designed and built this website to share Balo English Medium School's story with the world.
+              Students of Balo English Medium School who designed and built this website to share their school's story with the world.
             </p>
           </motion.div>
         </div>
@@ -152,29 +210,60 @@ function DevelopersPage() {
       </section>
 
       <section className="py-24 px-6 bg-card">
-        <div className="max-w-5xl mx-auto">
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp} className="max-w-2xl mb-12">
-            <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">
-              How We Learned
+        <div className="mx-auto max-w-5xl">
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: false, amount: 0.2 }}
+            variants={fadeUp}
+            className="mb-16 max-w-2xl"
+          >
+            <div className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent">
+              From students to developers
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-balance leading-tight">
-              From classrooms to code editors.
+            <h2 className="text-balance text-4xl font-bold leading-tight md:text-5xl">
+              We grew up here. Then we built this.
             </h2>
+            <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
+              Not outsiders. Not a company. Three BALO students who walked in as children — and whose fingers are now on the keyboard.
+            </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-1 gap-6 max-w-2xl">
-            <motion.div
-              initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp}
-              className="p-8 rounded-3xl bg-background border border-border shadow-soft"
-            >
-              <div className="size-12 rounded-2xl bg-accent/10 text-accent grid place-items-center mb-4">
-                <Sparkles className="size-6" />
-              </div>
-              <h3 className="font-display text-2xl font-bold mb-3">Weekly Sessions with Mr Samuel Clay</h3>
-              <p className="text-muted-foreground leading-relaxed text-sm">
-                We are mentored by <strong>Mr Samuel Clay</strong>, a software engineer at Amazon based in the United Kingdom. Every week, he takes time out of his schedule to run live sessions with us — reviewing code, teaching engineering best practices, and patiently answering every question. His weekly guidance has shaped how we think, build, and ship software.
-              </p>
-            </motion.div>
+          <div className="space-y-20">
+            {stories.map((story, i) => (
+              <motion.article
+                key={story.name}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: false, amount: 0.15 }}
+                variants={fadeUp}
+                custom={i}
+                className={`grid items-start gap-8 lg:grid-cols-[minmax(0,0.9fr)_1.1fr] ${
+                  i % 2 === 1 ? "lg:[&>*:first-child]:order-2" : ""
+                }`}
+              >
+                <div className="overflow-hidden rounded-[2rem] border border-border bg-background shadow-card">
+                  <img
+                    src={story.photo}
+                    alt={story.alt}
+                    className="aspect-[3/4] w-full object-cover object-top"
+                  />
+                </div>
+                <div className="rounded-[2rem] border border-border bg-background p-6 shadow-soft sm:p-8">
+                  <div className="text-xs font-bold uppercase tracking-[0.2em] text-accent">
+                    {String(i + 1).padStart(2, "0")} · {story.name}
+                  </div>
+                  <div className="mt-5 space-y-4 text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+                    {story.paragraphs.map((p) => (
+                      <p key={p.slice(0, 48)}>{p}</p>
+                    ))}
+                  </div>
+                  <p className="mt-8 font-display text-xl italic text-foreground">
+                    ~ {story.name}
+                  </p>
+                </div>
+              </motion.article>
+            ))}
           </div>
         </div>
       </section>
