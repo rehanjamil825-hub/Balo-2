@@ -18,7 +18,7 @@ export const Route = createFileRoute("/about")({
       { title: "Leadership — Balo English Medium School, Howrah" },
       { name: "description", content: "Meet the founder, director and principal guiding Balo English Medium School in Howrah." },
       { property: "og:title", content: "Leadership — Balo English Medium School" },
-      { property: "og:description", content: "Meet the hearts behind Balo English Medium School: founder Mrs Elizabetta Ravoili, director Mrs Rehana Khatoon, and principal Mrs Roshan Ara." },
+      { property: "og:description", content: "Meet the hearts behind Balo English Medium School: founder Mrs Elisabetta Ravaioli, director Mrs Rehana Khatoon, and principal Mrs Roshan Ara." },
     ],
     links: [{ rel: "canonical", href: "/about" }],
   }),
@@ -36,11 +36,11 @@ const fadeUp = {
 
 const leaders = [
   {
-    name: "Elizabetta, Liam and Anna ",
-    role: "Founders",
+    name: "Elisabetta Ravaioli",
+    role: "Founder",
     image: founder,
     quote: "One classroom can lift an entire lane out of poverty.",
-    bio: "A lifelong educator with a heart for the underserved, Mrs Ravoili founded Balo English Medium School to make sure no child in Babudanga or Pilkhana was turned away for lack of money. She believes that dignity begins with a good teacher and a welcoming classroom.",
+    bio: "A lifelong educator with a heart for the underserved, Mrs Ravaioli founded Balo English Medium School to make sure no child in Babudanga or Pilkhana was turned away for lack of money. She believes that dignity begins with a good teacher and a welcoming classroom.",
   },
   {
     name: "Mrs Rehana Khatoon",
@@ -239,7 +239,7 @@ function ImpactQuote() {
           <p className="mt-6 text-2xl md:text-4xl font-display font-medium text-balance leading-snug">
             "We did not wait for a big building. We started with a big heart — and the building grew around it."
           </p>
-          <div className="mt-8 text-sm tracking-widest uppercase text-white/80">— Mrs Elizabetta Ravoili, Founder</div>
+          <div className="mt-8 text-sm tracking-widest uppercase text-white/80">— Mrs Elisabetta Ravaioli, Founder</div>
         </motion.div>
       </div>
     </section>

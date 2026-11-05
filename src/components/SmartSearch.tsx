@@ -17,7 +17,7 @@ const INDEX: Entry[] = [
   { title: "Life at BALO", href: "/life-at-balo", section: "School", keywords: "daily routine timetable school day students life culture nurturing hope nutrition cleanliness hygiene" },
   { title: "Welfare Society", href: "/welfare-society", section: "School", keywords: "welfare society charity support sponsorship help ngo" },
   { title: "Notices & Events", href: "/events", section: "School", keywords: "notice board news events announcements holidays updates circular" },
-  { title: "About Us", href: "/about", section: "About", keywords: "about founder elizabetta ravoili director rehana khatoon principal roshan ara history mission volunteers italy ireland usa malaysia" },
+  { title: "About Us", href: "/about", section: "About", keywords: "about founder elisabetta ravaioli betta director rehana khatoon principal roshan ara history mission volunteers italy ireland usa malaysia" },
   { title: "Staff", href: "/staff", section: "About", keywords: "staff teachers faculty manager ranjit mishra teaching team" },
   { title: "Developers", href: "/developers", section: "About", keywords: "developers coding web development students rehan jamil shahil sharma shibran khatoon samuel clay weekly sessions amazon from students to developers stories" },
   { title: "Facilities", href: "/facilities", section: "Academics", keywords: "library computer lab science laboratory smart class ac classrooms infrastructure" },
