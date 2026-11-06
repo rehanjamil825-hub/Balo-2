@@ -58,6 +58,7 @@ const stories: {
   name: string;
   photo: string;
   alt: string;
+  objectClass?: string;
   paragraphs: string[];
 }[] = [
   {
@@ -91,6 +92,7 @@ const stories: {
     name: "Shibran Khatoon",
     photo: shibranPhoto,
     alt: "Shibran Khatoon, student developer at Balo English Medium School",
+    objectClass: "object-[center_28%]",
     paragraphs: [
       "I am Shibran Khatoon, a student of Balo English Medium School — a girl with a mind full of thoughts, courage, and big dreams.",
       "I joined this school when I was just eight years old. I was so small, so shy, and I knew nothing.",
@@ -270,18 +272,20 @@ function DevelopersPage() {
                 viewport={{ once: true, amount: 0.15 }}
                 variants={fadeUp}
                 custom={i}
-                className={`grid items-start gap-8 lg:grid-cols-[minmax(0,0.9fr)_1.1fr] ${
+                className={`grid items-start gap-8 lg:grid-cols-2 ${
                   i % 2 === 1 ? "lg:[&>*:first-child]:order-2" : ""
                 }`}
               >
-                <div className="overflow-hidden rounded-[2rem] border border-border bg-background shadow-card">
-                  <img
-                    src={story.photo}
-                    alt={story.alt}
-                    className="aspect-[3/4] w-full object-cover object-top"
-                  />
+                <div className="lg:sticky lg:top-28">
+                  <div className="overflow-hidden rounded-[2rem] border border-border bg-background shadow-card">
+                    <img
+                      src={story.photo}
+                      alt={story.alt}
+                      className={`aspect-[3/4] w-full object-cover ${story.objectClass ?? "object-top"}`}
+                    />
+                  </div>
                 </div>
-                <div className="rounded-[2rem] border border-border bg-background p-6 shadow-soft sm:p-8">
+                <div className="flex h-full flex-col rounded-[2rem] border border-border bg-background p-6 shadow-soft sm:p-8">
                   <div className="text-xs font-bold uppercase tracking-[0.2em] text-accent">
                     {String(i + 1).padStart(2, "0")} · {story.name}
                   </div>
@@ -290,7 +294,7 @@ function DevelopersPage() {
                       <p key={p.slice(0, 48)}>{p}</p>
                     ))}
                   </div>
-                  <p className="mt-8 font-display text-xl italic text-foreground">
+                  <p className="mt-auto pt-8 font-display text-xl italic text-foreground">
                     ~ {story.name}
                   </p>
                 </div>
