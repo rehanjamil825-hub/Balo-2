@@ -32,7 +32,11 @@ npm install
 npm run dev
 ```
 
-You will need Supabase environment variables for enquiry, admin, and AI features (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, and the matching server-side keys). Ask a maintainer for a local `.env` rather than committing secrets.
+`npm run dev` prints a **Network** URL (for example `http://192.168.1.12:5173`). Open that on a phone or another laptop on the same Wi‑Fi. The site on `http://localhost:5173` only works on this computer.
+
+**BALO AI needs this Vite/Node process.** It is not a static page: the browser posts to `/api/chat`, and the server talks to Gemini with keys from `.env`. If you only run `vite preview`, host the `dist` folder, or open the site without those keys, the pages load but chat will fail.
+
+You will need Supabase environment variables for enquiry, admin, and AI features (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, and the matching server-side keys: `BALO_ASSISTANT_API_KEY`, `GEMINI_API_KEY`). Ask a maintainer for a local `.env` rather than committing secrets.
 
 ```bash
 npm run build    # production build (Node server for AWS)
