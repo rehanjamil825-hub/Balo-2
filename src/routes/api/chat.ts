@@ -172,18 +172,26 @@ export const Route = createFileRoute("/api/chat")({
           });
 
         // ASSISTANT MODE — Gemini with verified school context.
+        // If Gemini is missing or fails, answer from the local school records
+        // so the visitor still gets a reply instead of "could not answer that".
         if (mode === "assistant") {
           const sections: ContextSection[] = [...dbSections, ...splitSiteFacts(SITE_FACTS)];
-          const { used } = composeAssistantAnswer(message, sections);
-          const assistantKeys = secretList("BALO_ASSISTANT_API_KEY", "BALO_ASSISTANT_API_KEY_BACKUP");
+          const local = composeAssistantAnswer(message, sections);
+          const assistantKeys = secretList(
+            "BALO_ASSISTANT_API_KEY",
+            "BALO_ASSISTANT_API_KEY_BACKUP",
+            "GEMINI_API_KEY",
+            "GEMINI_API_KEY_BACKUP",
+          );
+
           if (!assistantKeys.length) {
-            return errorJson("The school assistant is not configured yet. Please inform the school office.", 500);
+            return json({ answer: local.answer, engine: "balo-assistant" });
           }
 
           const providerRule = asksAboutProvider(message)
             ? 'The CURRENT question asks who powers you. Answer clearly: "No, I am BALO AI, powered by Google." Do not name a model unless specifically asked which model.'
             : "The CURRENT question does not ask about your provider. Never mention Google, Gemini, a model, a provider, an API, or earlier provider-related conversation.";
-          const context = used.map((s) => `[${s.title}]\n${s.body}`).join("\n\n---\n\n").slice(0, 40000);
+          const context = local.used.map((s) => `[${s.title}]\n${s.body}`).join("\n\n---\n\n").slice(0, 40000);
           const system = `${settings?.system_instructions?.trim() || ASSISTANT_IDENTITY_RULES}\n\n${ASSISTANT_IDENTITY_RULES}\n\n${providerRule}\n\nAnswer ONLY the latest user message. Do not repeat or recap earlier answers. If this is a new topic, ignore earlier topics.\n\nFormatting: never reply as a bland wall of plain text. Use markdown with a clear visual hierarchy:\n- Start with a short ## heading that names the topic.\n- Use ### subheadings when you cover more than one point.\n- **Bold** names, places, numbers and key facts.\n- Use bullet lists or numbered steps whenever there are two or more items.\n- Short paragraphs. Leave a blank line between sections.\n\nAnswer only from this verified school context:\n${context}`;
           try {
             const result = await generateStudentAnswer({
@@ -197,8 +205,8 @@ export const Route = createFileRoute("/api/chat")({
             });
             return json({ answer: result.answer, engine: "balo-assistant" });
           } catch (error) {
-            console.error("[balo-ai] assistant backend failed", error);
-            return errorJson("The school assistant is temporarily unavailable. Please try again shortly.", 503);
+            console.error("[balo-ai] assistant backend failed, using school records", error);
+            return json({ answer: local.answer, engine: "balo-assistant" });
           }
         }
 
@@ -211,6 +219,7 @@ export const Route = createFileRoute("/api/chat")({
           "GEMINI_API_KEY_2",
           "BALO_STUDENT_API_KEY",
           "BALO_STUDENT_API_KEY_BACKUP",
+          "BALO_ASSISTANT_API_KEY",
         );
         if (!studentKeys.length) {
           return errorJson("The tutor is not configured yet. Please inform the school office.", 500);
