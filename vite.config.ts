@@ -18,6 +18,15 @@ export default defineConfig({
   },
   vite: {
     server: {
+      // Listen on the LAN so phones / other laptops can open the site.
+      // BALO AI posts to /api/chat on this same server — localhost-only
+      // binding is why chat "works here" and fails on other devices.
+      host: true,
+      allowedHosts: true,
+      cors: true,
+    },
+    preview: {
+      host: true,
       allowedHosts: true,
     },
   },
