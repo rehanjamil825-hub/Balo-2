@@ -135,7 +135,12 @@ export function useBaloChat(_active = true) {
         }
 
         if (!res.ok) {
-          throw new Error(payload.error || "BALO AI could not answer that. Please try again.");
+          throw new Error(
+            payload.error ||
+              (res.status === 404
+                ? "BALO AI could not reach the chat server. Use the Network URL from npm run dev, not a static preview."
+                : "BALO AI could not answer that. Please try again."),
+          );
         }
 
         const answer = (payload.answer ?? "").trim();

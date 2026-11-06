@@ -9,11 +9,16 @@
 
 const GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 
-/** Safe defaults if the backend settings row has no model configured. */
-export const DEFAULT_STUDENT_MODEL = "gemini-3.6-flash";
+/** Safe defaults if the backend settings row has no model configured.
+ *  Prefer the auto-updating alias, then current Flash IDs. Gemini 3.x
+ *  Flash models think by default; thinking tokens count against
+ *  maxOutputTokens, so the chain must leave room for real text. */
+export const DEFAULT_STUDENT_MODEL = "gemini-flash-latest";
 export const DEFAULT_STUDENT_FALLBACKS = [
   "gemini-3.5-flash",
-  "gemini-flash-latest",
+  "gemini-3.6-flash",
+  "gemini-2.5-flash",
+  "gemini-2.0-flash",
 ];
 export type StudentTurn = { role: "user" | "assistant"; content: string };
 
@@ -61,7 +66,11 @@ async function callGemini(opts: {
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: opts.system }] },
         contents: opts.contents,
-        generationConfig: { temperature: 0.6, maxOutputTokens: 2048 },
+        generationConfig: {
+          temperature: 0.6,
+          // Gemini 3 Flash spends thinking tokens from this budget first.
+          maxOutputTokens: 8192,
+        },
       }),
     },
   );
@@ -87,7 +96,10 @@ async function callGemini(opts: {
   }
 
   const text: string = (payload?.candidates?.[0]?.content?.parts ?? [])
-    .map((p: any) => (typeof p?.text === "string" ? p.text : ""))
+    .map((p: any) => {
+      if (!p || p.thought === true) return "";
+      return typeof p.text === "string" ? p.text : "";
+    })
     .join("")
     .trim();
 
@@ -99,8 +111,13 @@ async function callGemini(opts: {
 }
 
 /** Statuses worth retrying on the next model in the chain. */
-function shouldRetry(status?: number) {
-  return status === undefined || status === 404 || status === 408 || status === 429 || status >= 500;
+function shouldRetry(status?: number, message = "") {
+  if (status === undefined || status === 404 || status === 408 || status === 429 || (status ?? 0) >= 500) {
+    return true;
+  }
+  // Unknown / retired model names come back as 400 "is not found".
+  if (status === 400 && /not found|invalid|unknown model/i.test(message)) return true;
+  return false;
 }
 
 export async function generateStudentAnswer(opts: {
@@ -113,9 +130,16 @@ export async function generateStudentAnswer(opts: {
   apiKeys: string[];
 }): Promise<{ answer: string; model: string; attempts: GeminiAttempt[] }> {
   const attempts: GeminiAttempt[] = [];
+  // Always append the built-in chain so a stale admin model (or empty
+  // fallbacks row) cannot leave BALO AI with a single failing ID.
   const chain = Array.from(
     new Set(
-      [opts.model || DEFAULT_STUDENT_MODEL, ...(opts.fallbackModels ?? DEFAULT_STUDENT_FALLBACKS)]
+      [
+        opts.model,
+        ...(opts.fallbackModels ?? []),
+        DEFAULT_STUDENT_MODEL,
+        ...DEFAULT_STUDENT_FALLBACKS,
+      ]
         .map((m) => (m ?? "").trim())
         .filter(Boolean),
     ),
@@ -136,8 +160,9 @@ export async function generateStudentAnswer(opts: {
         return { answer, model, attempts };
       } catch (error: any) {
         const status = error?.status as number | undefined;
-        attempts.push({ model, keyIndex, status, message: String(error?.message ?? error).slice(0, 200) });
-        if (!shouldRetry(status)) break;
+        const message = String(error?.message ?? error).slice(0, 200);
+        attempts.push({ model, keyIndex, status, message });
+        if (!shouldRetry(status, message)) break;
       }
     }
   }
