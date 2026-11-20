@@ -1,7 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { isAuthorizedAdminEmail, OWNER_EMAIL } from "@/lib/admin-owner";
+import type { Database } from "@/integrations/supabase/types";
+import {
+  isAuthorizedAdminEmail,
+  isVerifiedAdminAccount,
+  normalizeAdminUsername,
+  OWNER_EMAIL,
+} from "@/lib/admin-owner";
 
 const usernameSchema = z
   .string()
@@ -14,17 +22,38 @@ const passwordSchema = z.string().min(8, "Password must be at least 8 characters
 const adminEmailSchema = z.string().trim().email("Enter a valid admin email.");
 
 function normalizedUsername(value: string) {
-  return value.trim().toLowerCase();
+  return normalizeAdminUsername(value);
 }
 
 function invalidCredentials() {
   return new Error("Invalid username or password.");
 }
 
-/** Live site origin for verification emails. Set SITE_URL on AWS, e.g. https://balo.example.com */
-function adminEmailRedirectTo() {
-  const site = process.env.SITE_URL?.trim().replace(/\/$/, "");
-  return site ? `${site}/admin-login` : "";
+/** Request origin, used when SITE_URL is not configured yet. */
+function requestOrigin(): string | null {
+  const request = getRequest();
+  if (!request) return null;
+  const host = request.headers.get("x-forwarded-host") || request.headers.get("host");
+  if (!host) return null;
+  const proto = request.headers.get("x-forwarded-proto") || "https";
+  return `${proto}://${host}`;
+}
+
+/**
+ * Public origin for links in admin emails.
+ *
+ * SITE_URL is trusted server configuration, so any http(s) origin from it is
+ * used. The browser-supplied request origin is only a development fallback and
+ * must match the allow-list, otherwise it would be an open redirect.
+ */
+async function adminLinkRedirect(path: string) {
+  const configured = process.env.SITE_URL?.trim().replace(/\/$/, "");
+  if (configured && /^https?:\/\/[^\s]+$/i.test(configured)) {
+    return `${configured}${path}`;
+  }
+  const { isAllowedAdminAuthOrigin } = await import("@/lib/admin-auth-rules");
+  const origin = requestOrigin();
+  return origin && isAllowedAdminAuthOrigin(origin) ? `${origin}${path}` : "";
 }
 
 /**
@@ -34,11 +63,13 @@ function adminEmailRedirectTo() {
  */
 export const registerAdmin = createServerFn({ method: "POST" })
   .inputValidator((input) =>
-    z.object({
-      username: usernameSchema,
-      password: passwordSchema,
-      adminEmail: adminEmailSchema,
-    }).parse(input),
+    z
+      .object({
+        username: usernameSchema,
+        password: passwordSchema,
+        adminEmail: adminEmailSchema,
+      })
+      .parse(input),
   )
   .handler(async ({ data }) => {
     if (!isAuthorizedAdminEmail(data.adminEmail)) {
@@ -62,7 +93,7 @@ export const registerAdmin = createServerFn({ method: "POST" })
     const { data: authData, error: authError } = await auth.auth.signUp({
       email: acceptedEmail,
       password: data.password,
-      options: { emailRedirectTo: adminEmailRedirectTo() },
+      options: { emailRedirectTo: (await adminLinkRedirect("/admin-login")) || undefined },
     });
     if (authError) {
       throw new Error("This admin email is already registered or could not be registered.");
@@ -90,6 +121,14 @@ export const signInAdmin = createServerFn({ method: "POST" })
     z.object({ username: usernameSchema, password: passwordSchema }).parse(input),
   )
   .handler(async ({ data }) => {
+    // Slow down password guessing: 10 attempts per address+username per 10 minutes.
+    const request = getRequest();
+    const { clientAddress, rateLimit } = await import("@/lib/rate-limit.server");
+    const attemptKey = `${request ? clientAddress(request) : "unknown"}:${normalizedUsername(data.username)}`;
+    if (!rateLimit(`admin-signin:${attemptKey}`, 10, 10 * 60_000).ok) {
+      throw new Error("Too many sign-in attempts. Please wait a few minutes and try again.");
+    }
+
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { passwordGrant } = await import("@/lib/admin-auth.server");
     const { data: profile, error: profileError } = await supabaseAdmin
@@ -99,7 +138,9 @@ export const signInAdmin = createServerFn({ method: "POST" })
       .maybeSingle();
     if (profileError || !profile) throw invalidCredentials();
 
-    const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(profile.user_id);
+    const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(
+      profile.user_id,
+    );
     const email = userData.user?.email;
     if (userError || !email) throw invalidCredentials();
 
@@ -113,7 +154,7 @@ export const signInAdmin = createServerFn({ method: "POST" })
       }
       throw invalidCredentials();
     }
-    if (!authData.user.email_confirmed_at) {
+    if (!isVerifiedAdminAccount(authData.user.email, authData.user.email_confirmed_at)) {
       throw new Error("EMAIL_NOT_VERIFIED: Verify the admin email before signing in.");
     }
 
@@ -144,43 +185,100 @@ export const resendAdminVerification = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin.auth.resend({
       type: "signup",
       email: acceptedEmail,
-      options: { emailRedirectTo: adminEmailRedirectTo() },
+      options: { emailRedirectTo: (await adminLinkRedirect("/admin-login")) || undefined },
     });
     if (error) throw new Error("Could not resend the verification email.");
     return { ok: true };
   });
 
 /**
- * Recovery is verified by the username-to-Auth identity mapping and the
- * authorised admin email. The password is written only through Auth's admin
- * API; it is never stored or returned by this application.
+ * Password recovery, step 1: send a reset link to the authorised inbox.
+ *
+ * The response is deliberately identical whether or not the username exists,
+ * so this endpoint cannot be used to discover admin accounts. Only Supabase
+ * Auth can issue the recovery token, so the caller must be able to read the
+ * owner inbox before the password can ever change.
  */
-export const recoverAdminPassword = createServerFn({ method: "POST" })
-  .inputValidator((input) =>
-    z.object({
-      username: usernameSchema,
-      adminEmail: adminEmailSchema,
-      password: passwordSchema,
-    }).parse(input),
-  )
+export const requestAdminPasswordReset = createServerFn({ method: "POST" })
+  .inputValidator((input) => z.object({ username: usernameSchema }).parse(input))
   .handler(async ({ data }) => {
-    if (!isAuthorizedAdminEmail(data.adminEmail)) {
-      throw new Error("We could not verify those admin details.");
+    const request = getRequest();
+    const { clientAddress, rateLimit } = await import("@/lib/rate-limit.server");
+    const ip = request ? clientAddress(request) : "unknown";
+    const limit = rateLimit(`admin-reset:${ip}`, 5, 15 * 60_000);
+    if (!limit.ok) {
+      throw new Error("Too many reset requests. Please wait a few minutes and try again.");
     }
+
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { createPasswordAuthClient } = await import("@/lib/admin-auth.server");
+
     const { data: profile } = await supabaseAdmin
       .from("admin_profiles")
       .select("user_id")
       .eq("normalized_username", normalizedUsername(data.username))
       .maybeSingle();
-    if (!profile) throw new Error("We could not verify those admin details.");
 
-    const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(profile.user_id);
-    if (userError || !userData.user?.email || !isAuthorizedAdminEmail(userData.user.email)) {
-      throw new Error("We could not verify those admin details.");
+    if (!profile) return { ok: true };
+
+    const { data: userData } = await supabaseAdmin.auth.admin.getUserById(profile.user_id);
+    const email = userData.user?.email;
+    if (!email || !isAuthorizedAdminEmail(email)) return { ok: true };
+
+    const redirectTo = await adminLinkRedirect("/admin-reset-password");
+    const auth = createPasswordAuthClient();
+    const { error } = await auth.auth.resetPasswordForEmail(email, {
+      ...(redirectTo ? { redirectTo } : {}),
+    });
+    if (error) {
+      console.error("[admin-reset] could not send recovery email", error.message);
     }
-    const { error } = await supabaseAdmin.auth.admin.updateUserById(profile.user_id, { password: data.password });
-    if (error) throw new Error("Could not update the admin password.");
+    // Same response in every case: the endpoint must not reveal which usernames exist.
+    return { ok: true };
+  });
+
+/**
+ * Password recovery, step 2: set the new password from a recovery session.
+ *
+ * The reset page can only obtain a session from the emailed recovery token
+ * (the admin client never persists sessions), so a valid session here is proof
+ * that someone read the authorised inbox. The account is then re-checked
+ * against the authorised+verified email rules before Auth is updated.
+ */
+export const completeAdminPasswordReset = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ password: passwordSchema }).parse(input))
+  .handler(async ({ context, data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(
+      context.userId,
+    );
+    const user = userData.user;
+    if (userError || !user || !isVerifiedAdminAccount(user.email, user.email_confirmed_at)) {
+      throw new Error(
+        "This reset link cannot be used for that account. Please request a new link.",
+      );
+    }
+
+    const { data: profile } = await supabaseAdmin
+      .from("admin_profiles")
+      .select("user_id")
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (!profile) {
+      throw new Error(
+        "This reset link cannot be used for that account. Please request a new link.",
+      );
+    }
+
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(context.userId, {
+      password: data.password,
+    });
+    if (error) {
+      throw new Error("Could not update the password. Please request a new reset link.");
+    }
+
     return { ok: true };
   });
 
@@ -203,7 +301,6 @@ export const getAdminStatus = createServerFn({ method: "GET" })
     return { isAdmin: Boolean(role), username: profile?.username ?? null };
   });
 
-
 // Existing admin CRUD (unchanged)
 const idSchema = z.object({ id: z.string().uuid() });
 const announcementInput = z.object({
@@ -218,7 +315,7 @@ const noticeInput = z.object({
   publish_at: z.string().datetime(),
 });
 
-async function requireAdmin(ctx: { supabase: any; userId: string }) {
+async function requireAdmin(ctx: { supabase: SupabaseClient<Database>; userId: string }) {
   const { data } = await ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "admin" });
   if (!data) throw new Error("Forbidden: admin only");
 }
@@ -227,7 +324,10 @@ export const listAllAnnouncements = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await requireAdmin(context);
-    const { data, error } = await context.supabase.from("announcements").select("*").order("publish_at", { ascending: false });
+    const { data, error } = await context.supabase
+      .from("announcements")
+      .select("*")
+      .order("publish_at", { ascending: false });
     if (error) throw error;
     return data;
   });
@@ -237,7 +337,11 @@ export const createAnnouncement = createServerFn({ method: "POST" })
   .inputValidator((i) => announcementInput.parse(i))
   .handler(async ({ context, data }) => {
     await requireAdmin(context);
-    const { data: row, error } = await context.supabase.from("announcements").insert(data).select().single();
+    const { data: row, error } = await context.supabase
+      .from("announcements")
+      .insert(data)
+      .select()
+      .single();
     if (error) throw error;
     return row;
   });
@@ -248,7 +352,12 @@ export const updateAnnouncement = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     await requireAdmin(context);
     const { id, ...patch } = data;
-    const { data: row, error } = await context.supabase.from("announcements").update(patch).eq("id", id).select().single();
+    const { data: row, error } = await context.supabase
+      .from("announcements")
+      .update(patch)
+      .eq("id", id)
+      .select()
+      .single();
     if (error) throw error;
     return row;
   });
@@ -267,7 +376,10 @@ export const listAllNotices = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await requireAdmin(context);
-    const { data, error } = await context.supabase.from("notices").select("*").order("publish_at", { ascending: false });
+    const { data, error } = await context.supabase
+      .from("notices")
+      .select("*")
+      .order("publish_at", { ascending: false });
     if (error) throw error;
     return data;
   });
@@ -277,7 +389,11 @@ export const createNotice = createServerFn({ method: "POST" })
   .inputValidator((i) => noticeInput.parse(i))
   .handler(async ({ context, data }) => {
     await requireAdmin(context);
-    const { data: row, error } = await context.supabase.from("notices").insert(data).select().single();
+    const { data: row, error } = await context.supabase
+      .from("notices")
+      .insert(data)
+      .select()
+      .single();
     if (error) throw error;
     return row;
   });
@@ -288,7 +404,12 @@ export const updateNotice = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     await requireAdmin(context);
     const { id, ...patch } = data;
-    const { data: row, error } = await context.supabase.from("notices").update(patch).eq("id", id).select().single();
+    const { data: row, error } = await context.supabase
+      .from("notices")
+      .update(patch)
+      .eq("id", id)
+      .select()
+      .single();
     if (error) throw error;
     return row;
   });
@@ -302,5 +423,3 @@ export const deleteNotice = createServerFn({ method: "POST" })
     if (error) throw error;
     return { ok: true };
   });
-
-
