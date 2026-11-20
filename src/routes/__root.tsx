@@ -252,6 +252,19 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
+        {/*
+          Animation entry states are inline styles (opacity: 0), which would hide
+          the page if JavaScript never runs. This is the no-JS fallback: make
+          everything visible and leave it still.
+        */}
+        <noscript>
+          <style
+            dangerouslySetInnerHTML={{
+              __html:
+                '.balo-splash{display:none !important}[style*="opacity:0"],[style*="opacity: 0"]{opacity:1 !important;transform:none !important;filter:none !important}',
+            }}
+          />
+        </noscript>
         <LoadingScreen />
         {!isAdminShellRoute && !isChatRoute && <Nav />}
         {!isBare && !isAdminLogin && <AnnouncementBanner />}

@@ -30,7 +30,7 @@ export function LoadingScreen() {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
-          className="fixed inset-0 z-[100] grid place-items-center bg-background"
+          className="balo-splash fixed inset-0 z-[100] grid place-items-center bg-background"
         >
           <div className="relative">
             {/* Expanding rings */}
