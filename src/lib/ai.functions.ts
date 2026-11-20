@@ -1,51 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
-
-const sessionSchema = z.object({
-  sessionKey: z.string().trim().min(8).max(80),
-  mode: z.enum(["assistant", "student"]),
-});
-
-/**
- * Loads the saved conversation for a visitor session + mode.
- * Session keys are unguessable random client-generated ids, so a caller can
- * only ever read back the conversation belonging to its own browser.
- */
-export const getConversation = createServerFn({ method: "POST" })
-  .inputValidator((i) => sessionSchema.parse(i))
-  .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: conv } = await supabaseAdmin
-      .from("ai_conversations")
-      .select("id")
-      .eq("session_key", data.sessionKey)
-      .eq("mode", data.mode)
-      .maybeSingle();
-    if (!conv) return { messages: [] as { role: string; content: string }[] };
-
-    const { data: rows } = await supabaseAdmin
-      .from("ai_messages")
-      .select("role, content, created_at")
-      .eq("conversation_id", conv.id)
-      .order("created_at", { ascending: true })
-      .limit(100);
-
-    return { messages: (rows ?? []).map((r) => ({ role: r.role, content: r.content })) };
-  });
-
-export const clearConversation = createServerFn({ method: "POST" })
-  .inputValidator((i) => sessionSchema.parse(i))
-  .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: conv } = await supabaseAdmin
-      .from("ai_conversations")
-      .select("id")
-      .eq("session_key", data.sessionKey)
-      .eq("mode", data.mode)
-      .maybeSingle();
-    if (conv) await supabaseAdmin.from("ai_messages").delete().eq("conversation_id", conv.id);
-    return { ok: true };
-  });
 
 const enquirySchema = z.object({
   name: z.string().trim().min(2).max(100),
@@ -58,6 +13,17 @@ const enquirySchema = z.object({
 export const submitEnquiry = createServerFn({ method: "POST" })
   .inputValidator((i) => enquirySchema.parse(i))
   .handler(async ({ data }) => {
+    // Enquiries are public and trigger office email, so keep them rate limited.
+    const request = getRequest();
+    const { clientAddress, rateLimit } = await import("@/lib/rate-limit.server");
+    const ip = request ? clientAddress(request) : "unknown";
+    const limit = rateLimit(`enquiry:${ip}`, 5, 60 * 60_000);
+    if (!limit.ok) {
+      throw new Error(
+        "You have sent several enquiries already. Please wait an hour, or email baloindia2015@gmail.com directly.",
+      );
+    }
+
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("enquiries").insert({
       name: data.name,

@@ -1,9 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { absoluteUrl, canonicalLink } from "@/lib/school-facts";
 import { motion } from "@/lib/limited-motion";
 import { useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import {
-  Trophy, Sun, Activity, PartyPopper, Music, Sparkles, Calendar, MapPin, ArrowRight,
+  Trophy,
+  Sun,
+  Activity,
+  PartyPopper,
+  Music,
+  Sparkles,
+  Calendar,
+  MapPin,
+  ArrowRight,
 } from "lucide-react";
 
 import sportsDay from "@/assets/sports-day.jpg";
@@ -27,19 +36,26 @@ import hero from "@/assets/playground.jpg";
 import { MediaCarousel } from "@/components/MediaCarousel";
 import { useLightbox, TapHint } from "@/components/page-kit";
 
-
 const music = musicAsset;
 
 export const Route = createFileRoute("/extracurricular")({
   head: () => ({
     meta: [
       { title: "Extracurricular Activities — Balo English Medium School, Howrah" },
-      { name: "description", content: "Discover sports day, summer camp, football, dance, music, and fun fiesta at Balo English Medium School — where learning extends beyond the classroom." },
+      {
+        name: "description",
+        content:
+          "Discover sports day, summer camp, football, dance, music, and fun fiesta at Balo English Medium School — where learning extends beyond the classroom.",
+      },
       { property: "og:title", content: "Extracurricular Activities — Balo English Medium School" },
-      { property: "og:description", content: "Sports day, summer camp, football, dance, music, and fun fiesta at Balo English Medium School, Howrah." },
-      { property: "og:image", content: sportsDay },
+      {
+        property: "og:description",
+        content:
+          "Sports day, summer camp, football, dance, music, and fun fiesta at Balo English Medium School, Howrah.",
+      },
+      { property: "og:image", content: absoluteUrl(sportsDay) },
     ],
-    links: [{ rel: "canonical", href: "/extracurricular" }],
+    links: [canonicalLink("/extracurricular")],
   }),
   component: ExtracurricularPage,
 });
@@ -69,16 +85,23 @@ const activities: Activity[] = [
     title: "Sports Day",
     image: sportsDay,
     season: "Annual Event",
-    description: "Our Annual Sports Day is the highlight of the year. Children compete in races, relays, sack races, and team games, learning sportsmanship, discipline, and the joy of movement.",
-    highlights: ["Track & field races", "Team games", "House competitions", "Medals & certificates"],
+    description:
+      "Our Annual Sports Day is the highlight of the year. Children compete in races, relays, sack races, and team games, learning sportsmanship, discipline, and the joy of movement.",
+    highlights: [
+      "Track & field races",
+      "Team games",
+      "House competitions",
+      "Medals & certificates",
+    ],
   },
   {
     icon: Sun,
     title: "Summer Camp",
     image: summer26a,
-    carousel: [summer26a, summer26b, summer26c, summer25a, summer25b,],
+    carousel: [summer26a, summer26b, summer26c, summer25a, summer25b],
     season: "Summer Break",
-    description: "During summer break, our campus transforms into a creative playground. Students enjoy art, crafts, storytelling, music, dance, and outdoor adventures in a safe, supervised environment.",
+    description:
+      "During summer break, our campus transforms into a creative playground. Students enjoy art, crafts, storytelling, music, dance, and outdoor adventures in a safe, supervised environment.",
     highlights: ["Arts & crafts", "Music & dance", " Game sessions", "Science Experiments"],
   },
   {
@@ -87,8 +110,14 @@ const activities: Activity[] = [
     image: rugby,
     carousel: [rugby, footballNew],
     season: "Year-round Training",
-    description: "Football builds strength, teamwork, and resilience. Our boys train regularly and play friendly matches, learning fair play and the joy of being part of a team.",
-    highlights: ["Weekly practice sessions", "Boys' team participation", "Fitness & coordination", "Inter-school matches"],
+    description:
+      "Football builds strength, teamwork, and resilience. Our boys train regularly and play friendly matches, learning fair play and the joy of being part of a team.",
+    highlights: [
+      "Weekly practice sessions",
+      "Boys' team participation",
+      "Fitness & coordination",
+      "Inter-school matches",
+    ],
   },
   {
     icon: PartyPopper,
@@ -96,8 +125,14 @@ const activities: Activity[] = [
     image: funFiesta,
     carousel: [funFiesta, funFiestaA, funFiestaB],
     season: "Annual Carnival",
-    description: "Fun Fiesta is our annual carnival filled with games, rides, food stalls, performances, and laughter. It brings students, families, and teachers together to celebrate community.",
-    highlights: ["Carnival games & rides", "Student performances", "Food stalls", "Family-friendly fun"],
+    description:
+      "Fun Fiesta is our annual carnival filled with games, rides, food stalls, performances, and laughter. It brings students, families, and teachers together to celebrate community.",
+    highlights: [
+      "Carnival games & rides",
+      "Student performances",
+      "Food stalls",
+      "Family-friendly fun",
+    ],
   },
   {
     icon: Music,
@@ -105,8 +140,14 @@ const activities: Activity[] = [
     image: music,
     carousel: [musicNew, music],
     season: "Weekly Sessions",
-    description: "Students learn vocals and harmonium under the guidance of our music teacher. Music classes nurture rhythm, confidence, and a lifelong love for the arts.",
-    highlights: ["Harmonium & vocal training", "Choir & group singing", "Cultural performances", "Festival celebrations"],
+    description:
+      "Students learn vocals and harmonium under the guidance of our music teacher. Music classes nurture rhythm, confidence, and a lifelong love for the arts.",
+    highlights: [
+      "Harmonium & vocal training",
+      "Choir & group singing",
+      "Cultural performances",
+      "Festival celebrations",
+    ],
   },
   {
     icon: Sparkles,
@@ -114,8 +155,14 @@ const activities: Activity[] = [
     image: dance1,
     carousel: [dance1, dance2, dance3, dance4],
     season: "Cultural Programme",
-    description: "Dance at Balo helps children move with confidence, express feelings without words, and celebrate every festival together. Students learn choreography for annual events, cultural days, and school celebrations.",
-    highlights: ["Group choreography", "Festival performances", "Confidence & stage presence", "Team coordination"],
+    description:
+      "Dance at Balo helps children move with confidence, express feelings without words, and celebrate every festival together. Students learn choreography for annual events, cultural days, and school celebrations.",
+    highlights: [
+      "Group choreography",
+      "Festival performances",
+      "Confidence & stage presence",
+      "Team coordination",
+    ],
   },
 ];
 
@@ -146,7 +193,8 @@ function Hero() {
             Learning beyond the <span className="italic text-secondary">classroom.</span>
           </h1>
           <p className="mt-6 text-lg md:text-xl text-white/85 max-w-2xl">
-            At Balo English Medium School, sports, camps, and celebrations are part of the curriculum. We believe happy, active children become confident, well-rounded adults.
+            At Balo English Medium School, sports, camps, and celebrations are part of the
+            curriculum. We believe happy, active children become confident, well-rounded adults.
           </p>
         </motion.div>
       </div>
@@ -157,7 +205,6 @@ function Hero() {
 function ActivitiesGrid() {
   const lightbox = useLightbox();
   return (
-
     <section className="py-28 px-6">
       <div className="max-w-7xl mx-auto">
         <motion.div
@@ -174,7 +221,8 @@ function ActivitiesGrid() {
             Four events our students never forget.
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            From the thrill of Sports Day to the creativity of Summer Camp, these programs shape character, friendships, and lifelong memories.
+            From the thrill of Sports Day to the creativity of Summer Camp, these programs shape
+            character, friendships, and lifelong memories.
           </p>
         </motion.div>
 
@@ -192,9 +240,17 @@ function ActivitiesGrid() {
             >
               <div className="aspect-[16/10] overflow-hidden">
                 {a.carousel ? (
-                  <MediaCarousel images={a.carousel} title={a.title} aspect="aspect-[16/10]" onOpen={lightbox.open} />
+                  <MediaCarousel
+                    images={a.carousel}
+                    title={a.title}
+                    aspect="aspect-[16/10]"
+                    onOpen={lightbox.open}
+                  />
                 ) : (
-                  <div className="relative size-full cursor-zoom-in" onClick={() => lightbox.open(a.image, a.title)}>
+                  <div
+                    className="relative size-full cursor-zoom-in"
+                    onClick={() => lightbox.open(a.image, a.title)}
+                  >
                     <img
                       src={a.image}
                       alt={a.title}
@@ -238,7 +294,6 @@ function ActivitiesGrid() {
       </div>
       {lightbox.node}
     </section>
-
   );
 }
 
@@ -256,10 +311,12 @@ function JoinCTA() {
           <MapPin className="size-4" /> Salkia, Howrah
         </div>
         <h2 className="text-4xl md:text-6xl font-bold text-balance leading-tight">
-          Every child deserves a place to <span className="text-accent italic">play, grow, and shine.</span>
+          Every child deserves a place to{" "}
+          <span className="text-accent italic">play, grow, and shine.</span>
         </h2>
         <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
-          Enrol your child at Balo English Medium School and give them access to academics, sports, arts, and community life — all free of cost.
+          Enrol your child at Balo English Medium School and give them access to academics, sports,
+          arts, and community life — all free of cost.
         </p>
         <a
           href="/#contact"

@@ -36,9 +36,7 @@ function buildContents(history: StudentTurn[], message: string, imageDataUrl: st
     parts: [{ text: turn.content }] as GeminiPart[],
   }));
 
-  const parts: GeminiPart[] = [
-    { text: message || "Please read this image and help me with it." },
-  ];
+  const parts: GeminiPart[] = [{ text: message || "Please read this image and help me with it." }];
   if (imageDataUrl) {
     const img = parseDataUrl(imageDataUrl);
     if (img) parts.push({ inlineData: img });
@@ -47,6 +45,11 @@ function buildContents(history: StudentTurn[], message: string, imageDataUrl: st
   return contents;
 }
 
+type GeminiReplyPart = { text?: string; thought?: boolean };
+type GeminiPayload = {
+  candidates?: { content?: { parts?: GeminiReplyPart[] }; finishReason?: string }[];
+  promptFeedback?: { blockReason?: string };
+};
 type GeminiAttempt = { model: string; keyIndex: number; status?: number; message: string };
 
 async function callGemini(opts: {
@@ -55,25 +58,26 @@ async function callGemini(opts: {
   system: string;
   contents: unknown;
 }) {
-  const res = await fetch(
-    `${GEMINI_BASE}/${encodeURIComponent(opts.model)}:generateContent`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": opts.apiKey,
-      },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: opts.system }] },
-        contents: opts.contents,
-        generationConfig: {
-          temperature: 0.6,
-          // Gemini 3 Flash spends thinking tokens from this budget first.
-          maxOutputTokens: 8192,
-        },
-      }),
+  const res = await fetch(`${GEMINI_BASE}/${encodeURIComponent(opts.model)}:generateContent`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-key": opts.apiKey,
     },
-  );
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: opts.system }] },
+      contents: opts.contents,
+      generationConfig: {
+        temperature: 0.6,
+        // Gemini 3 Flash spends thinking tokens from this budget first.
+        // Kept deliberately modest: a public endpoint must not be able to
+        // trigger very large (expensive) generations.
+        maxOutputTokens: 4096,
+      },
+    }),
+    // Never hold a slot open indefinitely if Google stalls.
+    signal: AbortSignal.timeout(45_000),
+  });
 
   const raw = await res.text();
   if (!res.ok) {
@@ -88,15 +92,15 @@ async function callGemini(opts: {
     throw err;
   }
 
-  let payload: any = {};
+  let payload: GeminiPayload = {};
   try {
-    payload = JSON.parse(raw);
+    payload = JSON.parse(raw) as GeminiPayload;
   } catch {
     throw new Error("Malformed response from the tutoring service.");
   }
 
   const text: string = (payload?.candidates?.[0]?.content?.parts ?? [])
-    .map((p: any) => {
+    .map((p) => {
       if (!p || p.thought === true) return "";
       return typeof p.text === "string" ? p.text : "";
     })
@@ -112,7 +116,13 @@ async function callGemini(opts: {
 
 /** Statuses worth retrying on the next model in the chain. */
 function shouldRetry(status?: number, message = "") {
-  if (status === undefined || status === 404 || status === 408 || status === 429 || (status ?? 0) >= 500) {
+  if (
+    status === undefined ||
+    status === 404 ||
+    status === 408 ||
+    status === 429 ||
+    (status ?? 0) >= 500
+  ) {
     return true;
   }
   // Unknown / retired model names come back as 400 "is not found".
@@ -158,9 +168,10 @@ export async function generateStudentAnswer(opts: {
           contents,
         });
         return { answer, model, attempts };
-      } catch (error: any) {
-        const status = error?.status as number | undefined;
-        const message = String(error?.message ?? error).slice(0, 200);
+      } catch (error: unknown) {
+        const failure = error as { status?: number; message?: string };
+        const status = failure.status;
+        const message = String(failure.message ?? error).slice(0, 200);
         attempts.push({ model, keyIndex, status, message });
         if (!shouldRetry(status, message)) break;
       }

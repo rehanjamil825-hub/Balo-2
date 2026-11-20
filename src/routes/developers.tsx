@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { absoluteUrl, canonicalLink } from "@/lib/school-facts";
 import { motion } from "@/lib/limited-motion";
 import { useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
@@ -14,12 +15,19 @@ export const Route = createFileRoute("/developers")({
   head: () => ({
     meta: [
       { title: "Developers — Balo English Medium School" },
-      { name: "description", content: "From students to developers: Rehan Jamil, Shahil Sharma and Shibran Khatoon — BALO students who built this website for their school." },
+      {
+        name: "description",
+        content:
+          "From students to developers: Rehan Jamil, Shahil Sharma and Shibran Khatoon — BALO students who built this website for their school.",
+      },
       { property: "og:title", content: "Developers — Balo English Medium School" },
-      { property: "og:description", content: "The team that built this website with love for Balo English Medium School." },
-      { property: "og:image", content: developers },
+      {
+        property: "og:description",
+        content: "The team that built this website with love for Balo English Medium School.",
+      },
+      { property: "og:image", content: absoluteUrl(developers) },
     ],
-    links: [{ rel: "canonical", href: "/developers" }],
+    links: [canonicalLink("/developers")],
   }),
   component: DevelopersPage,
 });
@@ -118,8 +126,14 @@ function DevelopersPage() {
   const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
   return (
     <main>
-      <section ref={heroRef} className="relative min-h-[55vh] flex items-center overflow-hidden px-6 py-20 pt-24 text-white">
-        <motion.div style={{ y, scale: heroScale }} className="absolute inset-0 -z-10 will-change-transform">
+      <section
+        ref={heroRef}
+        className="relative min-h-[55vh] flex items-center overflow-hidden px-6 py-20 pt-24 text-white"
+      >
+        <motion.div
+          style={{ y, scale: heroScale }}
+          className="absolute inset-0 -z-10 will-change-transform"
+        >
           <img
             src={banner}
             alt="Developer workstation with code on screen"
@@ -136,7 +150,8 @@ function DevelopersPage() {
               Meet the <span className="italic text-secondary">developers.</span>
             </h1>
             <p className="mt-6 text-lg md:text-xl text-white/85 max-w-2xl mx-auto">
-              Students of Balo English Medium School who designed and built this website to share their school's story with the world.
+              Students of Balo English Medium School who designed and built this website to share
+              their school's story with the world.
             </p>
           </motion.div>
         </div>
@@ -168,7 +183,12 @@ function DevelopersPage() {
             </motion.div>
           </motion.div>
 
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp}>
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={fadeUp}
+          >
             <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">
               The Team
             </div>
@@ -176,7 +196,9 @@ function DevelopersPage() {
               Code with care, design with heart.
             </h2>
             <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-              This website was crafted by three developers who wanted to give Balo English Medium School a beautiful digital home — so every parent, donor, and well-wisher can see what the school does for the children of Salkia.
+              This website was crafted by three developers who wanted to give Balo English Medium
+              School a beautiful digital home — so every parent, donor, and well-wisher can see what
+              the school does for the children of Salkia.
             </p>
 
             <div className="mt-10 space-y-4">
@@ -191,12 +213,19 @@ function DevelopersPage() {
                   whileHover={{ scale: 1.05, y: -4 }}
                   className="flex items-center gap-4 p-5 rounded-2xl bg-card border border-border shadow-soft"
                 >
-                  <div className={`size-14 shrink-0 rounded-2xl bg-gradient-to-br ${m.color} text-white grid place-items-center font-display font-black text-xl`}>
-                    {m.name.split(" ").map(w => w[0]).join("")}
+                  <div
+                    className={`size-14 shrink-0 rounded-2xl bg-gradient-to-br ${m.color} text-white grid place-items-center font-display font-black text-xl`}
+                  >
+                    {m.name
+                      .split(" ")
+                      .map((w) => w[0])
+                      .join("")}
                   </div>
                   <div className="flex-1">
                     <div className="font-display text-lg font-bold">{m.name}</div>
-                    <div className="text-xs uppercase tracking-widest text-accent font-semibold mt-0.5">{m.role}</div>
+                    <div className="text-xs uppercase tracking-widest text-accent font-semibold mt-0.5">
+                      {m.role}
+                    </div>
                     <div className="text-sm text-muted-foreground mt-1">{m.note}</div>
                   </div>
                   <Code className="size-5 text-muted-foreground/40" />
@@ -207,9 +236,12 @@ function DevelopersPage() {
             <div className="mt-10 p-6 rounded-2xl gradient-warm border border-border">
               <Heart className="size-6 text-accent mb-3" />
               <p className="text-sm italic text-foreground/80 leading-relaxed">
-                "We built this site as our way of saying thank you to a school that proves education and love can change a neighbourhood."
+                "We built this site as our way of saying thank you to a school that proves education
+                and love can change a neighbourhood."
               </p>
-              <div className="mt-3 text-xs tracking-widest uppercase text-muted-foreground font-semibold">— The Dev Team</div>
+              <div className="mt-3 text-xs tracking-widest uppercase text-muted-foreground font-semibold">
+                — The Dev Team
+              </div>
             </div>
           </motion.div>
         </div>
@@ -217,7 +249,13 @@ function DevelopersPage() {
 
       <section className="py-24 px-6 bg-card">
         <div className="max-w-5xl mx-auto">
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp} className="max-w-2xl mb-12">
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={fadeUp}
+            className="max-w-2xl mb-12"
+          >
             <div className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-4">
               How We Learned
             </div>
@@ -228,15 +266,24 @@ function DevelopersPage() {
 
           <div className="grid md:grid-cols-1 gap-6 max-w-2xl">
             <motion.div
-              initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={fadeUp}
               className="p-8 rounded-3xl bg-background border border-border shadow-soft"
             >
               <div className="size-12 rounded-2xl bg-accent/10 text-accent grid place-items-center mb-4">
                 <Sparkles className="size-6" />
               </div>
-              <h3 className="font-display text-2xl font-bold mb-3">Weekly Sessions with Mr Samuel Clay</h3>
+              <h3 className="font-display text-2xl font-bold mb-3">
+                Weekly Sessions with Mr Samuel Clay
+              </h3>
               <p className="text-muted-foreground leading-relaxed text-sm">
-                We are mentored by <strong>Mr Samuel Clay</strong>, a software engineer at Amazon based in the United Kingdom. Every week, he takes time out of his schedule to run live sessions with us — reviewing code, teaching engineering best practices, and patiently answering every question. His weekly guidance has shaped how we think, build, and ship software.
+                We are mentored by <strong>Mr Samuel Clay</strong>, a software engineer at Amazon
+                based in the United Kingdom. Every week, he takes time out of his schedule to run
+                live sessions with us — reviewing code, teaching engineering best practices, and
+                patiently answering every question. His weekly guidance has shaped how we think,
+                build, and ship software.
               </p>
             </motion.div>
           </div>
@@ -259,7 +306,8 @@ function DevelopersPage() {
               We grew up here. Then we built this.
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-              Not outsiders. Not a company. Three BALO students who walked in as children — and whose fingers are now on the keyboard.
+              Not outsiders. Not a company. Three BALO students who walked in as children — and
+              whose fingers are now on the keyboard.
             </p>
           </motion.div>
 

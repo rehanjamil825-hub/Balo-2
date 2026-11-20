@@ -23,6 +23,7 @@ import dome1 from "@/assets/group-students.jpg";
 import dome2 from "@/assets/raised-hands.jpg";
 import dome3 from "@/assets/classroom-reading.jpg";
 import gallerybackground from "@/assets/gallery-background.jpg";
+import { absoluteUrl, canonicalLink } from "@/lib/school-facts";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
@@ -40,7 +41,9 @@ export const Route = createFileRoute("/gallery")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: absoluteUrl("/og-balo.jpg") },
     ],
+    links: [canonicalLink("/gallery")],
   }),
   component: GalleryPage,
 });
@@ -51,25 +54,30 @@ const dome = [
   { src: dome3, label: "Reading time" },
 ];
 
+/**
+ * Captions describe what is actually in each photograph. They are deliberately
+ * factual (who or what is visible) instead of naming a person or an event the
+ * photo may not show.
+ */
 const photos = [
-  { src: g1, label: "Classroom moment" },
-  { src: g2, label: "Learning together" },
-  { src: g3, label: "School day" },
-  { src: g4, label: "Activities" },
-  { src: g5, label: "Celebration" },
-  { src: g6, label: "Friends at BALO" },
-  { src: g7, label: "In the classroom" },
-  { src: g8, label: "Programme day" },
-  { src: g9, label: "Our teachers" },
-  { src: g10, label: "Study time" },
-  { src: g11, label: "Assembly" },
-  { src: g12, label: "Smiles at BALO" },
-  { src: g13, label: "Sports and games" },
-  { src: g14, label: "Cultural performance" },
-  { src: g15, label: "Group photo" },
-  { src: g16, label: "Practical session" },
-  { src: g17, label: "Break time" },
-  { src: g18, label: "Community day" },
+  { src: g1, label: "A visitor with students and staff" },
+  { src: g2, label: "Christmas celebration in the hall" },
+  { src: g3, label: "Women's Day celebration" },
+  { src: g4, label: "Students with sports certificates and a guest" },
+  { src: g5, label: "Students and teachers together at school" },
+  { src: g6, label: "Volunteers planning lessons at a laptop" },
+  { src: g7, label: "Morning assembly in the hall" },
+  { src: g8, label: "Friends together at school" },
+  { src: g9, label: "Students with visiting volunteers" },
+  { src: g10, label: "A health check-up at school" },
+  { src: g11, label: "A school picnic by train" },
+  { src: g12, label: "A lesson in progress" },
+  { src: g13, label: "Students gathered in the hall" },
+  { src: g14, label: "A class group photograph" },
+  { src: g15, label: "A science exhibition" },
+  { src: g16, label: "Smart class presentation" },
+  { src: g17, label: "Computer lab session" },
+  { src: g18, label: "Students with visitors" },
 ];
 
 function GalleryPage() {
@@ -81,7 +89,7 @@ function GalleryPage() {
         eyebrow="Gallery"
         title="Life at BALO, in"
         highlight="pictures."
-        lead="Every photograph here is a real day at Balo English Medium School — lessons, laughter, celebrations and the small moments that make this school a second home for 480 children."
+        lead="Every photograph here is a real day at Balo English Medium School — lessons, celebrations and the small moments that make this school a second home. Captions describe what each photo shows; please ask the school office before reposting pictures of children."
         image={gallerybackground}
       />
 

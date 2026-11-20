@@ -44,6 +44,7 @@ import farewell2 from "@/assets/farewell2.jpg";
 
 import gift1 from "@/assets/gift1.jpg";
 import gift2 from "@/assets/gift2.jpg";
+import { absoluteUrl, canonicalLink } from "@/lib/school-facts";
 
 export const Route = createFileRoute("/life-at-balo")({
   head: () => ({
@@ -61,7 +62,9 @@ export const Route = createFileRoute("/life-at-balo")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: absoluteUrl("/og-balo.jpg") },
     ],
+    links: [canonicalLink("/life-at-balo")],
   }),
   component: LifeAtBaloPage,
 });
@@ -210,11 +213,7 @@ function LifeAtBaloPage() {
           </p>
         </Reveal>
         <Reveal i={1}>
-          <SamplePair
-            label="Yoga Day"
-             images={[yoga1, yoga2]}
-             onOpen={lightbox.open}
-           />
+          <SamplePair label="Yoga Day" images={[yoga1, yoga2]} onOpen={lightbox.open} />
         </Reveal>
       </Section>
 

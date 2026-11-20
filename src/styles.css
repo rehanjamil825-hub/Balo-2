@@ -119,3 +119,20 @@
   background: color-mix(in oklab, var(--foreground) 16%, transparent);
   border-radius: 999px;
 }
+
+/* Respect the visitor's reduced-motion preference: no smooth scrolling, no
+   decorative animation, no long transitions. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

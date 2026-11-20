@@ -4,6 +4,7 @@ import {
   isAllowedAdminAuthOrigin,
   isVerifiedAdminAccount,
   normalizeAdminUsername,
+  resolveAdminAuthRedirect,
 } from "../src/lib/admin-auth-rules";
 
 describe("admin authentication rules", () => {
@@ -25,7 +26,23 @@ describe("admin authentication rules", () => {
 
   test("admin email links only return to the local preview or this project's preview", () => {
     expect(isAllowedAdminAuthOrigin("http://localhost:8080")).toBe(true);
-    expect(isAllowedAdminAuthOrigin("https://id-preview--260bd6c6-afdc-4219-9095-bec95a6b4f9d.lovable.app")).toBe(true);
+    expect(
+      isAllowedAdminAuthOrigin(
+        "https://id-preview--260bd6c6-afdc-4219-9095-bec95a6b4f9d.lovable.app",
+      ),
+    ).toBe(true);
     expect(isAllowedAdminAuthOrigin("https://attacker.example")).toBe(false);
+    expect(isAllowedAdminAuthOrigin("https://baloindia.org/evil")).toBe(false);
+  });
+
+  test("email links use the configured site even on a custom domain", () => {
+    expect(resolveAdminAuthRedirect("https://school.example.org")).toBe(
+      "https://school.example.org/admin-reset-password",
+    );
+    expect(resolveAdminAuthRedirect("http://localhost:5173", "https://attacker.example")).toBe(
+      "http://localhost:5173/admin-reset-password",
+    );
+    expect(resolveAdminAuthRedirect(undefined, "https://attacker.example")).toBeUndefined();
+    expect(resolveAdminAuthRedirect("not a url")).toBeUndefined();
   });
 });

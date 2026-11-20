@@ -1,14 +1,12 @@
-/** Inbox that receives admin verification codes. */
-export const OWNER_EMAIL = "shahrehshi@gmail.com";
-
-/** Emails that may register / recover. Codes always go to OWNER_EMAIL. */
-const AUTHORIZED_ADMIN_EMAILS = [
+/**
+ * Admin identity data shared by server functions and the login screen.
+ * The rules themselves live in `admin-auth-rules.ts` so they stay testable.
+ */
+export {
   OWNER_EMAIL,
-  "baloindia2015@gmail.com",
-] as const;
-
-export function isAuthorizedAdminEmail(email: string) {
-  return AUTHORIZED_ADMIN_EMAILS.includes(
-    email.trim().toLowerCase() as (typeof AUTHORIZED_ADMIN_EMAILS)[number],
-  );
-}
+  AUTHORIZED_ADMIN_EMAILS,
+  isAuthorizedAdminEmail,
+  isVerifiedAdminAccount,
+  normalizeAdminUsername,
+  resolveAdminAuthRedirect,
+} from "@/lib/admin-auth-rules";

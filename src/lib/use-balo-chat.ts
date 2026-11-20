@@ -54,7 +54,11 @@ export function useBaloChat(_active = true) {
       const [{ data: s }, { data: c }, { data: sub }] = await Promise.all([
         supabase.from("ai_settings").select("mode, is_enabled"),
         supabase.from("ai_classes").select("id, name").eq("is_active", true).order("sort_order"),
-        supabase.from("ai_subjects").select("name, class_id").eq("is_active", true).order("sort_order"),
+        supabase
+          .from("ai_subjects")
+          .select("name, class_id")
+          .eq("is_active", true)
+          .order("sort_order"),
       ]);
       if (!alive) return;
       if (s) {
@@ -65,7 +69,9 @@ export function useBaloChat(_active = true) {
       setClassRows((c ?? []) as ClassRow[]);
       setSubjectRows((sub ?? []) as SubjectRow[]);
     })();
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, []);
 
   const selectedClassId = classRows.find((c) => c.name === classLabel)?.id ?? null;
@@ -83,7 +89,7 @@ export function useBaloChat(_active = true) {
   const pickImage = useCallback((file: File | undefined | null) => {
     if (!file) return;
     if (!file.type.startsWith("image/")) return setError("Please choose an image file.");
-    if (file.size > 5 * 1024 * 1024) return setError("Image must be under 5 MB.");
+    if (file.size > 4 * 1024 * 1024) return setError("Image must be under 4 MB.");
     const reader = new FileReader();
     reader.onload = () => setImage(String(reader.result));
     reader.readAsDataURL(file);
@@ -103,13 +109,18 @@ export function useBaloChat(_active = true) {
         .map((m) => ({ role: m.role, content: m.content }));
 
       const outgoing: Msg = { role: "user", content: question || "(image)", image: sentImage };
-      setMsgs((p) => ({ ...p, [mode]: [...p[mode], outgoing, { role: "assistant", content: "" }] }));
+      setMsgs((p) => ({
+        ...p,
+        [mode]: [...p[mode], outgoing, { role: "assistant", content: "" }],
+      }));
       setInput("");
       setImage(null);
 
       try {
         const res = await fetch("/api/chat", {
           method: "POST",
+          // Same-origin: sends the signed BALO AI cookie used for rate limiting.
+          credentials: "same-origin",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             mode,
@@ -153,11 +164,16 @@ export function useBaloChat(_active = true) {
           list[list.length - 1] = { role: "assistant", content: answer };
           return { ...p, [mode]: list };
         });
-      } catch (e: any) {
-        setError(e?.message ?? "Something went wrong.");
+      } catch (e: unknown) {
+        setError(e instanceof Error && e.message ? e.message : "Something went wrong.");
         setMsgs((p) => {
           const list = [...p[mode]];
-          if (list.length && list[list.length - 1]!.role === "assistant" && !list[list.length - 1]!.content) list.pop();
+          if (
+            list.length &&
+            list[list.length - 1]!.role === "assistant" &&
+            !list[list.length - 1]!.content
+          )
+            list.pop();
           return { ...p, [mode]: list };
         });
       } finally {
@@ -173,19 +189,28 @@ export function useBaloChat(_active = true) {
   }, [mode]);
 
   return {
-    mode, setMode,
-    input, setInput,
-    image, setImage, pickImage,
-    busy, error,
+    mode,
+    setMode,
+    input,
+    setInput,
+    image,
+    setImage,
+    pickImage,
+    busy,
+    error,
     messages: current,
     enabled,
     modeOff: !enabled[mode],
     classes: classRows.map((c) => c.name),
     subjects,
-    classLabel, setClassLabel,
-    subject, setSubject,
-    topic, setTopic,
-    send, reset,
+    classLabel,
+    setClassLabel,
+    subject,
+    setSubject,
+    topic,
+    setTopic,
+    send,
+    reset,
     inputRef,
   };
 }

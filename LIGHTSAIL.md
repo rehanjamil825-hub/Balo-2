@@ -262,6 +262,33 @@ SITE_URL=https://www.yourschool.org
 
 ---
 
+## Step 8 — Check that the server features work
+
+Run these on the server (or from your laptop with the real domain):
+
+```bash
+curl -s https://www.yourschool.org/api/health
+```
+
+You want `"serverFunctions": true`, `"chat": true`, `"enquiry": true` and
+`"admin": true`. If the reply is HTML or a 404, nginx is not proxying to the
+Node server — check `pm2 status` and `pm2 logs balo`.
+
+Then in Supabase → **Authentication → URL Configuration**, make sure the
+following are in **Redirect URLs**, otherwise admin emails open the wrong page:
+
+```
+https://www.yourschool.org/admin-login
+https://www.yourschool.org/admin-reset-password
+```
+
+`npm run build` refuses to finish if the build has no Node server, so a
+static-only build cannot be deployed by accident.
+
+If the site is behind CloudFront, follow [deploy/cloudfront.md](./deploy/cloudfront.md).
+
+---
+
 ## Everyday commands
 
 | What you want | Command |
@@ -291,6 +318,8 @@ pm2 restart balo
 | Site loads, AI says “not configured” | Missing `BALO_ASSISTANT_API_KEY` or `GEMINI_API_KEY` | Edit `.env`, `pm2 restart balo` |
 | Admin login fails / “Missing Supabase” | Missing `SUPABASE_SERVICE_ROLE_KEY` | Edit `.env`, `pm2 restart balo` |
 | Verification email sends you to localhost | `SITE_URL` or Supabase Site URL still wrong | Step 7 |
+| Password-reset link says "missing, expired or already used" | The link was opened on another device, or `/admin-reset-password` is not in Supabase Redirect URLs | Step 8 |
+| Chat says "you have asked several questions" | Rate limit reached (8/minute per address) | Wait a minute; this is intentional |
 | `npm run build` killed / out of memory | Plan is too small | Use the $10 plan, or add swap |
 
 Add 2 GB of swap (only if build runs out of memory):

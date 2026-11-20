@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { X, ZoomIn } from "lucide-react";
+import { useCallback, useRef, useState, type ReactNode } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { ImageOff, X, ZoomIn } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { sampleFor } from "@/components/sample-pool";
-
+import { useDialogBehaviour, useScrollLock } from "@/lib/a11y";
 
 /** Entrance animation used across the content pages. `once: true` keeps
  *  low-end devices happy — each block animates a single time per page visit. */
@@ -55,12 +54,22 @@ export function PageHero({
 }) {
   const bg = image;
   const heroRef = useRef<HTMLElement>(null);
+  const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 150]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
+  const parallax = useTransform(scrollYProgress, [0, 1], [0, 150]);
+  const zoom = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
+  const y = reduceMotion ? 0 : parallax;
+  const scale = reduceMotion ? 1 : zoom;
   return (
-    <section ref={heroRef} className="relative flex min-h-[70vh] items-center overflow-hidden px-6 pt-24">
-      <motion.div aria-hidden style={{ y, scale }} className="pointer-events-none absolute inset-0 -z-10 origin-center will-change-transform">
+    <section
+      ref={heroRef}
+      className="relative flex min-h-[70vh] items-center overflow-hidden px-6 pt-24"
+    >
+      <motion.div
+        aria-hidden
+        style={{ y, scale }}
+        className="pointer-events-none absolute inset-0 -z-10 origin-center will-change-transform"
+      >
         {bg && (
           <img
             src={bg}
@@ -88,8 +97,6 @@ export function PageHero({
     </section>
   );
 }
-
-
 
 export function Section({
   id,
@@ -153,63 +160,91 @@ export function SampleImage({
   src,
   ratio = "4 / 3",
   onOpen,
+  caption,
 }: {
   label: string;
+  /** The real photograph. Required: there is no automatic stand-in. */
   src?: string;
   ratio?: string;
   onOpen?: (src: string, label: string) => void;
+  caption?: string;
 }) {
-  // Auto-fill with a real photo from src/assets when no explicit src is set.
-  const resolved = src ?? sampleFor(label);
-  const clickable = Boolean(resolved && onOpen);
+  // Never substitute an unrelated photo for a named person or a specific room:
+  // an honest "photograph coming soon" card is better than mislabelling a photo.
+  const clickable = Boolean(src && onOpen);
   return (
     <figure
-      onClick={() => resolved && onOpen?.(resolved, label)}
       className={cn(
-        "group relative overflow-hidden rounded-3xl border border-border bg-muted/40 shadow-soft",
+        "group relative m-0 overflow-hidden rounded-3xl border border-border bg-muted/40 shadow-soft",
         clickable && "cursor-zoom-in",
       )}
       style={{ aspectRatio: ratio }}
     >
-      {resolved ? (
+      {src ? (
         <>
           <img
-            src={resolved}
+            src={src}
             alt={label}
             loading="lazy"
             decoding="async"
             className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
           />
-          {clickable && <TapHint />}
+          {clickable ? (
+            <>
+              <button
+                type="button"
+                onClick={() => onOpen?.(src, label)}
+                className="absolute inset-0 z-10 cursor-zoom-in"
+                aria-label={`Preview photo: ${label}`}
+              />
+              <TapHint />
+            </>
+          ) : null}
         </>
       ) : (
         <div className="grid size-full place-items-center bg-gradient-to-br from-primary/10 via-transparent to-accent/10 p-5 text-center">
           <div>
+            <ImageOff className="mx-auto mb-2 size-5 text-muted-foreground" aria-hidden="true" />
             <div className="text-sm font-semibold text-foreground/80">{label}</div>
             <div className="mt-1 text-[11px] uppercase tracking-widest text-muted-foreground">
-              Sample image — replaceable
+              Photograph coming soon
             </div>
           </div>
         </div>
+      )}
+      {caption && (
+        <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-3 pb-2 pt-6 text-[11px] font-medium text-white">
+          {caption}
+        </figcaption>
       )}
     </figure>
   );
 }
 
-
 export function SamplePair({
   label,
   images,
+  captions,
   onOpen,
 }: {
   label: string;
   images?: [string?, string?];
+  /** Accurate captions for each photo; falls back to a numbered label. */
+  captions?: [string?, string?];
   onOpen?: (src: string, label: string) => void;
 }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      <SampleImage label={`${label} — photo 1`} src={images?.[0]} onOpen={onOpen} />
-      <SampleImage label={`${label} — photo 2`} src={images?.[1]} onOpen={onOpen} />
+      <SampleImage
+        label={captions?.[0] ?? `${label} — photo 1`}
+        src={images?.[0]}
+        onOpen={onOpen}
+      />
+      <SampleImage
+        label={captions?.[1] ?? `${label} — photo 2`}
+        src={images?.[1]}
+        onOpen={onOpen}
+      />
     </div>
   );
 }
@@ -217,31 +252,27 @@ export function SamplePair({
 /** Animated lightbox preview shared by the gallery and photo sections. */
 export function useLightbox() {
   const [open, setOpen] = useState<{ src: string; label: string } | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const close = useCallback(() => setOpen(null), []);
 
-  useEffect(() => {
-    if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(null);
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = prev;
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
+  useScrollLock(Boolean(open));
+  useDialogBehaviour(Boolean(open), dialogRef, close);
 
   const node = open ? (
     <motion.div
+      ref={dialogRef}
+      tabIndex={-1}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="fixed inset-0 z-[70] grid place-items-center bg-black/85 p-4 backdrop-blur-sm"
-      onClick={() => setOpen(null)}
+      className="fixed inset-0 z-[70] grid place-items-center bg-black/85 p-4 backdrop-blur-sm outline-none"
+      onClick={close}
       role="dialog"
       aria-modal="true"
-      aria-label={open.label}
+      aria-label={`Photo preview: ${open.label}`}
     >
       <button
-        onClick={() => setOpen(null)}
+        type="button"
+        onClick={close}
         aria-label="Close preview"
         className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
       >

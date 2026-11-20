@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import baloLogo from "@/assets/balo-logo.jpg";
 
@@ -8,22 +8,29 @@ import baloLogo from "@/assets/balo-logo.jpg";
  * then fades out after ~1.6s.
  */
 export function LoadingScreen() {
+  const reduceMotion = useReducedMotion();
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const t = window.setTimeout(() => setVisible(false), 1600);
+    if (reduceMotion) {
+      setVisible(false);
+      return;
+    }
+    const t = window.setTimeout(() => setVisible(false), 1200);
     return () => window.clearTimeout(t);
-  }, []);
+  }, [reduceMotion]);
 
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
           key="loader"
+          aria-hidden="true"
+          role="presentation"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
-          className="fixed inset-0 z-[100] grid place-items-center bg-background"
+          transition={{ duration: 0.4 }}
+          className="balo-splash fixed inset-0 z-[100] grid place-items-center bg-background"
         >
           <div className="relative">
             {/* Expanding rings */}

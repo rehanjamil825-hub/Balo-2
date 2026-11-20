@@ -1,13 +1,20 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { PageHero, Section, Reveal, SampleImage, SamplePair, useLightbox } from "@/components/page-kit";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  PageHero,
+  Section,
+  Reveal,
+  SampleImage,
+  SamplePair,
+  useLightbox,
+} from "@/components/page-kit";
 
 import staffGroup from "@/assets/teaching3.jpg";
-import staffNew from "@/assets/staff-all.jpg";
+import staffNew from "@/assets/staff-new.jpg";
 import teacherBoard from "@/assets/teaching2.jpg";
 import mealPrep from "@/assets/non-teaching2.jpg";
 import kitchen2 from "@/assets/non-teaching.jpg";
 import ranjitPhoto from "@/assets/manager-ranjit-mishra.jpg";
-
+import { absoluteUrl, canonicalLink } from "@/lib/school-facts";
 
 export const Route = createFileRoute("/staff")({
   head: () => ({
@@ -25,7 +32,9 @@ export const Route = createFileRoute("/staff")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: absoluteUrl("/og-balo.jpg") },
     ],
+    links: [canonicalLink("/staff")],
   }),
   component: StaffPage,
 });
@@ -47,23 +56,29 @@ function StaffPage() {
       <Section eyebrow="Leadership" title="Mr. Ranjit Mishra — Manager">
         <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_1.2fr]">
           <Reveal>
-            <SampleImage label="Mr. Ranjit Mishra, Manager" src={ranjitPhoto} ratio="4 / 5" onOpen={lightbox.open} />
+            <SampleImage
+              label="Mr. Ranjit Mishra, Manager"
+              src={ranjitPhoto}
+              ratio="4 / 5"
+              caption="Mr. Ranjit Mishra, Manager and Hindi teacher"
+              onOpen={lightbox.open}
+            />
           </Reveal>
           <Reveal i={1}>
             <div className="space-y-4 leading-relaxed text-muted-foreground">
               <p>
-                Mr. Ranjit Mishra is the <strong className="text-foreground">Manager</strong> of Balo
-                English Medium School. He keeps the school running day to day — admissions and
-                records, staff coordination, the daily meal programme, supplies, maintenance and
-                the hundred practical decisions that a free school for 480 children needs before
-                nine o'clock every morning.
+                Mr. Ranjit Mishra is the <strong className="text-foreground">Manager</strong> of
+                Balo English Medium School. He keeps the school running day to day — admissions and
+                records, staff coordination, the daily meal programme, supplies, maintenance and the
+                hundred practical decisions that a free school for 480 children needs before nine
+                o'clock every morning.
               </p>
               <p>
                 Alongside his management responsibilities he also teaches{" "}
                 <strong className="text-foreground">Hindi</strong>, which keeps him close to the
-                classroom and to the students themselves. Parents know him as the person who
-                listens first and finds a way — whether it is a uniform, a book, a medical need or
-                a child who has stopped coming to school.
+                classroom and to the students themselves. Parents know him as the person who listens
+                first and finds a way — whether it is a uniform, a book, a medical need or a child
+                who has stopped coming to school.
               </p>
             </div>
           </Reveal>
@@ -82,7 +97,12 @@ function StaffPage() {
           </p>
         </Reveal>
         <Reveal i={1}>
-          <SamplePair label="Teaching Staff" images={[staffGroup, teacherBoard]} onOpen={lightbox.open} />
+          <SamplePair
+            label="Teaching Staff"
+            images={[staffGroup, teacherBoard]}
+            captions={["Our teaching staff together", "Staff on a school celebration day"]}
+            onOpen={lightbox.open}
+          />
         </Reveal>
       </Section>
 
@@ -90,19 +110,70 @@ function StaffPage() {
       <Section eyebrow="Care & operations" title="Non-Teaching Staff">
         <Reveal>
           <p className="mb-8 max-w-3xl leading-relaxed text-muted-foreground">
-            Behind every lesson is a team that is just as important. Our non-teaching staff cook
-            and serve a hot meal for more than 480 students every school day, keep the classrooms,
-            lab, bathrooms and kitchen clean, manage supplies, help the youngest children through
-            the day and support the teachers with everything the school needs. Their contribution
-            is the reason a child at BALO arrives, eats, learns and goes home cared for.
+            Behind every lesson is a team that is just as important. Our non-teaching staff cook and
+            serve a hot meal for more than 480 students every school day, keep the classrooms, lab,
+            bathrooms and kitchen clean, manage supplies, help the youngest children through the day
+            and support the teachers with everything the school needs. Their contribution is the
+            reason a child at BALO arrives, eats, learns and goes home cared for.
           </p>
         </Reveal>
         <Reveal i={1}>
-          <SamplePair label="Non-Teaching Staff" images={[mealPrep, kitchen2]} onOpen={lightbox.open} />
+          <SamplePair
+            label="Non-Teaching Staff"
+            images={[mealPrep, kitchen2]}
+            captions={[
+              "The team who prepare the daily meal",
+              "Cooks and helpers in the school kitchen",
+            ]}
+            onOpen={lightbox.open}
+          />
         </Reveal>
         <Reveal i={2}>
           <div className="mt-4">
-            <SampleImage label="Our full staff together" src={staffNew} ratio="16 / 9" onOpen={lightbox.open} />
+            <SampleImage
+              label="Staff outside the school building"
+              src={staffNew}
+              ratio="16 / 9"
+              caption="Our full staff together at school"
+              onOpen={lightbox.open}
+            />
+          </div>
+        </Reveal>
+      </Section>
+
+      <Section title="Everyone who makes the school work" eyebrow="Join the dots">
+        <Reveal>
+          <p className="max-w-3xl leading-relaxed text-muted-foreground">
+            Our staff work alongside the leadership team and the volunteers who visit every year.
+            Read their stories, or find out how you can teach, cook, coach or mentor with us.
+          </p>
+        </Reveal>
+        <Reveal i={1}>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link
+              to="/about"
+              className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+            >
+              Leadership team
+            </Link>
+            <Link
+              to="/volunteers"
+              className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold hover:bg-muted"
+            >
+              Volunteers
+            </Link>
+            <Link
+              to="/developers"
+              className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold hover:bg-muted"
+            >
+              Student developers
+            </Link>
+            <Link
+              to="/enquiry"
+              className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold hover:bg-muted"
+            >
+              Contact the office
+            </Link>
           </div>
         </Reveal>
       </Section>

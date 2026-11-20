@@ -1,8 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { ChevronDown, HelpCircle } from "lucide-react";
 import { PageHero, Section, Reveal } from "@/components/page-kit";
 import faqPage from "@/assets/faq-background.jpg";
+import {
+  FEE_STATEMENT,
+  SCHOOL_ADDRESS_TEXT,
+  SCHOOL_EMAIL,
+  SCHOOL_PHONE_DISPLAY,
+  absoluteUrl,
+  canonicalLink,
+} from "@/lib/school-facts";
 
 export const Route = createFileRoute("/faq")({
   head: () => ({
@@ -20,9 +28,32 @@ export const Route = createFileRoute("/faq")({
           "Admissions, fees and sponsorship, school timings, uniform, curriculum, safety and volunteering — answered plainly.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: absoluteUrl("/og-balo.jpg") },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Frequently Asked Questions — Balo English Medium School" },
+      {
+        name: "twitter:description",
+        content:
+          "Admissions, fees and sponsorship, timings, uniform and safety — answered plainly.",
+      },
     ],
-    links: [{ rel: "canonical", href: "/faq" }],
+    links: [canonicalLink("/faq")],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: GROUPS.flatMap((g) =>
+            g.items.map((qa) => ({
+              "@type": "Question",
+              name: qa.q,
+              acceptedAnswer: { "@type": "Answer", text: qa.a },
+            })),
+          ),
+        }),
+      },
+    ],
   }),
   component: FaqPage,
 });
@@ -35,7 +66,7 @@ const GROUPS: { group: string; items: Qa[] }[] = [
     items: [
       {
         q: "When does admission open, and which classes can my child join?",
-        a: "Admissions for the new session are taken from January onwards, and seats in the middle classes open up through the year as families move. We admit from the pre-primary level up to Class 12. Walk in to the school office at 55, Madar Talla Lane, Babudanga, Pilkhana, Salkia, Howrah with your child's birth certificate and the last report card, and we will tell you the same day whether a seat is available in that class.",
+        a: `Admissions for the new session are taken from January onwards, and seats in the middle classes open up through the year as families move. We admit from the pre-primary level up to Class 12. Walk in to the school office at ${SCHOOL_ADDRESS_TEXT} with your child's birth certificate and the last report card, and we will tell you the same day whether a seat is available in that class. You can also call ${SCHOOL_PHONE_DISPLAY} or email ${SCHOOL_EMAIL}.`,
       },
       {
         q: "Is there an entrance test?",
@@ -52,7 +83,7 @@ const GROUPS: { group: string; items: Qa[] }[] = [
     items: [
       {
         q: "What does it cost, and what happens if a family cannot pay?",
-        a: "Fees are kept deliberately low, and no child who has been admitted is removed for want of money. Balo is supported by our sister organisations — Balo Italia, Balo USA, Ireland and Malaysia — whose fundraising covers sponsored places, books, uniforms and meals for the children who need them. Speak to the office privately; these arrangements are handled quietly and without embarrassment.",
+        a: `${FEE_STATEMENT} Balo is supported by our sister organisations — Balo Italia, Balo USA, Balo Children Ireland and partners in Malaysia — whose fundraising covers books, uniforms, the daily meal and teacher salaries. There is nothing to pay, and no child who has been admitted is removed for want of money. Speak to the office privately if your family needs help with uniforms, books or transport.`,
       },
       {
         q: "How does child sponsorship work?",
@@ -65,7 +96,7 @@ const GROUPS: { group: string; items: Qa[] }[] = [
     items: [
       {
         q: "What are the school timings?",
-        a: "Classes run through the morning on weekdays, with a mid-morning break; exact start and end times shift slightly between the primary and senior sections and between summer and winter schedules. The current timings and every holiday are published on the Academic Calendar page and on the notice board at the gate.",
+        a: "Classes run from about 10:00 AM to 3:40 PM on weekdays, with a mid-morning break; exact start and end times shift slightly between the primary and senior sections and between summer and winter schedules. The current timings and every holiday are published on the Academic Calendar page and on the notice board at the gate.",
       },
       {
         q: "Is uniform compulsory?",
@@ -111,24 +142,37 @@ const GROUPS: { group: string; items: Qa[] }[] = [
 
 function Item({ qa, i }: { qa: Qa; i: number }) {
   const [open, setOpen] = useState(false);
+  const id = useId();
+  const panelId = `${id}-panel`;
+  const buttonId = `${id}-button`;
   return (
     <Reveal i={i}>
       <div className="overflow-hidden rounded-2xl border border-border bg-background">
-        <button
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+        <h3 className="m-0">
+          <button
+            id={buttonId}
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls={panelId}
+            className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+          >
+            <span className="font-semibold">{qa.q}</span>
+            <ChevronDown
+              aria-hidden="true"
+              className={`size-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
+            />
+          </button>
+        </h3>
+        <div
+          id={panelId}
+          role="region"
+          aria-labelledby={buttonId}
+          hidden={!open}
+          className="border-t border-border/70 px-5 py-4 text-sm leading-relaxed text-muted-foreground"
         >
-          <span className="font-semibold">{qa.q}</span>
-          <ChevronDown
-            className={`size-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
-          />
-        </button>
-        {open && (
-          <p className="border-t border-border/70 px-5 py-4 text-sm leading-relaxed text-muted-foreground">
-            {qa.a}
-          </p>
-        )}
+          {qa.a}
+        </div>
       </div>
     </Reveal>
   );
