@@ -1,3 +1,13 @@
+import {
+  FEE_STATEMENT,
+  FOUNDING_STORY,
+  SCHOOL_ADDRESS_TEXT,
+  SCHOOL_EMAIL,
+  SCHOOL_HOURS,
+  SCHOOL_PHONE_DISPLAY,
+  SCHOOL_STATS,
+} from "@/lib/school-facts";
+
 /**
  * Everything that is published on the BALO website, compiled for BALO AI.
  * This is the authoritative "website mirror" the AI reads so that it can answer
@@ -18,11 +28,11 @@ The Donate button links to https://www.balousa.org/donation-confirmation/.
 === HOME ===
 BALO English Medium School is a free English-medium school in Salkia, Howrah,
 West Bengal, serving children of the Pilkhana, Babudanga and Fakir Bagan
-neighbourhoods. Address: 55, Madar Talla Lane, Babudanga, Pilkhana, Salkia,
-Howrah, West Bengal 711101 (also known as 55 Pilkhana 2nd Bye Lane). Rated 4.4 (15 reviews)
-as a school centre in Howrah. Key stats shown on the site: 480 students,
-20+ staff members, founded 2006. Education is completely free — no fees, no
-hidden costs. Every child is welcomed, fed and respected before any lesson begins.
+neighbourhoods. Address: ${SCHOOL_ADDRESS_TEXT}. Phone: ${SCHOOL_PHONE_DISPLAY}.
+Email: ${SCHOOL_EMAIL}. Rated ${SCHOOL_STATS.rating} (${SCHOOL_STATS.reviews} Google reviews) as a
+school centre in Howrah. Key stats shown on the site: ${SCHOOL_STATS.students} students,
+${SCHOOL_STATS.staff} staff members, founded ${SCHOOL_STATS.foundedYear}.
+${FEE_STATEMENT} Every child is welcomed, fed and respected before any lesson begins.
 
 === ABOUT US ===
 Founder: Mrs Elisabetta "Betta" Ravaioli (Italy) — a lifelong educator who founded
@@ -32,9 +42,8 @@ community outreach. Principal: Mrs Roshan Ara — leads the school with warmth a
 discipline; under her the school grew from a small tuition corner into a full
 English-medium learning centre. Manager: Mr. Ranjit Mishra (he is the Manager of
 the school, and also teaches Hindi).
-History: BALO launched in 2006 through the dedication of Betta Ravaioli. The global
-BALO story began in August 2005 when Betta, Liam (Ireland) and Anne Leache first met
- Together with sister organisations Balo Italia, Balo USA, Balo Children Ireland and
+History: ${FOUNDING_STORY}
+Together with sister organisations Balo Italia, Balo USA, Balo Children Ireland and
 Malaysia, BALO raises funds for building costs, teacher salaries, a daily hot meal
 for 480 students and 20+ staff, school supplies, uniforms, a safe home for girls in
 danger, women's training programmes and micro loans.
@@ -68,7 +77,7 @@ Class-wise subjects used by BALO AI Student mode:
   Chemistry, Biology, History, Geography, Computer Applications, Commercial
   Applications, Economics, Political Science.
 Examinations: the academic year has 3 terms with unit tests in between.
-School hours: approximately 10:00 AM to 3:40 PM, 8 periods of about 40 minutes with
+School hours: ${SCHOOL_HOURS}, 8 periods of about 40 minutes with
 breaks; timings may vary by class.
 Uniform: boys wear a blue T-shirt with blue trousers, girls wear a blue skirt; the
 school provides a school diary and an ID card.
@@ -229,16 +238,17 @@ tests; exact term dates and holidays are posted on the notice board.
 
 === FAQ (/faq) ===
 Admissions: open from January for the new session; mid-year seats can open. Pre-primary
-to Class 12. Walk in to 55, Madar Talla Lane, Salkia with birth certificate and last
+to Class 12. Walk in to ${SCHOOL_ADDRESS_TEXT} with birth certificate and last
 report card. Youngest classes have no entrance test; from Class 3 a short English and
 Maths check is for placement, not filtering — nobody is turned away for a low score.
 Children from Bengali or Hindi medium schools are welcome; extra reading/spelling help
 is given, and Hindi and Bengali continue as taught languages.
-Fees & sponsorship: fees are kept low; no admitted child is removed for want of money.
-Sister organisations fund sponsored places, books, uniforms and meals. A sponsor covers
-one child's year (tuition, uniform, books); the child stays with their family; sponsors
+Fees & sponsorship: ${FEE_STATEMENT} There is no tuition fee and no admission fee, so
+families never pay to keep a child in school, and no admitted child is removed for want
+of money. Sister organisations fund books, uniforms, the daily meal and teacher salaries,
+and sponsors can cover one child's year; the child stays with their family and sponsors
 get progress updates. Speak privately to the office.
-Timings: roughly 10:00 AM to 3:40 PM on weekdays, eight periods of about forty
+Timings: ${SCHOOL_HOURS}, eight periods of about forty
 minutes, with a mid-morning break. Primary/senior and summer/winter times can
 differ — see the calendar and the notice board at the gate.
 Uniform is compulsory (see Rules). Safety: supervised gate, children released only to
@@ -252,8 +262,8 @@ are welcome in school hours; or use Virtual Tour and Gallery first.
 === ENQUIRY (/enquiry) ===
 Families, volunteers and donors send admissions, volunteering, donation or general
 questions through the Enquiry form (name, email, optional phone, subject, message).
-The school office replies by email. Address: 55, Madar Talla Ln, Babudanga, Pilkhana,
-Salkia, Howrah, West Bengal 711101. Email: baloindia2015@gmail.com.
+The school office replies by email, and the office phone is ${SCHOOL_PHONE_DISPLAY}.
+Address: ${SCHOOL_ADDRESS_TEXT}. Email: ${SCHOOL_EMAIL}.
 
 === BALO AI (/balo-ai) ===
 BALO AI is the school's own helper on this website. Assistant mode answers questions
@@ -291,7 +301,8 @@ build and ship software. If asked about Samuel Clay, weekly sessions, mentoring,
 or how the developers learned to code, mention these weekly live sessions.
 
 === CONTACT ===
-Email: baloindia2015@gmail.com. Sister organisation websites: balo.it (Balo Italia)
+Phone: ${SCHOOL_PHONE_DISPLAY}. Email: ${SCHOOL_EMAIL}. Address: ${SCHOOL_ADDRESS_TEXT}.
+Sister organisation websites: balo.it (Balo Italia)
 and balousa.org (Balo USA). Donations: https://www.balousa.org/donation-confirmation/
 `.trim();
 
@@ -379,4 +390,3 @@ ${AI_TONE_RULES}
 
 /** @deprecated use ASSISTANT_IDENTITY_RULES / STUDENT_IDENTITY_RULES */
 export const AI_IDENTITY_RULES = ASSISTANT_IDENTITY_RULES;
-

@@ -17,6 +17,15 @@ export function NoticeBell() {
     if (open && notices.length) markAllNoticesSeen(notices.map((n) => n.id));
   }, [open, notices]);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
+
   if (!notices.length) return null;
 
   return (
@@ -26,18 +35,30 @@ export function NoticeBell() {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 2.1, type: "spring", stiffness: 200, damping: 18 }}
         onClick={() => setOpen((v) => !v)}
-        aria-label="Notice board"
+        aria-label={open ? "Close notice board" : "Open notice board"}
+        aria-expanded={open}
+        aria-controls="notice-bell-panel"
         className="fixed bottom-5 left-5 z-[60] grid place-items-center size-12 rounded-full bg-card border border-border shadow-lg hover:bg-muted transition"
       >
-        {open ? <X className="size-5" /> : <Bell className="size-5" />}
+        {open ? (
+          <X className="size-5" aria-hidden="true" />
+        ) : (
+          <Bell className="size-5" aria-hidden="true" />
+        )}
         {!open && unread && (
-          <span className="absolute top-2 right-2 size-2.5 rounded-full bg-red-500 animate-pulse" />
+          <span
+            aria-hidden="true"
+            className="absolute top-2 right-2 size-2.5 rounded-full bg-red-500 animate-pulse"
+          />
         )}
       </motion.button>
 
       <AnimatePresence>
         {open && (
           <motion.div
+            id="notice-bell-panel"
+            role="region"
+            aria-label="Live notice board"
             initial={{ opacity: 0, y: 20, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
@@ -46,7 +67,7 @@ export function NoticeBell() {
           >
             <div className="flex items-center justify-between border-b border-border px-4 py-3">
               <div className="flex items-center gap-2 text-sm font-bold">
-                <Bell className="size-4 text-primary" /> Notice Board
+                <Bell className="size-4 text-primary" aria-hidden="true" /> Notice Board
               </div>
               <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
                 {notices.length} live
@@ -68,7 +89,7 @@ export function NoticeBell() {
               onClick={() => setOpen(false)}
               className="flex items-center justify-center gap-1.5 border-t border-border px-4 py-2.5 text-xs font-semibold text-primary hover:bg-muted"
             >
-              Open Notice &amp; Events <ArrowRight className="size-3.5" />
+              Open Notice &amp; Events <ArrowRight className="size-3.5" aria-hidden="true" />
             </Link>
           </motion.div>
         )}

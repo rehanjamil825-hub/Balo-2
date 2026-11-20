@@ -7,6 +7,16 @@ import { LogOut, LayoutDashboard, ShieldAlert, UserCircle2 } from "lucide-react"
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
+  head: () => ({
+    meta: [{ title: "BALO admin dashboard" }, { name: "robots", content: "noindex, nofollow" }],
+  }),
+  // Gate the dashboard before it renders. Every admin server function is also
+  // checked server-side, so this is defence in depth rather than the only lock.
+  beforeLoad: async () => {
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) throw redirect({ to: "/admin-login" });
+    return {};
+  },
   component: AdminLayout,
 });
 
@@ -14,7 +24,10 @@ function AdminLayout() {
   const navigate = useNavigate();
   const checkAdmin = useServerFn(getAdminStatus);
   const [state, setState] = useState<
-    { kind: "loading" } | { kind: "signed-out" } | { kind: "not-admin"; username: string | null } | { kind: "admin"; username: string | null }
+    | { kind: "loading" }
+    | { kind: "signed-out" }
+    | { kind: "not-admin"; username: string | null }
+    | { kind: "admin"; username: string | null }
   >({ kind: "loading" });
 
   useEffect(() => {
@@ -26,7 +39,11 @@ function AdminLayout() {
       try {
         const r = await checkAdmin();
         if (!mounted) return;
-        setState(r.isAdmin ? { kind: "admin", username: r.username } : { kind: "not-admin", username: r.username });
+        setState(
+          r.isAdmin
+            ? { kind: "admin", username: r.username }
+            : { kind: "not-admin", username: r.username },
+        );
       } catch {
         if (mounted) setState({ kind: "not-admin", username: null });
       }
@@ -35,14 +52,33 @@ function AdminLayout() {
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_IN" || event === "SIGNED_OUT") check();
     });
-    return () => { mounted = false; sub.subscription.unsubscribe(); };
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
   }, [checkAdmin]);
 
   if (state.kind === "loading") {
-    return <div className="min-h-screen grid place-items-center bg-background text-muted-foreground">Checking access…</div>;
+    return (
+      <div className="min-h-screen grid place-items-center bg-background text-muted-foreground">
+        Checking access…
+      </div>
+    );
   }
   if (state.kind === "signed-out") {
-    throw redirect({ to: "/admin-login" });
+    return (
+      <div className="grid min-h-screen place-items-center bg-background px-6 text-center">
+        <div>
+          <p className="text-muted-foreground">You are signed out. Please sign in to continue.</p>
+          <Link
+            to="/admin-login"
+            className="mt-4 inline-flex rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+          >
+            Go to admin sign-in
+          </Link>
+        </div>
+      </div>
+    );
   }
   if (state.kind === "not-admin") {
     return (
@@ -51,10 +87,14 @@ function AdminLayout() {
           <ShieldAlert className="size-12 mx-auto text-destructive mb-4" />
           <h1 className="text-2xl font-bold">Not authorised</h1>
           <p className="mt-2 text-muted-foreground text-sm">
-            {state.username ?? "This account"} is not an admin. Sign in with an administrator account.
+            {state.username ?? "This account"} is not an admin. Sign in with an administrator
+            account.
           </p>
           <button
-            onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/admin-login" }); }}
+            onClick={async () => {
+              await supabase.auth.signOut();
+              navigate({ to: "/admin-login" });
+            }}
             className="mt-6 inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium"
           >
             Sign out
@@ -73,7 +113,9 @@ function AdminLayout() {
             <span className="font-display font-bold">Balo Admin</span>
           </div>
           <div className="flex items-center gap-3 text-sm">
-            <Link to="/" className="text-muted-foreground hover:text-foreground">View site</Link>
+            <Link to="/" className="text-muted-foreground hover:text-foreground">
+              View site
+            </Link>
             <div className="flex items-center gap-2 rounded-full border border-border bg-background pl-1.5 pr-3 py-1">
               <span className="grid place-items-center size-7 rounded-full bg-primary/10 text-primary">
                 <UserCircle2 className="size-5" />
@@ -83,7 +125,10 @@ function AdminLayout() {
               </span>
             </div>
             <button
-              onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/admin-login" }); }}
+              onClick={async () => {
+                await supabase.auth.signOut();
+                navigate({ to: "/admin-login" });
+              }}
               className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 hover:bg-muted"
             >
               <LogOut className="size-4" /> Sign out
@@ -103,7 +148,10 @@ function AdminLayout() {
               to={tab.to}
               activeOptions={{ exact: true }}
               className="whitespace-nowrap border-b-2 border-transparent px-3 py-3 text-sm text-muted-foreground hover:text-foreground"
-              activeProps={{ className: "whitespace-nowrap border-b-2 border-primary px-3 py-3 text-sm font-semibold text-foreground" }}
+              activeProps={{
+                className:
+                  "whitespace-nowrap border-b-2 border-primary px-3 py-3 text-sm font-semibold text-foreground",
+              }}
             >
               {tab.label}
             </Link>
@@ -113,7 +161,6 @@ function AdminLayout() {
       <main className="max-w-6xl mx-auto px-6 py-8">
         <Outlet />
       </main>
-
     </div>
   );
 }

@@ -1,10 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Loader2, Send, CheckCircle2, Mail, MapPin } from "lucide-react";
+import { Loader2, Send, CheckCircle2, Mail, MapPin, Phone } from "lucide-react";
 import { PageHero, Section, Reveal } from "@/components/page-kit";
+import { ServerStatusNotice } from "@/components/ServerStatusNotice";
 import { submitEnquiry } from "@/lib/ai.functions";
+import {
+  SCHOOL_ADDRESS_TEXT,
+  SCHOOL_EMAIL,
+  SCHOOL_PHONE_DISPLAY,
+  SCHOOL_PHONE_HREF,
+} from "@/lib/school-facts";
 import reception from "@/assets/reception1.jpg";
+import { absoluteUrl, canonicalLink } from "@/lib/school-facts";
 
 export const Route = createFileRoute("/enquiry")({
   head: () => ({
@@ -22,7 +30,9 @@ export const Route = createFileRoute("/enquiry")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: absoluteUrl("/og-balo.jpg") },
     ],
+    links: [canonicalLink("/enquiry")],
   }),
   component: EnquiryPage,
 });
@@ -34,8 +44,9 @@ function EnquiryPage() {
   const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
 
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm((f) => ({ ...f, [k]: e.target.value }));
+  const set =
+    (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      setForm((f) => ({ ...f, [k]: e.target.value }));
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -53,8 +64,16 @@ function EnquiryPage() {
       });
       setDone(true);
       setForm({ name: "", email: "", phone: "", subject: "", message: "" });
-    } catch (err: any) {
-      setError(err?.message ?? "Could not send your enquiry. Please check the form and try again.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "";
+      // A static-only host answers with HTML instead of the server function:
+      // say so plainly instead of blaming the visitor's form.
+      const looksStatic = /HTML|unexpected token|Failed to fetch|NetworkError|404/i.test(message);
+      setError(
+        looksStatic
+          ? `The enquiry form needs the BALO Node server and it is not reachable here. Please email ${SCHOOL_EMAIL} or call ${SCHOOL_PHONE_DISPLAY}.`
+          : message || "Could not send your enquiry. Please check the form and try again.",
+      );
     } finally {
       setBusy(false);
     }
@@ -74,6 +93,7 @@ function EnquiryPage() {
       />
 
       <Section>
+        <ServerStatusNotice feature="enquiry" />
         <div className="grid gap-8 lg:grid-cols-[1.2fr_minmax(0,1fr)]">
           <Reveal>
             <form
@@ -101,28 +121,71 @@ function EnquiryPage() {
                   <div className="grid gap-4 sm:grid-cols-2">
                     <label className="block">
                       <span className="mb-1.5 block text-sm font-semibold">Your name</span>
-                      <input required minLength={2} maxLength={100} value={form.name} onChange={set("name")} className={field} placeholder="Full name" />
+                      <input
+                        required
+                        minLength={2}
+                        maxLength={100}
+                        value={form.name}
+                        onChange={set("name")}
+                        className={field}
+                        placeholder="Full name"
+                      />
                     </label>
                     <label className="block">
                       <span className="mb-1.5 block text-sm font-semibold">Email</span>
-                      <input required type="email" maxLength={255} value={form.email} onChange={set("email")} className={field} placeholder="you@example.com" />
+                      <input
+                        required
+                        type="email"
+                        maxLength={255}
+                        value={form.email}
+                        onChange={set("email")}
+                        className={field}
+                        placeholder="you@example.com"
+                      />
                     </label>
                     <label className="block">
-                      <span className="mb-1.5 block text-sm font-semibold">Phone <span className="font-normal text-muted-foreground">(optional)</span></span>
-                      <input maxLength={30} value={form.phone} onChange={set("phone")} className={field} placeholder="+91…" />
+                      <span className="mb-1.5 block text-sm font-semibold">
+                        Phone <span className="font-normal text-muted-foreground">(optional)</span>
+                      </span>
+                      <input
+                        maxLength={30}
+                        value={form.phone}
+                        onChange={set("phone")}
+                        className={field}
+                        placeholder="+91…"
+                      />
                     </label>
                     <label className="block">
                       <span className="mb-1.5 block text-sm font-semibold">Subject</span>
-                      <input required minLength={2} maxLength={150} value={form.subject} onChange={set("subject")} className={field} placeholder="Admission enquiry" />
+                      <input
+                        required
+                        minLength={2}
+                        maxLength={150}
+                        value={form.subject}
+                        onChange={set("subject")}
+                        className={field}
+                        placeholder="Admission enquiry"
+                      />
                     </label>
                   </div>
                   <label className="block">
                     <span className="mb-1.5 block text-sm font-semibold">Message</span>
-                    <textarea required minLength={5} maxLength={2000} rows={6} value={form.message} onChange={set("message")} className={field} placeholder="How can we help?" />
+                    <textarea
+                      required
+                      minLength={5}
+                      maxLength={2000}
+                      rows={6}
+                      value={form.message}
+                      onChange={set("message")}
+                      className={field}
+                      placeholder="How can we help?"
+                    />
                   </label>
 
                   {error && (
-                    <p className="rounded-2xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>
+                    <p className="rounded-2xl bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                      {error}
+                    </p>
                   )}
 
                   <button
@@ -130,7 +193,11 @@ function EnquiryPage() {
                     disabled={busy}
                     className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:brightness-110 disabled:opacity-50"
                   >
-                    {busy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+                    {busy ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <Send className="size-4" />
+                    )}
                     {busy ? "Sending…" : "Send enquiry"}
                   </button>
                 </>
@@ -146,19 +213,31 @@ function EnquiryPage() {
                 </div>
                 <h3 className="font-display text-lg font-bold">Visit us</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  55, Madar Talla Ln, Babudanga, Pilkhana, Salkia, Howrah, West Bengal 711101
+                  {SCHOOL_ADDRESS_TEXT}
                 </p>
               </div>
               <div className="rounded-3xl border border-border bg-card p-6 shadow-soft">
+                <div className="mb-3 grid size-11 place-items-center rounded-2xl bg-primary/10 text-primary">
+                  <Phone className="size-5" aria-hidden="true" />
+                </div>
+                <h3 className="font-display text-lg font-bold">Call the office</h3>
+                <a
+                  href={SCHOOL_PHONE_HREF}
+                  className="mt-2 block text-sm font-semibold text-primary underline"
+                >
+                  {SCHOOL_PHONE_DISPLAY}
+                </a>
+              </div>
+              <div className="rounded-3xl border border-border bg-card p-6 shadow-soft">
                 <div className="mb-3 grid size-11 place-items-center rounded-2xl bg-accent/10 text-accent">
-                  <Mail className="size-5" />
+                  <Mail className="size-5" aria-hidden="true" />
                 </div>
                 <h3 className="font-display text-lg font-bold">Email the office</h3>
                 <a
-                  href="mailto:baloindia2015@gmail.com"
+                  href={`mailto:${SCHOOL_EMAIL}`}
                   className="mt-2 block text-sm font-semibold text-primary underline"
                 >
-                  baloindia2015@gmail.com
+                  {SCHOOL_EMAIL}
                 </a>
               </div>
             </div>

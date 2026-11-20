@@ -16,6 +16,7 @@ import classB from "@/assets/classroom-2.jpg";
 import receptionA from "@/assets/reception1.jpg";
 import receptionB from "@/assets/reception2.jpg";
 import imglibrarytree from "@/assets/img-library-tree.jpg";
+import { absoluteUrl, canonicalLink } from "@/lib/school-facts";
 
 export const Route = createFileRoute("/virtual-tour")({
   head: () => ({
@@ -33,46 +34,60 @@ export const Route = createFileRoute("/virtual-tour")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: absoluteUrl("/og-balo.jpg") },
     ],
+    links: [canonicalLink("/virtual-tour")],
   }),
   component: VirtualTourPage,
 });
 
-const stops: { title: string; desc: string; images?: [string?, string?] }[] = [
+const stops: {
+  title: string;
+  desc: string;
+  images?: [string?, string?];
+  captions?: [string?, string?];
+}[] = [
   {
     title: "Hall Room",
     desc: "Every school day begins here. Students gather for the morning assembly and morning prayer, share the day's thought, hear announcements from the teachers and start the morning together as one school. The hall also hosts rehearsals, competitions and cultural programmes through the year.",
     images: [hallA, hallB],
+    captions: ["The hall between sessions", "The hall where assembly is held"],
   },
   {
     title: "Staff Room",
     desc: "The working heart of our teaching team. Teachers plan lessons, prepare worksheets, correct copies and meet for academic coordination — reviewing each class's progress, agreeing on the term's syllabus pace and discussing children who need extra support.",
     images: [staffA, staffB],
+    captions: ["Our teaching team", "Staff at a school celebration"],
   },
   {
     title: "Computer Room",
     desc: "Our computer room hosts practical sessions for digital learning — typing, basic coding, spreadsheets, presentations and safe internet practices. Sessions are always teacher-supervised, so students learn confidently and responsibly.",
     images: [compA, compB],
+    captions: ["Computer room workstations", "A row of computers in the lab"],
   },
   {
     title: "Science Lab",
     desc: "Physics, chemistry and biology come alive here. Students perform experiments at proper lab tables with safety equipment, record observations and write up lab reports — turning textbook theory into hands-on understanding.",
     images: [labA, labB],
+    captions: ["The science laboratory", "Lab shelves and equipment"],
   },
   {
     title: "Kitchen",
     desc: "Managed by our dedicated non-teaching staff, the kitchen prepares a fresh, nutritious hot meal for more than 480 students every school day. Ingredients are locally sourced and the space is kept clean, orderly and carefully supervised.",
     images: [kitchenA, kitchenB],
+    captions: ["The school kitchen", "The team who cook the daily meal"],
   },
   {
     title: "Classrooms",
     desc: "Ten bright, ventilated and air-conditioned classrooms where the learning happens — lessons, discussions, group work, unit tests and daily practice, all in an English-medium environment built around the ICSE curriculum.",
     images: [classA, classB],
+    captions: ["Students at work in class", "Writing practice in the classroom"],
   },
   {
     title: "Reception",
     desc: "The welcoming point of the school and the first place visitors and parents come to. Enquiries, appointments with teachers, notices, diaries and day-to-day communication with families are all handled here.",
     images: [receptionA, receptionB],
+    captions: ["The school office", "The reception desk"],
   },
 ];
 
@@ -100,7 +115,12 @@ function VirtualTourPage() {
               <p className="mt-4 leading-relaxed text-muted-foreground">{s.desc}</p>
             </Reveal>
             <Reveal i={1}>
-              <SamplePair label={s.title} images={s.images} onOpen={lightbox.open} />
+              <SamplePair
+                label={s.title}
+                images={s.images}
+                captions={s.captions}
+                onOpen={lightbox.open}
+              />
             </Reveal>
           </div>
         </Section>

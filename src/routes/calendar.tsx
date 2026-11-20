@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHero, Section, Reveal } from "@/components/page-kit";
 import { CalendarDays } from "lucide-react";
 import calendarBackground from "@/assets/calendar-background.jpg";
+import { absoluteUrl, canonicalLink } from "@/lib/school-facts";
 
 export const Route = createFileRoute("/calendar")({
   head: () => ({
@@ -19,7 +20,9 @@ export const Route = createFileRoute("/calendar")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: absoluteUrl("/og-balo.jpg") },
     ],
+    links: [canonicalLink("/calendar")],
   }),
   component: CalendarPage,
 });
@@ -30,21 +33,41 @@ const months: { month: string; days: Day[] }[] = [
   {
     month: "January",
     days: [
-      { name: "Republic Day", date: "26 January", note: "Flag hoisting, patriotic songs and a special assembly." },
-      { name: "Martyrs' Day", date: "30 January", note: "Two minutes' silence in memory of Mahatma Gandhi." },
+      {
+        name: "Republic Day",
+        date: "26 January",
+        note: "Flag hoisting, patriotic songs and a special assembly.",
+      },
+      {
+        name: "Martyrs' Day",
+        date: "30 January",
+        note: "Two minutes' silence in memory of Mahatma Gandhi.",
+      },
     ],
   },
   {
     month: "March",
     days: [
-      { name: "International Women's Day", date: "8 March", note: "Programmes honouring the women of our school and community." },
-      { name: "Commonwealth Day", date: "Second Monday of March", note: "Learning about the Commonwealth of Nations." },
+      {
+        name: "International Women's Day",
+        date: "8 March",
+        note: "Programmes honouring the women of our school and community.",
+      },
+      {
+        name: "Commonwealth Day",
+        date: "Second Monday of March",
+        note: "Learning about the Commonwealth of Nations.",
+      },
     ],
   },
   {
     month: "April",
     days: [
-      { name: "World Health Day", date: "7 April", note: "Health, hygiene and nutrition awareness sessions." },
+      {
+        name: "World Health Day",
+        date: "7 April",
+        note: "Health, hygiene and nutrition awareness sessions.",
+      },
       { name: "Earth Day", date: "22 April", note: "Clean-up drives and environment pledges." },
     ],
   },
@@ -52,47 +75,107 @@ const months: { month: string; days: Day[] }[] = [
     month: "May",
     days: [
       { name: "International Labour Day", date: "1 May", note: "Honouring the dignity of work." },
-      { name: "World Red Cross Day", date: "8 May", note: "First aid and humanitarian service awareness." },
-      { name: "Mother's Day", date: "Second Sunday of May", note: "Cards, crafts and thank-you messages for mothers." },
+      {
+        name: "World Red Cross Day",
+        date: "8 May",
+        note: "First aid and humanitarian service awareness.",
+      },
+      {
+        name: "Mother's Day",
+        date: "Second Sunday of May",
+        note: "Cards, crafts and thank-you messages for mothers.",
+      },
     ],
   },
   {
     month: "June",
     days: [
-      { name: "World Environment Day", date: "5 June", note: "Tree planting and a no-plastic pledge." },
-      { name: "International Yoga Day", date: "21 June", note: "A whole-school yoga and breathing session." },
-      { name: "Father's Day", date: "Third Sunday of June", note: "Activities celebrating fathers and guardians." },
-      { name: "International Day Against Drug Abuse", date: "26 June", note: "Awareness talk for senior students." },
+      {
+        name: "World Environment Day",
+        date: "5 June",
+        note: "Tree planting and a no-plastic pledge.",
+      },
+      {
+        name: "International Yoga Day",
+        date: "21 June",
+        note: "A whole-school yoga and breathing session.",
+      },
+      {
+        name: "Father's Day",
+        date: "Third Sunday of June",
+        note: "Activities celebrating fathers and guardians.",
+      },
+      {
+        name: "International Day Against Drug Abuse",
+        date: "26 June",
+        note: "Awareness talk for senior students.",
+      },
     ],
   },
   {
     month: "July / August",
     days: [
-      { name: "Friendship Day", date: "First Sunday of August", note: "Kindness and friendship activities in class." },
-      { name: "Independence Day", date: "15 August", note: "Flag hoisting, march past and cultural programme." },
+      {
+        name: "Friendship Day",
+        date: "First Sunday of August",
+        note: "Kindness and friendship activities in class.",
+      },
+      {
+        name: "Independence Day",
+        date: "15 August",
+        note: "Flag hoisting, march past and cultural programme.",
+      },
       { name: "National Sports Day", date: "29 August", note: "Races, relays and team games." },
     ],
   },
   {
     month: "September",
     days: [
-      { name: "Teachers' Day", date: "5 September", note: "Students plan and host the day for their teachers." },
-      { name: "World Literacy Day", date: "8 September", note: "Reading drives and storytelling sessions." },
+      {
+        name: "Teachers' Day",
+        date: "5 September",
+        note: "Students plan and host the day for their teachers.",
+      },
+      {
+        name: "World Literacy Day",
+        date: "8 September",
+        note: "Reading drives and storytelling sessions.",
+      },
     ],
   },
   {
     month: "October / November",
     days: [
-      { name: "World Food Day", date: "16 October", note: "Nutrition awareness and no-food-waste pledge." },
-      { name: "Children's Day", date: "14 November", note: "Games, treats and performances for all students." },
+      {
+        name: "World Food Day",
+        date: "16 October",
+        note: "Nutrition awareness and no-food-waste pledge.",
+      },
+      {
+        name: "Children's Day",
+        date: "14 November",
+        note: "Games, treats and performances for all students.",
+      },
     ],
   },
   {
     month: "December",
     days: [
-      { name: "World AIDS Day", date: "1 December", note: "Age-appropriate health awareness for senior classes." },
-      { name: "Human Rights Day", date: "10 December", note: "Workshops on rights, equality and dignity." },
-      { name: "Kisan Diwas (Farmer's Day)", date: "23 December", note: "Learning about farmers and where our food comes from." },
+      {
+        name: "World AIDS Day",
+        date: "1 December",
+        note: "Age-appropriate health awareness for senior classes.",
+      },
+      {
+        name: "Human Rights Day",
+        date: "10 December",
+        note: "Workshops on rights, equality and dignity.",
+      },
+      {
+        name: "Kisan Diwas (Farmer's Day)",
+        date: "23 December",
+        note: "Learning about farmers and where our food comes from.",
+      },
     ],
   },
 ];
@@ -111,9 +194,18 @@ function CalendarPage() {
       <Section eyebrow="The school year" title="How the year is organised">
         <div className="grid gap-4 md:grid-cols-3">
           {[
-            { t: "School day", d: "Eight periods of about forty minutes, roughly 10:00 AM to 3:40 PM, with a mid-morning break. Primary and senior sections may finish a little differently in summer and winter." },
-            { t: "Three terms", d: "The year runs in three academic terms, each with class work, homework, dictations and unit tests. Exact start and end dates are posted on the notice board at the gate." },
-            { t: "Holidays", d: "National holidays, vacations and movable days are confirmed each year on the notice board and in Notices & Events. Plan travel inside the official vacation dates." },
+            {
+              t: "School day",
+              d: "Eight periods of about forty minutes, roughly 10:00 AM to 3:40 PM, with a mid-morning break. Primary and senior sections may finish a little differently in summer and winter.",
+            },
+            {
+              t: "Three terms",
+              d: "The year runs in three academic terms, each with class work, homework, dictations and unit tests. Exact start and end dates are posted on the notice board at the gate.",
+            },
+            {
+              t: "Holidays",
+              d: "National holidays, vacations and movable days are confirmed each year on the notice board and in Notices & Events. Plan travel inside the official vacation dates.",
+            },
           ].map((card, i) => (
             <Reveal key={card.t} i={i}>
               <article className="h-full rounded-3xl border border-border bg-card p-5 shadow-soft">

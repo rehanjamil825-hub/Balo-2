@@ -15,6 +15,8 @@ import {
 import { BaloAiMark } from "@/components/BaloAiMark";
 import { BaloAiWordmark } from "@/components/BaloAiWordmark";
 import { useBaloChat, STARTERS, type Mode, type Msg } from "@/lib/use-balo-chat";
+import { ServerStatusNotice } from "@/components/ServerStatusNotice";
+import { absoluteUrl, canonicalLink } from "@/lib/school-facts";
 
 export const Route = createFileRoute("/balo-ai")({
   head: () => ({
@@ -33,20 +35,16 @@ export const Route = createFileRoute("/balo-ai")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: absoluteUrl("/og-balo.jpg") },
     ],
+    links: [canonicalLink("/balo-ai")],
   }),
   component: BaloAiPage,
 });
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-function ModeSwitch({
-  mode,
-  onChange,
-}: {
-  mode: Mode;
-  onChange: (mode: Mode) => void;
-}) {
+function ModeSwitch({ mode, onChange }: { mode: Mode; onChange: (mode: Mode) => void }) {
   return (
     <div className="relative inline-flex rounded-full bg-muted/70 p-0.5">
       {(["assistant", "student"] as Mode[]).map((item) => {
@@ -121,11 +119,7 @@ function Bubble({ m }: { m: Msg }) {
         }`}
       >
         {m.image && (
-          <img
-            src={m.image}
-            alt="Uploaded question"
-            className="mb-2 max-h-52 w-auto rounded-2xl"
-          />
+          <img src={m.image} alt="Uploaded question" className="mb-2 max-h-52 w-auto rounded-2xl" />
         )}
         {isUser ? (
           <p className="whitespace-pre-wrap">{m.content}</p>
@@ -241,6 +235,7 @@ function BaloAiPage() {
             <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-2 px-3 py-2.5 sm:px-5">
               <select
                 value={chat.classLabel}
+                aria-label="Class"
                 onChange={(e) => chat.setClassLabel(e.target.value)}
                 className={selectClass}
               >
@@ -253,6 +248,7 @@ function BaloAiPage() {
               </select>
               <select
                 value={chat.subject}
+                aria-label="Subject"
                 onChange={(e) => chat.setSubject(e.target.value)}
                 className={selectClass}
               >
@@ -267,6 +263,7 @@ function BaloAiPage() {
                 value={chat.topic}
                 onChange={(e) => chat.setTopic(e.target.value)}
                 placeholder="Topic (optional)"
+                aria-label="Topic (optional)"
                 className={`${selectClass} min-w-[8rem] flex-1`}
               />
               <label className="flex min-w-[12rem] flex-1 cursor-pointer items-start gap-2 text-[11px] leading-snug text-muted-foreground sm:text-xs">
@@ -284,6 +281,9 @@ function BaloAiPage() {
       </AnimatePresence>
 
       <div className="balo-ai-scroll relative min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        <div className="px-3 pt-3">
+          <ServerStatusNotice feature="chat" />
+        </div>
         <AnimatePresence mode="wait">
           {chat.modeOff ? (
             <motion.div
@@ -350,6 +350,10 @@ function BaloAiPage() {
           ) : (
             <motion.div
               key={`chat-${chat.mode}`}
+              role="log"
+              aria-live="polite"
+              aria-relevant="additions text"
+              aria-label="BALO AI conversation"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -361,7 +365,10 @@ function BaloAiPage() {
               )}
               {chat.busy && <Typing />}
               {chat.error && (
-                <div className="rounded-2xl bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                <div
+                  role="alert"
+                  className="rounded-2xl bg-destructive/10 px-4 py-3 text-sm text-destructive"
+                >
                   {chat.error}
                 </div>
               )}
@@ -414,6 +421,7 @@ function BaloAiPage() {
                     type="button"
                     onClick={() => fileRef.current?.click()}
                     title="Upload a photo of your question"
+                    aria-label="Upload a photo of your question"
                     className="grid size-10 shrink-0 place-items-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
                   >
                     <ImagePlus className="size-4" />
@@ -431,6 +439,11 @@ function BaloAiPage() {
                     if (!blocked) chat.send(chat.input);
                   }
                 }}
+                aria-label={
+                  chat.mode === "assistant"
+                    ? "Ask BALO AI about the school"
+                    : "Ask a study question"
+                }
                 placeholder={
                   blocked
                     ? "Accept the learning pledge to begin…"

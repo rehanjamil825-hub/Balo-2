@@ -1,3 +1,11 @@
+# Balo English Medium School — https://baloindia.org
 User-agent: *
 Allow: /
+
+# Staff-only surfaces: never indexed, never crawled.
+Disallow: /admin
+Disallow: /admin-login
+Disallow: /admin-reset-password
+Disallow: /api/
+
 Sitemap: https://baloindia.org/sitemap.xml

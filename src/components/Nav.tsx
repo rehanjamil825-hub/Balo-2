@@ -1,15 +1,8 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Heart,
-  Menu,
-  X,
-  Globe,
-  ChevronDown,
-  UserCircle2,
-} from "lucide-react";
+import { Heart, Menu, X, Globe, ChevronDown, UserCircle2 } from "lucide-react";
 import { SmartSearch } from "@/components/SmartSearch";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import baloLogo from "@/assets/balo-logo.jpg";
 import { useLang, type Lang } from "@/lib/i18n";
 import { useUnreadNotices } from "@/lib/notices";
@@ -87,24 +80,56 @@ const langOptions: { code: Lang; label: string }[] = [
   { code: "bn", label: "বাং" },
 ];
 
+const LANG_NAMES: Record<Lang, string> = { en: "English", hi: "हिंदी", bn: "বাংলা" };
+
 function LangSwitcher({ mobile = false }: { mobile?: boolean }) {
   const { lang, setLang, t } = useLang();
   const [open, setOpen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const menuId = useId();
+
+  // Close on outside click / Escape, and return focus to the trigger.
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: MouseEvent | TouchEvent) => {
+      if (!wrapRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      wrapRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    };
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("touchstart", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("touchstart", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
 
   return (
-    <div className={mobile ? "" : "relative"}>
+    <div className={mobile ? "" : "relative"} ref={wrapRef}>
       <button
+        type="button"
         onClick={() => setOpen((v) => !v)}
         className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/60 px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-muted"
-        aria-label={t("lang.label")}
+        aria-label={`${t("lang.label")}: ${LANG_NAMES[lang]}`}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        aria-controls={menuId}
       >
-        <Globe className="size-3.5" />
+        <Globe className="size-3.5" aria-hidden="true" />
         {langOptions.find((o) => o.code === lang)?.label}
       </button>
 
       <AnimatePresence>
         {open && (
           <motion.div
+            id={menuId}
+            role="menu"
+            aria-label={t("lang.label")}
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
@@ -118,6 +143,10 @@ function LangSwitcher({ mobile = false }: { mobile?: boolean }) {
             {langOptions.map((o) => (
               <button
                 key={o.code}
+                type="button"
+                role="menuitemradio"
+                aria-checked={lang === o.code}
+                lang={o.code}
                 onClick={() => {
                   setLang(o.code);
                   setOpen(false);
@@ -127,9 +156,7 @@ function LangSwitcher({ mobile = false }: { mobile?: boolean }) {
                     ? "flex-1 rounded-full px-3 py-1.5 text-xs"
                     : "block w-full rounded-lg px-3 py-2 text-left text-sm"
                 } font-semibold transition-colors ${
-                  lang === o.code
-                    ? "bg-accent text-accent-foreground"
-                    : "hover:bg-muted"
+                  lang === o.code ? "bg-accent text-accent-foreground" : "hover:bg-muted"
                 }`}
               >
                 {o.label}
@@ -157,22 +184,26 @@ export function Nav() {
   const admin = useAdminSession();
 
   const currentGroupKey =
-    navGroups.find((g) =>
-      g.items.some((i) => !i.hash && i.href === pathname),
-    )?.key ?? null;
+    navGroups.find((g) => g.items.some((i) => !i.hash && i.href === pathname))?.key ?? null;
 
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
 
+  // Escape closes the mobile menu (parity with the desktop dropdown).
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [mobileOpen]);
+
   const linkClasses =
     "text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer";
 
-  const handleHashClick = (
-    e: React.MouseEvent,
-    hash: string,
-    href = "/",
-  ) => {
+  const handleHashClick = (e: React.MouseEvent, hash: string, href = "/") => {
     e.preventDefault();
 
     setMobileOpen(false);
@@ -184,8 +215,7 @@ export function Nav() {
 
         if (!el) return;
 
-        const top =
-          el.getBoundingClientRect().top + window.scrollY - 130;
+        const top = el.getBoundingClientRect().top + window.scrollY - 130;
 
         window.scrollTo({
           top,
@@ -203,22 +233,15 @@ export function Nav() {
     }
   };
 
-  const renderItem = (
-    item: NavItem,
-    mobile = false,
-    inMenu = false,
-  ) => {
+  const renderItem = (item: NavItem, mobile = false, inMenu = false) => {
     const itemHref = item.key === "nav.admin" ? admin.href : item.href;
-    const itemLabel = item.key === "nav.admin"
-      ? t(admin.signedIn ? "nav.admin" : "nav.adminLogin")
-      : t(item.key);
+    const itemLabel =
+      item.key === "nav.admin" ? t(admin.signedIn ? "nav.admin" : "nav.adminLogin") : t(item.key);
     const isCurrent = !item.hash && itemHref === pathname;
 
     const className = mobile
       ? `block text-sm font-medium cursor-pointer ${
-          isCurrent
-            ? "font-semibold text-foreground"
-            : "text-foreground/70 hover:text-foreground"
+          isCurrent ? "font-semibold text-foreground" : "text-foreground/70 hover:text-foreground"
         }`
       : inMenu
         ? `rounded-xl px-3 py-2 text-sm font-medium cursor-pointer ${
@@ -240,9 +263,7 @@ export function Nav() {
           key={item.key}
           href={`#${item.hash}`}
           className={`${className} relative`}
-          onClick={(e) =>
-            handleHashClick(e, item.hash!, item.href)
-          }
+          onClick={(e) => handleHashClick(e, item.hash!, item.href)}
         >
           {t(item.key)}
           {dot}
@@ -289,17 +310,11 @@ export function Nav() {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <div className="size-10 overflow-hidden rounded-full shadow-soft ring-2 ring-accent/40">
-            <img
-              src={baloLogo}
-              alt="Balo India logo"
-              className="h-full w-full object-cover"
-            />
+            <img src={baloLogo} alt="Balo India logo" className="h-full w-full object-cover" />
           </div>
 
           <div className="leading-tight">
-            <div className="font-display text-lg font-bold">
-              Balo India
-            </div>
+            <div className="font-display text-lg font-bold">Balo India</div>
 
             <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
               School · Howrah
@@ -312,13 +327,9 @@ export function Nav() {
           {navGroups.map((group) => {
             const open = openGroup === group.key;
 
-            const groupHasDot =
-              group.items.some((i) => i.notice) &&
-              hasUnreadNotices;
+            const groupHasDot = group.items.some((i) => i.notice) && hasUnreadNotices;
 
-            const groupActive = group.items.some(
-              (i) => !i.hash && i.href === pathname,
-            );
+            const groupActive = group.items.some((i) => !i.hash && i.href === pathname);
 
             return (
               <div
@@ -330,9 +341,7 @@ export function Nav() {
                 <button
                   type="button"
                   aria-expanded={open}
-                  onClick={() =>
-                    setOpenGroup(open ? null : group.key)
-                  }
+                  onClick={() => setOpenGroup(open ? null : group.key)}
                   className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
                     groupActive
                       ? "bg-accent/10 font-semibold text-foreground"
@@ -346,9 +355,7 @@ export function Nav() {
                   )}
 
                   <ChevronDown
-                    className={`size-3.5 transition-transform ${
-                      open ? "rotate-180" : ""
-                    }`}
+                    className={`size-3.5 transition-transform ${open ? "rotate-180" : ""}`}
                   />
                 </button>
 
@@ -362,9 +369,7 @@ export function Nav() {
                       className="absolute left-0 top-full z-50 min-w-[13rem] rounded-2xl border border-border bg-card p-2 shadow-card"
                     >
                       <div className="flex flex-col">
-                        {group.items.map((item) =>
-                          renderItem(item, false, true),
-                        )}
+                        {group.items.map((item) => renderItem(item, false, true))}
                       </div>
                     </motion.div>
                   )}
@@ -394,6 +399,7 @@ export function Nav() {
         {/* Mobile account and menu actions */}
         <div className="flex items-center gap-1 lg:hidden">
           <button
+            type="button"
             className="relative rounded-lg p-2 transition-colors hover:bg-muted"
             onClick={() => {
               setMobileOpen((open) => {
@@ -402,6 +408,8 @@ export function Nav() {
               });
             }}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
           >
             {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
             {hasUnreadNotices && !mobileOpen && (
@@ -415,6 +423,7 @@ export function Nav() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
+            id="mobile-menu"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -423,35 +432,20 @@ export function Nav() {
           >
             <div className="space-y-3 px-6 py-4">
               {navGroups.map((group) => (
-                <div
-                  key={group.key}
-                  className="rounded-xl border border-border/60 bg-card/60"
-                >
+                <div key={group.key} className="rounded-xl border border-border/60 bg-card/60">
                   <button
                     type="button"
-                    onClick={() =>
-                      setOpenGroup(
-                        openGroup === group.key
-                          ? null
-                          : group.key,
-                      )
-                    }
+                    onClick={() => setOpenGroup(openGroup === group.key ? null : group.key)}
                     className={`flex w-full items-center justify-between px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-[0.2em] ${
-                      currentGroupKey === group.key
-                        ? "text-accent"
-                        : "text-muted-foreground"
+                      currentGroupKey === group.key ? "text-accent" : "text-muted-foreground"
                     }`}
-                    aria-expanded={
-                      openGroup === group.key
-                    }
+                    aria-expanded={openGroup === group.key}
                   >
                     {t(group.key)}
 
                     <ChevronDown
                       className={`size-4 transition-transform ${
-                        openGroup === group.key
-                          ? "rotate-180"
-                          : ""
+                        openGroup === group.key ? "rotate-180" : ""
                       }`}
                     />
                   </button>
@@ -474,9 +468,7 @@ export function Nav() {
                         className="overflow-hidden"
                       >
                         <div className="space-y-2 border-t border-border/60 px-3 py-3 pl-5">
-                          {group.items.map((item) =>
-                            renderItem(item, true),
-                          )}
+                          {group.items.map((item) => renderItem(item, true))}
                         </div>
                       </motion.div>
                     )}

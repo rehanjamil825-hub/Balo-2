@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHero, Section, Reveal } from "@/components/page-kit";
 import { ShieldCheck } from "lucide-react";
 import backgroundrule from "@/assets/rules-background.jpg";
+import { absoluteUrl, canonicalLink } from "@/lib/school-facts";
 
 export const Route = createFileRoute("/rules")({
   head: () => ({
@@ -15,11 +16,14 @@ export const Route = createFileRoute("/rules")({
       { property: "og:title", content: "Rules & Regulations — Balo English Medium School" },
       {
         property: "og:description",
-        content: "What we ask of every BALO student and parent, so the school stays safe, fair and orderly.",
+        content:
+          "What we ask of every BALO student and parent, so the school stays safe, fair and orderly.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: absoluteUrl("/og-balo.jpg") },
     ],
+    links: [canonicalLink("/rules")],
   }),
   component: RulesPage,
 });
@@ -97,7 +101,10 @@ function RulesPage() {
         <Reveal>
           <p className="rounded-3xl border border-border bg-card p-6 text-sm leading-relaxed text-muted-foreground">
             For any clarification on these rules, please contact the school office at{" "}
-            <a className="font-semibold text-primary underline" href="mailto:baloindia2015@gmail.com">
+            <a
+              className="font-semibold text-primary underline"
+              href="mailto:baloindia2015@gmail.com"
+            >
               baloindia2015@gmail.com
             </a>{" "}
             or speak to the Manager at the reception.

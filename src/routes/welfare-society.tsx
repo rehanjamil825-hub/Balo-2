@@ -6,6 +6,7 @@ import welfare2 from "@/assets/balo-background.jpg";
 import bettaPortrait from "@/assets/welfare-betta.jpg";
 import liamPortrait from "@/assets/welfare-liam.jpg";
 import annePortrait from "@/assets/welfare-anne.jpg";
+import { absoluteUrl, canonicalLink } from "@/lib/school-facts";
 
 export const Route = createFileRoute("/welfare-society")({
   head: () => ({
@@ -14,16 +15,19 @@ export const Route = createFileRoute("/welfare-society")({
       {
         name: "description",
         content:
-           "The BALO Welfare Society supports children of Pilkhana and Fakir Bagan Lane, Howrah, through sports and cultural competitions, consumer awareness camps, human rights workshops and community outreach.",
+          "The BALO Welfare Society supports children of Pilkhana and Fakir Bagan Lane, Howrah, through sports and cultural competitions, consumer awareness camps, human rights workshops and community outreach.",
       },
       { property: "og:title", content: "BALO Welfare Society" },
       {
         property: "og:description",
-        content: "Sports meets, awareness camps, human rights workshops and community upliftment in Howrah.",
+        content:
+          "Sports meets, awareness camps, human rights workshops and community upliftment in Howrah.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: absoluteUrl("/og-balo.jpg") },
     ],
+    links: [canonicalLink("/welfare-society")],
   }),
   component: WelfarePage,
 });
@@ -81,7 +85,12 @@ function WelfarePage() {
             </div>
           </Reveal>
           <Reveal i={1}>
-            <SampleImage label="BALO Welfare Society programme" src={welfare1} ratio="4 / 3" onOpen={lightbox.open} />
+            <SampleImage
+              label="BALO Welfare Society programme"
+              src={welfare1}
+              ratio="4 / 3"
+              onOpen={lightbox.open}
+            />
           </Reveal>
         </div>
       </Section>
@@ -106,24 +115,93 @@ function WelfarePage() {
         <div className="grid gap-6 md:grid-cols-3">
           <Reveal>
             <article className="h-full overflow-hidden rounded-xl border border-border bg-card shadow-soft">
-              <SampleImage label="Elisabetta “Betta” Ravaioli, founder of Balo Italia" src={bettaPortrait} ratio="4 / 5" onOpen={lightbox.open} />
-              <div className="p-5"><h3 className="font-display text-xl font-bold">Elisabetta “Betta” Ravaioli</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">Founder of Balo Italia, Betta began the Balo story after volunteering with Mother Teresa’s Missionaries of Charity in Kolkata in 2005. Her work grew into direct support for children and families in Howrah.</p></div>
+              <SampleImage
+                label="Elisabetta “Betta” Ravaioli, founder of Balo Italia"
+                src={bettaPortrait}
+                ratio="4 / 5"
+                onOpen={lightbox.open}
+              />
+              <div className="p-5">
+                <h3 className="font-display text-xl font-bold">Elisabetta “Betta” Ravaioli</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  Founder of Balo Italia, Betta began the Balo story after volunteering with Mother
+                  Teresa’s Missionaries of Charity in Kolkata in 2005. Her work grew into direct
+                  support for children and families in Howrah.
+                </p>
+              </div>
             </article>
           </Reveal>
           <Reveal i={1}>
             <article className="h-full overflow-hidden rounded-xl border border-border bg-card shadow-soft">
-              <SampleImage label="Liam Ashe, chairperson of Balo Children Ireland" src={liamPortrait} ratio="4 / 5" onOpen={lightbox.open} />
-              <div className="p-5"><h3 className="font-display text-xl font-bold">Liam Ashe</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">Chairperson and coordinator for Balo Children Ireland, Liam is a former teacher at St. Flannan’s College in Ennis. He coordinates fundraising and visits Kolkata as a volunteer.</p></div>
+              <SampleImage
+                label="Liam Ashe, chairperson of Balo Children Ireland"
+                src={liamPortrait}
+                ratio="4 / 5"
+                onOpen={lightbox.open}
+              />
+              <div className="p-5">
+                <h3 className="font-display text-xl font-bold">Liam Ashe</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  Chairperson and coordinator for Balo Children Ireland, Liam is a former teacher at
+                  St. Flannan’s College in Ennis. He coordinates fundraising and visits Kolkata as a
+                  volunteer.
+                </p>
+              </div>
             </article>
           </Reveal>
           <Reveal i={2}>
             <article className="h-full overflow-hidden rounded-xl border border-border bg-card shadow-soft">
-              <SampleImage label="Anne Leache, Balo USA coordinator" src={annePortrait} ratio="4 / 5" onOpen={lightbox.open} />
-              <div className="p-5"><h3 className="font-display text-xl font-bold">Anne “Anna” Leache</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">A Seattle teacher and volunteer, Anne Leache became involved in Balo after volunteering in Kolkata in 2005. She helps coordinate Balo USA and its support for projects in India.</p></div>
+              <SampleImage
+                label="Anne Leache, Balo USA coordinator"
+                src={annePortrait}
+                ratio="4 / 5"
+                onOpen={lightbox.open}
+              />
+              <div className="p-5">
+                <h3 className="font-display text-xl font-bold">Anne “Anna” Leache</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  A Seattle teacher and volunteer, Anne Leache became involved in Balo after
+                  volunteering in Kolkata in 2005. She helps coordinate Balo USA and its support for
+                  projects in India.
+                </p>
+              </div>
             </article>
           </Reveal>
         </div>
-        <div className="mt-8 rounded-3xl border border-border bg-card p-6 shadow-soft"><h3 className="font-display text-2xl font-bold">Our sister organisations</h3><p className="mt-3 leading-relaxed text-muted-foreground">Balo India works with Balo Italia, Balo USA, Balo Children Ireland and partners in Malaysia to support education, nutrition, health, school supplies, uniforms, women’s training and the safety of vulnerable girls.</p><div className="mt-5 flex flex-wrap gap-3"><a href="https://balo.ie/" target="_blank" rel="noopener noreferrer" className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground">Visit Balo Ireland</a><a href="https://www.balousa.org/" target="_blank" rel="noopener noreferrer" className="rounded-full border border-border px-5 py-2 text-sm font-semibold">Balo USA</a><a href="https://www.balo.it/en/" target="_blank" rel="noopener noreferrer" className="rounded-full border border-border px-5 py-2 text-sm font-semibold">Balo Italia</a></div></div>
+        <div className="mt-8 rounded-3xl border border-border bg-card p-6 shadow-soft">
+          <h3 className="font-display text-2xl font-bold">Our sister organisations</h3>
+          <p className="mt-3 leading-relaxed text-muted-foreground">
+            Balo India works with Balo Italia, Balo USA, Balo Children Ireland and partners in
+            Malaysia to support education, nutrition, health, school supplies, uniforms, women’s
+            training and the safety of vulnerable girls.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <a
+              href="https://balo.ie/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground"
+            >
+              Visit Balo Ireland
+            </a>
+            <a
+              href="https://www.balousa.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full border border-border px-5 py-2 text-sm font-semibold"
+            >
+              Balo USA
+            </a>
+            <a
+              href="https://www.balo.it/en/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full border border-border px-5 py-2 text-sm font-semibold"
+            >
+              Balo Italia
+            </a>
+          </div>
+        </div>
       </Section>
 
       {lightbox.node}

@@ -2,9 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "@/lib/limited-motion";
 import { useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import {
-  BookOpen, Heart, Users, Award, Lightbulb, Quote, ArrowRight,
-} from "lucide-react";
+import { BookOpen, Heart, Users, Award, Lightbulb, Quote, ArrowRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { FOUNDING_STORY, absoluteUrl, canonicalLink } from "@/lib/school-facts";
 
 import founder from "@/assets/founder.jpg";
 import director from "@/assets/director.jpg";
@@ -16,11 +16,26 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "Leadership — Balo English Medium School, Howrah" },
-      { name: "description", content: "Meet the founder, director and principal guiding Balo English Medium School in Howrah." },
+      {
+        name: "description",
+        content:
+          "Meet the founder, director and principal guiding Balo English Medium School in Howrah.",
+      },
       { property: "og:title", content: "Leadership — Balo English Medium School" },
-      { property: "og:description", content: "Meet the hearts behind Balo English Medium School: founder Mrs Elisabetta Ravaioli, director Mrs Rehana Khatoon, and principal Mrs Roshan Ara." },
+      {
+        property: "og:description",
+        content:
+          "Meet the hearts behind Balo English Medium School: founder Mrs Elisabetta Ravaioli, director Mrs Rehana Khatoon, and principal Mrs Roshan Ara.",
+      },
+      { property: "og:image", content: absoluteUrl("/og-balo.jpg") },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Leadership — Balo English Medium School" },
+      {
+        name: "twitter:description",
+        content: "The founder, director and principal guiding BALO's free school in Howrah.",
+      },
     ],
-    links: [{ rel: "canonical", href: "/about" }],
+    links: [canonicalLink("/about")],
   }),
   component: AboutPage,
 });
@@ -79,13 +94,15 @@ function Hero() {
       <div className="max-w-7xl mx-auto px-6 w-full text-white">
         <motion.div initial="hidden" animate="show" variants={fadeUp}>
           <div className="text-xs uppercase tracking-[0.25em] text-secondary font-bold mb-4">
-             Leadership
+            Leadership
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-balance leading-[0.95]">
-            Meet the hearts behind <span className="italic text-secondary">Balo English Medium School.</span>
+            Meet the hearts behind{" "}
+            <span className="italic text-secondary">Balo English Medium School.</span>
           </h1>
           <p className="mt-6 text-lg md:text-xl text-white/85 max-w-2xl">
-            We are a community-run school in Salkia, Howrah, guided by three women who believe that every child deserves love, learning, and a future without limits.
+            We are a community-run school in Salkia, Howrah, guided by three women who believe that
+            every child deserves love, learning, and a future without limits.
           </p>
         </motion.div>
       </div>
@@ -111,7 +128,8 @@ function Leadership() {
             Three women, one unwavering mission.
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Founder, Director, and Principal — each brings a lifetime of care, experience, and vision to our school.
+            Founder, Director, and Principal — each brings a lifetime of care, experience, and
+            vision to our school.
           </p>
         </motion.div>
 
@@ -153,14 +171,74 @@ function Leadership() {
   );
 }
 
+function Origins() {
+  return (
+    <section className="px-6 py-16 bg-background">
+      <div className="mx-auto max-w-4xl rounded-3xl border border-border bg-card p-8 shadow-soft md:p-10">
+        <div className="text-xs font-bold uppercase tracking-[0.2em] text-accent">
+          How BALO began
+        </div>
+        <h2 className="mt-3 font-display text-3xl font-bold md:text-4xl">
+          From one meeting in Kolkata to a school of 480.
+        </h2>
+        <p className="mt-4 leading-relaxed text-muted-foreground">{FOUNDING_STORY}</p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link
+            to="/staff"
+            className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+          >
+            Meet our staff
+          </Link>
+          <Link
+            to="/volunteers"
+            className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold hover:bg-muted"
+          >
+            Meet our volunteers
+          </Link>
+          <Link
+            to="/welfare-society"
+            className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold hover:bg-muted"
+          >
+            BALO Welfare Society
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Mission() {
   const values = [
-    { icon: Heart, title: "Love First", desc: "Every child is welcomed, fed, and respected before any lesson begins." },
-    { icon: BookOpen, title: "Quality Education", desc: "English-medium instruction with strong foundations in reading, writing, and reasoning." },
-    { icon: Users, title: "Community Roots", desc: "We are run by parents, teachers, and neighbours who believe in shared responsibility." },
-    { icon: Lightbulb, title: "Future Ready", desc: "From smart classes to science labs, we prepare children for the world ahead." },
-    { icon: Award, title: "Always Free", desc: "No fees, no hidden costs — education is a right, not a product." },
-    { icon: ArrowRight, title: "Continuous Growth", desc: "Every year we add new programs, facilities, and opportunities for our children." },
+    {
+      icon: Heart,
+      title: "Love First",
+      desc: "Every child is welcomed, fed, and respected before any lesson begins.",
+    },
+    {
+      icon: BookOpen,
+      title: "Quality Education",
+      desc: "English-medium instruction with strong foundations in reading, writing, and reasoning.",
+    },
+    {
+      icon: Users,
+      title: "Community Roots",
+      desc: "We are run by parents, teachers, and neighbours who believe in shared responsibility.",
+    },
+    {
+      icon: Lightbulb,
+      title: "Future Ready",
+      desc: "From smart classes to science labs, we prepare children for the world ahead.",
+    },
+    {
+      icon: Award,
+      title: "Always Free",
+      desc: "No tuition fee, no admission fee, no hidden costs — education is a right, not a product.",
+    },
+    {
+      icon: ArrowRight,
+      title: "Continuous Growth",
+      desc: "Every year we add new programs, facilities, and opportunities for our children.",
+    },
   ];
 
   return (
@@ -194,7 +272,9 @@ function Mission() {
             Building futures, one child at a time.
           </h2>
           <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-            Balo English Medium School exists to give the children of Salkia, Babudanga, and Pilkhana a school they can be proud of — free of charge, full of possibility, and rooted in the love of the community.
+            Balo English Medium School exists to give the children of Salkia, Babudanga, and
+            Pilkhana a school they can be proud of — free of charge, full of possibility, and rooted
+            in the love of the community.
           </p>
           <div className="mt-8 grid sm:grid-cols-2 gap-4">
             {values.map((v, i) => (
@@ -224,10 +304,14 @@ function Mission() {
 function ImpactQuote() {
   return (
     <section className="py-28 px-6 relative overflow-hidden gradient-hero text-white">
-      <div className="absolute inset-0 opacity-20" style={{
-        backgroundImage: "radial-gradient(circle at 20% 20%, white 1px, transparent 1px), radial-gradient(circle at 80% 60%, white 1px, transparent 1px)",
-        backgroundSize: "40px 40px, 60px 60px",
-      }} />
+      <div
+        className="absolute inset-0 opacity-20"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 20% 20%, white 1px, transparent 1px), radial-gradient(circle at 80% 60%, white 1px, transparent 1px)",
+          backgroundSize: "40px 40px, 60px 60px",
+        }}
+      />
       <div className="relative max-w-4xl mx-auto text-center">
         <motion.div
           initial="hidden"
@@ -237,9 +321,12 @@ function ImpactQuote() {
         >
           <Quote className="size-12 mx-auto opacity-60" />
           <p className="mt-6 text-2xl md:text-4xl font-display font-medium text-balance leading-snug">
-            "We did not wait for a big building. We started with a big heart — and the building grew around it."
+            "We did not wait for a big building. We started with a big heart — and the building grew
+            around it."
           </p>
-          <div className="mt-8 text-sm tracking-widest uppercase text-white/80">— Mrs Elisabetta Ravaioli, Founder</div>
+          <div className="mt-8 text-sm tracking-widest uppercase text-white/80">
+            — Mrs Elisabetta Ravaioli, Founder
+          </div>
         </motion.div>
       </div>
     </section>
@@ -251,9 +338,9 @@ function AboutPage() {
     <main>
       <Hero />
       <Leadership />
+      <Origins />
       <Mission />
       <ImpactQuote />
     </main>
   );
 }
-

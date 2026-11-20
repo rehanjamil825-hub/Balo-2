@@ -8,7 +8,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -19,7 +19,16 @@ import { Footer } from "../components/Footer";
 import { LanguageProvider } from "../lib/i18n";
 import { BaloAIButton } from "../components/BaloAIButton";
 import { NoticeBell } from "../components/NoticeBell";
-
+import {
+  SCHOOL_ADDRESS,
+  SCHOOL_EMAIL,
+  SCHOOL_NAME,
+  SCHOOL_PHONE_DISPLAY,
+  SCHOOL_STATS,
+  SITE_URL,
+  SOCIAL_IMAGE_PATH,
+  absoluteUrl,
+} from "../lib/school-facts";
 
 function NotFoundComponent() {
   return (
@@ -86,16 +95,83 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { property: "og:site_name", content: "Balo English Medium School" },
+      { title: `${SCHOOL_NAME} — Free Education for Every Child in Howrah` },
+      {
+        name: "description",
+        content:
+          "Balo English Medium School is a free English-medium school in Salkia, Howrah, giving children of Pilkhana and Babudanga an education, a hot meal and a safe place to learn.",
+      },
+      { name: "theme-color", content: "#1f5f4b" },
+      { property: "og:site_name", content: SCHOOL_NAME },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "en_IN" },
+      {
+        property: "og:title",
+        content: `${SCHOOL_NAME} — Free Education for Every Child in Howrah`,
+      },
+      {
+        property: "og:description",
+        content:
+          "A 4.4★ rated community school in Salkia, Howrah giving children free, quality English-medium learning.",
+      },
+      { property: "og:image", content: absoluteUrl(SOCIAL_IMAGE_PATH) },
+      {
+        property: "og:image:alt",
+        content: "Students and volunteers together at Balo English Medium School",
+      },
       { name: "twitter:card", content: "summary_large_image" },
+      {
+        name: "twitter:title",
+        content: `${SCHOOL_NAME} — Free Education for Every Child in Howrah`,
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Free English-medium education, a hot meal and a safe classroom for the children of Pilkhana and Babudanga, Howrah.",
+      },
+      { name: "twitter:image", content: absoluteUrl(SOCIAL_IMAGE_PATH) },
+      { name: "robots", content: "index, follow" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "School",
+          name: SCHOOL_NAME,
+          url: SITE_URL,
+          logo: absoluteUrl("/favicon.png"),
+          image: absoluteUrl(SOCIAL_IMAGE_PATH),
+          email: SCHOOL_EMAIL,
+          telephone: SCHOOL_PHONE_DISPLAY,
+          foundingDate: String(SCHOOL_STATS.foundedYear),
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: `${SCHOOL_ADDRESS.line1}, ${SCHOOL_ADDRESS.line2}`,
+            addressLocality: SCHOOL_ADDRESS.city,
+            addressRegion: SCHOOL_ADDRESS.region,
+            postalCode: SCHOOL_ADDRESS.postalCode,
+            addressCountry: SCHOOL_ADDRESS.countryCode,
+          },
+          sameAs: [
+            "https://www.balousa.org/",
+            "https://balo.ie/",
+            "https://www.balo.it/en/",
+            "https://www.instagram.com/associazionebalo/",
+            "https://www.facebook.com/baloODV/",
+          ],
+        }),
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -111,6 +187,12 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary-foreground"
+        >
+          Skip to content
+        </a>
         {children}
         <Scripts />
       </body>
@@ -163,15 +245,10 @@ function RootComponent() {
   // BALO AI is a full-screen chat surface: no marquee, no footer.
   const isChatRoute = pathname.startsWith("/balo-ai");
   const isBare = isAdminShellRoute || isChatRoute;
-  const [ready, setReady] = useState(false);
 
-  // Keep initial content mounted OFF-DOM while the splash is up so page
-  // entry animations begin AFTER the splash fades — not underneath it.
-  useEffect(() => {
-    const t = window.setTimeout(() => setReady(true), 1650);
-    return () => window.clearTimeout(t);
-  }, []);
-
+  // The splash screen is a pure overlay. Page HTML is always server-rendered
+  // and present in the document, so search engines see the real content even
+  // while the animation is still playing.
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
@@ -179,13 +256,16 @@ function RootComponent() {
         {!isAdminShellRoute && !isChatRoute && <Nav />}
         {!isBare && !isAdminLogin && <AnnouncementBanner />}
         <HashScroller />
-        <div className={isBare ? "" : isAdminLogin ? "pt-[72px]" : "pt-9"}>
-          {ready ? <Outlet /> : <div style={{ minHeight: "100vh" }} aria-hidden />}
+        <div
+          id="main-content"
+          tabIndex={-1}
+          className={isBare ? "" : isAdminLogin ? "pt-[72px]" : "pt-9"}
+        >
+          <Outlet />
         </div>
         {!isBare && <Footer />}
-        {ready && <BaloAIButton />}
-        {!isBare && ready && <NoticeBell />}
-
+        {!isBare && <BaloAIButton />}
+        {!isBare && <NoticeBell />}
       </LanguageProvider>
     </QueryClientProvider>
   );

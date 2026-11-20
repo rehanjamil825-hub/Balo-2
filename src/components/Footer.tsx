@@ -1,24 +1,36 @@
 import { Link } from "@tanstack/react-router";
-import { GraduationCap, Mail, MapPin, Heart } from "lucide-react";
-
-const INSTAGRAM_URL = "https://www.instagram.com/associazionebalo/";
-const FACEBOOK_URL = "https://www.facebook.com/baloODV/";
-const DONATE_URL = "https://www.balousa.org/donation-confirmation/";
-const ADDRESS = "55, Madar Talla Lane, Babudanga, Pilkhana, Salkia, Howrah, West Bengal 711101";
+import { GraduationCap, Mail, MapPin, Heart, Phone } from "lucide-react";
+import {
+  DONATE_URL,
+  FACEBOOK_URL,
+  FEE_STATEMENT_SHORT,
+  INSTAGRAM_URL,
+  SCHOOL_ADDRESS_TEXT,
+  SCHOOL_EMAIL,
+  SCHOOL_NAME,
+  SCHOOL_PHONE_DISPLAY,
+  SCHOOL_PHONE_HREF,
+} from "@/lib/school-facts";
 
 const explore = [
   { to: "/", label: "Home" },
   { to: "/about", label: "Leadership" },
+  { to: "/staff", label: "Staff" },
   { to: "/life-at-balo", label: "Life at BALO" },
+  { to: "/welfare-society", label: "Welfare Society" },
   { to: "/events", label: "Notices & Events" },
-  { to: "/gallery", label: "Gallery" },
+  { to: "/facilities", label: "Facilities" },
   { to: "/subjects", label: "Academics" },
+  { to: "/gallery", label: "Gallery" },
+  { to: "/rules", label: "Rules" },
+  { to: "/calendar", label: "Calendar" },
 ];
 
 const connect = [
   { to: "/enquiry", label: "Enquiry" },
   { to: "/faq", label: "FAQ" },
   { to: "/volunteers", label: "Volunteers" },
+  { to: "/virtual-tour", label: "Virtual Tour" },
   { to: "/developers", label: "Developers" },
   { to: "/balo-ai", label: "BALO AI" },
 ];
@@ -33,21 +45,29 @@ export function Footer() {
               <GraduationCap className="size-5 text-white" />
             </div>
             <div>
-              <div className="font-display font-bold">Balo English Medium School</div>
+              <div className="font-display font-bold">{SCHOOL_NAME}</div>
               <div className="text-xs text-muted-foreground">Salkia, Howrah · A community NGO</div>
             </div>
           </div>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-            Free English-medium education for the children of Babudanga and Pilkhana — books, a meal, and a classroom that welcomes every child.
+            Free English-medium education for the children of Babudanga and Pilkhana — books, a
+            meal, and a classroom that welcomes every child. {FEE_STATEMENT_SHORT}
           </p>
           <div className="mt-4 space-y-2 text-sm text-muted-foreground">
             <p className="flex items-start gap-2">
-              <MapPin className="mt-0.5 size-4 shrink-0 text-primary" />
-              <span>{ADDRESS}</span>
+              <MapPin className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
+              <span>{SCHOOL_ADDRESS_TEXT}</span>
             </p>
-            <a href="mailto:baloindia2015@gmail.com" className="flex items-center gap-2 hover:text-primary">
-              <Mail className="size-4 shrink-0 text-primary" />
-              baloindia2015@gmail.com
+            <a href={SCHOOL_PHONE_HREF} className="flex items-center gap-2 hover:text-primary">
+              <Phone className="size-4 shrink-0 text-primary" aria-hidden="true" />
+              {SCHOOL_PHONE_DISPLAY}
+            </a>
+            <a
+              href={`mailto:${SCHOOL_EMAIL}`}
+              className="flex items-center gap-2 hover:text-primary"
+            >
+              <Mail className="size-4 shrink-0 text-primary" aria-hidden="true" />
+              {SCHOOL_EMAIL}
             </a>
           </div>
           <div className="mt-5 flex flex-wrap items-center gap-3">
@@ -58,7 +78,15 @@ export function Footer() {
               className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
               aria-label="Balo on Instagram"
             >
-              <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                className="size-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
                 <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
                 <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
@@ -72,7 +100,15 @@ export function Footer() {
               className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
               aria-label="Balo on Facebook"
             >
-              <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                className="size-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
               </svg>
               Facebook
@@ -94,7 +130,10 @@ export function Footer() {
           <ul className="mt-4 space-y-2 text-sm">
             {explore.map((item) => (
               <li key={item.to}>
-                <Link to={item.to} className="text-muted-foreground transition-colors hover:text-foreground">
+                <Link
+                  to={item.to}
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                >
                   {item.label}
                 </Link>
               </li>
@@ -107,7 +146,10 @@ export function Footer() {
           <ul className="mt-4 space-y-2 text-sm">
             {connect.map((item) => (
               <li key={item.to}>
-                <Link to={item.to} className="text-muted-foreground transition-colors hover:text-foreground">
+                <Link
+                  to={item.to}
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                >
                   {item.label}
                 </Link>
               </li>
@@ -117,7 +159,7 @@ export function Footer() {
       </div>
 
       <div className="mx-auto mt-10 max-w-7xl border-t border-border pt-6 text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Balo English Medium School. Built with love by our students.
+        © {new Date().getFullYear()} {SCHOOL_NAME}. Built with love by our students.
       </div>
     </footer>
   );
