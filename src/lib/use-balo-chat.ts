@@ -2,7 +2,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export type Mode = "assistant" | "student";
-export type Msg = { role: "user" | "assistant"; content: string; image?: string | null };
+export type Msg = {
+  role: "user" | "assistant";
+  content: string;
+  image?: string | null;
+  pending?: number;
+};
 
 export const STARTERS: Record<Mode, string[]> = {
   assistant: [
@@ -37,6 +42,11 @@ export function useBaloChat(_active = true) {
   const [topic, setTopic] = useState("");
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const busyRef = useRef(false);
+  const requestRef = useRef(0);
+  const abortRef = useRef<AbortController | null>(null);
+  const msgsRef = useRef(msgs);
+  msgsRef.current = msgs;
   const current = msgs[mode];
 
   // Forget any key from older builds that restored chats after reopen.
@@ -93,32 +103,47 @@ export function useBaloChat(_active = true) {
     async (text: string) => {
       const question = text.trim();
       const sentImage = mode === "student" ? image : null;
-      if ((!question && !sentImage) || busy) return;
-      setError(null);
-      setBusy(true);
+      if ((!question && !sentImage) || busyRef.current) return;
 
-      const prior = msgs[mode]
+      const usedMode = mode;
+      const prior = msgsRef.current[usedMode]
         .filter((m) => m.content && (m.role === "user" || m.role === "assistant"))
         .slice(-10)
         .map((m) => ({ role: m.role, content: m.content }));
 
+      const pendingId = ++requestRef.current;
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
+
+      busyRef.current = true;
+      setBusy(true);
+      setError(null);
+
       const outgoing: Msg = { role: "user", content: question || "(image)", image: sentImage };
-      setMsgs((p) => ({ ...p, [mode]: [...p[mode], outgoing, { role: "assistant", content: "" }] }));
+      setMsgs((p) => ({
+        ...p,
+        [usedMode]: [...p[usedMode], outgoing, { role: "assistant", content: "", pending: pendingId }],
+      }));
       setInput("");
       setImage(null);
+
+      const timer = window.setTimeout(() => controller.abort(), 32_000);
 
       try {
         const res = await fetch("/api/chat", {
           method: "POST",
+          cache: "no-store",
+          signal: controller.signal,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            mode,
+            mode: usedMode,
             message: question,
             history: prior,
             imageDataUrl: sentImage,
-            classLabel: mode === "student" ? classLabel : null,
-            subject: mode === "student" ? subject : null,
-            topic: mode === "student" ? topic : null,
+            classLabel: usedMode === "student" ? classLabel : null,
+            subject: usedMode === "student" ? subject : null,
+            topic: usedMode === "student" ? topic : null,
           }),
         });
 
@@ -134,6 +159,8 @@ export function useBaloChat(_active = true) {
           payload = {};
         }
 
+        if (pendingId !== requestRef.current) return;
+
         if (!res.ok) {
           throw new Error(
             payload.error ||
@@ -148,26 +175,43 @@ export function useBaloChat(_active = true) {
           throw new Error(payload.error || "BALO AI could not answer that. Please try again.");
         }
 
-        setMsgs((p) => {
-          const list = [...p[mode]];
-          list[list.length - 1] = { role: "assistant", content: answer };
-          return { ...p, [mode]: list };
-        });
+        setMsgs((p) => ({
+          ...p,
+          [usedMode]: p[usedMode].map((m) =>
+            m.pending === pendingId ? { role: "assistant" as const, content: answer } : m,
+          ),
+        }));
       } catch (e: any) {
-        setError(e?.message ?? "Something went wrong.");
-        setMsgs((p) => {
-          const list = [...p[mode]];
-          if (list.length && list[list.length - 1]!.role === "assistant" && !list[list.length - 1]!.content) list.pop();
-          return { ...p, [mode]: list };
-        });
+        if (pendingId !== requestRef.current) return;
+        const aborted = e?.name === "AbortError" || e?.code === "ABORT_ERR";
+        setError(
+          aborted
+            ? "BALO AI took too long. Please try again."
+            : (e?.message ?? "Something went wrong."),
+        );
+        setMsgs((p) => ({
+          ...p,
+          [usedMode]: p[usedMode].filter((m) => m.pending !== pendingId),
+        }));
       } finally {
-        setBusy(false);
+        clearTimeout(timer);
+        if (pendingId === requestRef.current) {
+          busyRef.current = false;
+          setBusy(false);
+          if (abortRef.current === controller) abortRef.current = null;
+          queueMicrotask(() => inputRef.current?.focus());
+        }
       }
     },
-    [busy, classLabel, image, msgs, mode, subject, topic],
+    [classLabel, image, mode, subject, topic],
   );
 
   const reset = useCallback(() => {
+    requestRef.current += 1;
+    abortRef.current?.abort();
+    abortRef.current = null;
+    busyRef.current = false;
+    setBusy(false);
     setMsgs((p) => ({ ...p, [mode]: [] }));
     setError(null);
   }, [mode]);

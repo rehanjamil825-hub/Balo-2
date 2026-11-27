@@ -42,6 +42,24 @@ function clean(v: unknown, max: number) {
   return typeof v === "string" ? v.trim().slice(0, max) : "";
 }
 
+async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<T>((_, reject) => {
+        timer = setTimeout(() => {
+          const err = new Error("Timed out") as Error & { status?: number };
+          err.status = 408;
+          reject(err);
+        }, ms);
+      }),
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
 function parseClientHistory(raw: unknown): StudentTurn[] {
   if (!Array.isArray(raw)) return [];
   const out: StudentTurn[] = [];
@@ -60,6 +78,7 @@ export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        try {
         const body = (await request.json()) as Body;
         const mode: Mode = body.mode === "student" ? "student" : "assistant";
         const message = clean(body.message, 4000);
@@ -81,11 +100,26 @@ export const Route = createFileRoute("/api/chat")({
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-        const { data: settings } = await supabaseAdmin
-          .from("ai_settings")
-          .select("is_enabled, system_instructions, provider, model, fallback_models")
-          .eq("mode", mode)
-          .maybeSingle();
+        let settings: {
+          is_enabled?: boolean;
+          system_instructions?: string | null;
+          provider?: string | null;
+          model?: string | null;
+          fallback_models?: string[] | null;
+        } | null = null;
+        try {
+          const { data } = await withTimeout(
+            supabaseAdmin
+              .from("ai_settings")
+              .select("is_enabled, system_instructions, provider, model, fallback_models")
+              .eq("mode", mode)
+              .maybeSingle(),
+            4000,
+          );
+          settings = data;
+        } catch (error) {
+          console.warn("[balo-ai] settings lookup timed out", error);
+        }
 
         if (settings && settings.is_enabled === false) {
           return errorJson(
@@ -97,20 +131,31 @@ export const Route = createFileRoute("/api/chat")({
         }
 
         // ---- Build verified context -------------------------------------
-        const [{ data: knowledge }, { data: docs }] = await Promise.all([
-          supabaseAdmin
-            .from("ai_knowledge")
-            .select("category, title, content")
-            .eq("mode", mode)
-            .eq("is_active", true)
-            .limit(50),
-          supabaseAdmin
-            .from("ai_documents")
-            .select("title, doc_type, extracted_text")
-            .eq("mode", mode)
-            .eq("is_active", true)
-            .limit(40),
-        ]);
+        let knowledge: { category: string; title: string; content: string }[] | null = null;
+        let docs: { title: string; doc_type: string; extracted_text: string | null }[] | null = null;
+        try {
+          const rows = await withTimeout(
+            Promise.all([
+              supabaseAdmin
+                .from("ai_knowledge")
+                .select("category, title, content")
+                .eq("mode", mode)
+                .eq("is_active", true)
+                .limit(50),
+              supabaseAdmin
+                .from("ai_documents")
+                .select("title, doc_type, extracted_text")
+                .eq("mode", mode)
+                .eq("is_active", true)
+                .limit(40),
+            ]),
+            5000,
+          );
+          knowledge = rows[0].data;
+          docs = rows[1].data;
+        } catch (error) {
+          console.warn("[balo-ai] knowledge lookup timed out", error);
+        }
 
         const dbSections: ContextSection[] = [];
         for (const k of knowledge ?? []) {
@@ -127,22 +172,33 @@ export const Route = createFileRoute("/api/chat")({
 
         if (mode === "assistant") {
           const nowIso = new Date().toISOString();
-          const [{ data: notices }, { data: anns }] = await Promise.all([
-            supabaseAdmin
-              .from("notices")
-              .select("title, body, publish_at")
-              .eq("is_published", true)
-              .lte("publish_at", nowIso)
-              .order("publish_at", { ascending: false })
-              .limit(25),
-            supabaseAdmin
-              .from("announcements")
-              .select("message, publish_at")
-              .eq("is_published", true)
-              .lte("publish_at", nowIso)
-              .order("publish_at", { ascending: false })
-              .limit(15),
-          ]);
+          let notices: { title: string; body: string; publish_at: string }[] | null = null;
+          let anns: { message: string; publish_at: string }[] | null = null;
+          try {
+            const rows = await withTimeout(
+              Promise.all([
+                supabaseAdmin
+                  .from("notices")
+                  .select("title, body, publish_at")
+                  .eq("is_published", true)
+                  .lte("publish_at", nowIso)
+                  .order("publish_at", { ascending: false })
+                  .limit(25),
+                supabaseAdmin
+                  .from("announcements")
+                  .select("message, publish_at")
+                  .eq("is_published", true)
+                  .lte("publish_at", nowIso)
+                  .order("publish_at", { ascending: false })
+                  .limit(15),
+              ]),
+              4000,
+            );
+            notices = rows[0].data;
+            anns = rows[1].data;
+          } catch (error) {
+            console.warn("[balo-ai] notices lookup timed out", error);
+          }
           if (notices?.length) {
             dbSections.unshift({
               title: "Notice board — current notices",
@@ -202,6 +258,7 @@ export const Route = createFileRoute("/api/chat")({
               model: settings?.model ?? null,
               fallbackModels: settings?.fallback_models ?? null,
               apiKeys: assistantKeys,
+              budgetMs: 12_000,
             });
             return json({ answer: result.answer, engine: "balo-assistant" });
           } catch (error) {
@@ -269,6 +326,7 @@ Rules you must never break:
             model: settings?.model ?? null,
             fallbackModels: settings?.fallback_models ?? null,
             apiKeys: studentKeys,
+            budgetMs: 18_000,
           });
 
           if (attempts.length) {
@@ -291,6 +349,9 @@ Rules you must never break:
               429,
             );
           }
+          if (status === 408 || /timed out/i.test(msg)) {
+            return json({ error: "The tutor took too long. Please try again." }, 504);
+          }
           if (status === 401 || status === 403) {
             return json(
               { error: "BALO AI Student is not configured correctly. Please inform the school office." },
@@ -298,6 +359,10 @@ Rules you must never break:
             );
           }
           return json({ error: "BALO AI could not answer that. Please try again." }, 500);
+        }
+        } catch (error) {
+          console.error("[balo-ai] chat handler failed", error);
+          return errorJson("BALO AI could not answer that. Please try again.", 500);
         }
       },
     },

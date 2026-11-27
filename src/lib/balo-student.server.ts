@@ -5,20 +5,20 @@
  * The preferred model and the fallback chain are read from the `ai_settings`
  * table so the school can change models from the admin dashboard without any
  * frontend change. Models and keys are both retried for temporary failures.
+ * Every Gemini call has a hard timeout so a thinking model cannot freeze chat.
  */
 
 const GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 
-/** Safe defaults if the backend settings row has no model configured.
- *  Prefer the auto-updating alias, then current Flash IDs. Gemini 3.x
- *  Flash models think by default; thinking tokens count against
- *  maxOutputTokens, so the chain must leave room for real text. */
-export const DEFAULT_STUDENT_MODEL = "gemini-flash-latest";
+const PER_CALL_MS = 12_000;
+const DEFAULT_BUDGET_MS = 20_000;
+
+/** Safe defaults if the backend settings row has no model configured. */
+export const DEFAULT_STUDENT_MODEL = "gemini-2.5-flash";
 export const DEFAULT_STUDENT_FALLBACKS = [
-  "gemini-3.5-flash",
-  "gemini-3.6-flash",
-  "gemini-2.5-flash",
   "gemini-2.0-flash",
+  "gemini-flash-latest",
+  "gemini-3.5-flash",
 ];
 export type StudentTurn = { role: "user" | "assistant"; content: string };
 
@@ -49,13 +49,44 @@ function buildContents(history: StudentTurn[], message: string, imageDataUrl: st
 
 type GeminiAttempt = { model: string; keyIndex: number; status?: number; message: string };
 
+function timeoutError(message = "Timed out waiting for the tutoring service.") {
+  const err = new Error(message) as Error & { status?: number };
+  err.status = 408;
+  return err;
+}
+
+async function fetchWithTimeout(url: string, init: RequestInit, ms: number) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } catch (error: any) {
+    if (error?.name === "AbortError" || error?.code === "ABORT_ERR") throw timeoutError();
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function callGemini(opts: {
   apiKey: string;
   model: string;
   system: string;
   contents: unknown;
+  timeoutMs: number;
+  disableThinking: boolean;
 }) {
-  const res = await fetch(
+  const generationConfig: Record<string, unknown> = {
+    temperature: 0.6,
+    maxOutputTokens: opts.disableThinking ? 2048 : 4096,
+  };
+  if (opts.disableThinking) {
+    // Gemini 3 Flash thinks by default; thinking tokens eat the output budget
+    // and can stall the reply. Turn thinking off for a snappy school chat.
+    generationConfig.thinkingConfig = { thinkingBudget: 0 };
+  }
+
+  const res = await fetchWithTimeout(
     `${GEMINI_BASE}/${encodeURIComponent(opts.model)}:generateContent`,
     {
       method: "POST",
@@ -66,13 +97,10 @@ async function callGemini(opts: {
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: opts.system }] },
         contents: opts.contents,
-        generationConfig: {
-          temperature: 0.6,
-          // Gemini 3 Flash spends thinking tokens from this budget first.
-          maxOutputTokens: 8192,
-        },
+        generationConfig,
       }),
     },
+    opts.timeoutMs,
   );
 
   const raw = await res.text();
@@ -110,6 +138,25 @@ async function callGemini(opts: {
   return text;
 }
 
+async function callGeminiFast(opts: {
+  apiKey: string;
+  model: string;
+  system: string;
+  contents: unknown;
+  timeoutMs: number;
+}) {
+  try {
+    return await callGemini({ ...opts, disableThinking: true });
+  } catch (error: any) {
+    const message = String(error?.message ?? error);
+    // Older Flash IDs reject thinkingConfig — retry the same model without it.
+    if (error?.status === 400 && /thinking/i.test(message)) {
+      return await callGemini({ ...opts, disableThinking: false });
+    }
+    throw error;
+  }
+}
+
 /** Statuses worth retrying on the next model in the chain. */
 function shouldRetry(status?: number, message = "") {
   if (status === undefined || status === 404 || status === 408 || status === 429 || (status ?? 0) >= 500) {
@@ -128,8 +175,11 @@ export async function generateStudentAnswer(opts: {
   model?: string | null;
   fallbackModels?: string[] | null;
   apiKeys: string[];
+  budgetMs?: number;
 }): Promise<{ answer: string; model: string; attempts: GeminiAttempt[] }> {
   const attempts: GeminiAttempt[] = [];
+  const budgetMs = opts.budgetMs ?? DEFAULT_BUDGET_MS;
+  const deadline = Date.now() + budgetMs;
   // Always append the built-in chain so a stale admin model (or empty
   // fallbacks row) cannot leave BALO AI with a single failing ID.
   const chain = Array.from(
@@ -150,12 +200,15 @@ export async function generateStudentAnswer(opts: {
     const apiKey = opts.apiKeys[keyIndex];
     if (!apiKey) continue;
     for (const model of chain) {
+      const remaining = deadline - Date.now();
+      if (remaining < 2500) break;
       try {
-        const answer = await callGemini({
+        const answer = await callGeminiFast({
           apiKey,
           model,
           system: opts.system,
           contents,
+          timeoutMs: Math.min(PER_CALL_MS, remaining),
         });
         return { answer, model, attempts };
       } catch (error: any) {
