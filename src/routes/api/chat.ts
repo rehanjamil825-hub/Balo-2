@@ -100,26 +100,95 @@ export const Route = createFileRoute("/api/chat")({
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-        let settings: {
+        type SettingsRow = {
           is_enabled?: boolean;
           system_instructions?: string | null;
           provider?: string | null;
           model?: string | null;
           fallback_models?: string[] | null;
-        } | null = null;
-        try {
-          const { data } = await withTimeout(
+        };
+        const nowIso = new Date().toISOString();
+        const empty = { data: null as never };
+
+        const [settingsPack, knowledgePack, docsPack, noticesPack, annsPack] = await Promise.all([
+          withTimeout(
             supabaseAdmin
               .from("ai_settings")
               .select("is_enabled, system_instructions, provider, model, fallback_models")
               .eq("mode", mode)
               .maybeSingle(),
-            4000,
-          );
-          settings = data;
-        } catch (error) {
-          console.warn("[balo-ai] settings lookup timed out", error);
-        }
+            2500,
+          ).catch((error) => {
+            console.warn("[balo-ai] settings lookup timed out", error);
+            return empty;
+          }),
+          withTimeout(
+            supabaseAdmin
+              .from("ai_knowledge")
+              .select("category, title, content")
+              .eq("mode", mode)
+              .eq("is_active", true)
+              .limit(50),
+            2500,
+          ).catch((error) => {
+            console.warn("[balo-ai] knowledge lookup timed out", error);
+            return empty;
+          }),
+          withTimeout(
+            supabaseAdmin
+              .from("ai_documents")
+              .select("title, doc_type, extracted_text")
+              .eq("mode", mode)
+              .eq("is_active", true)
+              .limit(40),
+            2500,
+          ).catch((error) => {
+            console.warn("[balo-ai] documents lookup timed out", error);
+            return empty;
+          }),
+          mode === "assistant"
+            ? withTimeout(
+                supabaseAdmin
+                  .from("notices")
+                  .select("title, body, publish_at")
+                  .eq("is_published", true)
+                  .lte("publish_at", nowIso)
+                  .order("publish_at", { ascending: false })
+                  .limit(25),
+                2500,
+              ).catch((error) => {
+                console.warn("[balo-ai] notices lookup timed out", error);
+                return empty;
+              })
+            : Promise.resolve(empty),
+          mode === "assistant"
+            ? withTimeout(
+                supabaseAdmin
+                  .from("announcements")
+                  .select("message, publish_at")
+                  .eq("is_published", true)
+                  .lte("publish_at", nowIso)
+                  .order("publish_at", { ascending: false })
+                  .limit(15),
+                2500,
+              ).catch((error) => {
+                console.warn("[balo-ai] announcements lookup timed out", error);
+                return empty;
+              })
+            : Promise.resolve(empty),
+        ]);
+
+        const settings = (settingsPack.data ?? null) as SettingsRow | null;
+        const knowledge = knowledgePack.data as
+          | { category: string; title: string; content: string }[]
+          | null;
+        const docs = docsPack.data as
+          | { title: string; doc_type: string; extracted_text: string | null }[]
+          | null;
+        const notices = noticesPack.data as
+          | { title: string; body: string; publish_at: string }[]
+          | null;
+        const anns = annsPack.data as { message: string; publish_at: string }[] | null;
 
         if (settings && settings.is_enabled === false) {
           return errorJson(
@@ -131,32 +200,6 @@ export const Route = createFileRoute("/api/chat")({
         }
 
         // ---- Build verified context -------------------------------------
-        let knowledge: { category: string; title: string; content: string }[] | null = null;
-        let docs: { title: string; doc_type: string; extracted_text: string | null }[] | null = null;
-        try {
-          const rows = await withTimeout(
-            Promise.all([
-              supabaseAdmin
-                .from("ai_knowledge")
-                .select("category, title, content")
-                .eq("mode", mode)
-                .eq("is_active", true)
-                .limit(50),
-              supabaseAdmin
-                .from("ai_documents")
-                .select("title, doc_type, extracted_text")
-                .eq("mode", mode)
-                .eq("is_active", true)
-                .limit(40),
-            ]),
-            5000,
-          );
-          knowledge = rows[0].data;
-          docs = rows[1].data;
-        } catch (error) {
-          console.warn("[balo-ai] knowledge lookup timed out", error);
-        }
-
         const dbSections: ContextSection[] = [];
         for (const k of knowledge ?? []) {
           dbSections.push({ title: `${k.title} (${k.category})`, body: k.content });
@@ -165,40 +208,12 @@ export const Route = createFileRoute("/api/chat")({
           if (d.extracted_text) {
             dbSections.push({
               title: `${d.title} (${d.doc_type})`,
-              body: String(d.extracted_text).slice(0, 8000),
+              body: String(d.extracted_text).slice(0, 4000),
             });
           }
         }
 
         if (mode === "assistant") {
-          const nowIso = new Date().toISOString();
-          let notices: { title: string; body: string; publish_at: string }[] | null = null;
-          let anns: { message: string; publish_at: string }[] | null = null;
-          try {
-            const rows = await withTimeout(
-              Promise.all([
-                supabaseAdmin
-                  .from("notices")
-                  .select("title, body, publish_at")
-                  .eq("is_published", true)
-                  .lte("publish_at", nowIso)
-                  .order("publish_at", { ascending: false })
-                  .limit(25),
-                supabaseAdmin
-                  .from("announcements")
-                  .select("message, publish_at")
-                  .eq("is_published", true)
-                  .lte("publish_at", nowIso)
-                  .order("publish_at", { ascending: false })
-                  .limit(15),
-              ]),
-              4000,
-            );
-            notices = rows[0].data;
-            anns = rows[1].data;
-          } catch (error) {
-            console.warn("[balo-ai] notices lookup timed out", error);
-          }
           if (notices?.length) {
             dbSections.unshift({
               title: "Notice board — current notices",
@@ -247,8 +262,9 @@ export const Route = createFileRoute("/api/chat")({
           const providerRule = asksAboutProvider(message)
             ? 'The CURRENT question asks who powers you. Answer clearly: "No, I am BALO AI, powered by Google." Do not name a model unless specifically asked which model.'
             : "The CURRENT question does not ask about your provider. Never mention Google, Gemini, a model, a provider, an API, or earlier provider-related conversation.";
-          const context = local.used.map((s) => `[${s.title}]\n${s.body}`).join("\n\n---\n\n").slice(0, 40000);
-          const system = `${settings?.system_instructions?.trim() || ASSISTANT_IDENTITY_RULES}\n\n${ASSISTANT_IDENTITY_RULES}\n\n${providerRule}\n\nAnswer ONLY the latest user message. Do not repeat or recap earlier answers. If this is a new topic, ignore earlier topics.\n\nFormatting: never reply as a bland wall of plain text. Use markdown with a clear visual hierarchy:\n- Start with a short ## heading that names the topic.\n- Use ### subheadings when you cover more than one point.\n- **Bold** names, places, numbers and key facts.\n- Use bullet lists or numbered steps whenever there are two or more items.\n- Short paragraphs. Leave a blank line between sections.\n\nAnswer only from this verified school context:\n${context}`;
+          const context = local.used.map((s) => `[${s.title}]\n${s.body}`).join("\n\n---\n\n").slice(0, 8000);
+          const identity = settings?.system_instructions?.trim() || ASSISTANT_IDENTITY_RULES;
+          const system = `${identity}\n\n${providerRule}\n\nAnswer ONLY the latest user message. Keep it tight — a short ## heading, **bold** key facts, bullets for two or more items. No recap of earlier answers.\n\nAnswer only from this verified school context:\n${context}`;
           try {
             const result = await generateStudentAnswer({
               system,
@@ -258,7 +274,8 @@ export const Route = createFileRoute("/api/chat")({
               model: settings?.model ?? null,
               fallbackModels: settings?.fallback_models ?? null,
               apiKeys: assistantKeys,
-              budgetMs: 12_000,
+              budgetMs: 7_000,
+              maxOutputTokens: 900,
             });
             return json({ answer: result.answer, engine: "balo-assistant" });
           } catch (error) {
@@ -285,7 +302,7 @@ export const Route = createFileRoute("/api/chat")({
         const contextText = dbSections
           .map((s) => `[${s.title}]\n${s.body}`)
           .join("\n\n---\n\n")
-          .slice(0, 20_000);
+          .slice(0, 6_000);
 
         const baseInstructions =
           settings?.system_instructions?.trim() ||
@@ -326,7 +343,8 @@ Rules you must never break:
             model: settings?.model ?? null,
             fallbackModels: settings?.fallback_models ?? null,
             apiKeys: studentKeys,
-            budgetMs: 18_000,
+            budgetMs: 9_000,
+            maxOutputTokens: 1200,
           });
 
           if (attempts.length) {
