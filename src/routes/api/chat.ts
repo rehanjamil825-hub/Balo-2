@@ -282,8 +282,8 @@ export const Route = createFileRoute("/api/chat")({
                 model: settings?.model ?? null,
                 fallbackModels: settings?.fallback_models ?? null,
                 apiKeys: assistantKeys,
-                budgetMs: 5_000,
-                maxOutputTokens: 700,
+                budgetMs: 8_000,
+                maxOutputTokens: 1024,
               });
               return result.answer;
             } catch (error) {
@@ -402,8 +402,8 @@ Rules you must never break:
             model: settings?.model ?? null,
             fallbackModels: settings?.fallback_models ?? null,
             apiKeys: studentKeys,
-            budgetMs: 6_000,
-            maxOutputTokens: 900,
+            budgetMs: 8_000,
+            maxOutputTokens: 1024,
           });
 
           if (attempts.length) {
