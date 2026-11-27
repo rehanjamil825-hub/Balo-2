@@ -128,7 +128,7 @@ export function useBaloChat(_active = true) {
       setInput("");
       setImage(null);
 
-      const timer = window.setTimeout(() => controller.abort(), 16_000);
+      const timer = window.setTimeout(() => controller.abort(), 12_000);
 
       try {
         const res = await fetch("/api/chat", {

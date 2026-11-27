@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ASSISTANT_IDENTITY_RULES, SITE_FACTS, STUDENT_IDENTITY_RULES } from "@/lib/site-facts.server";
 import {
   composeAssistantAnswer,
+  rankSections,
   splitSiteFacts,
   type ContextSection,
 } from "@/lib/balo-assistant.server";
@@ -60,6 +61,132 @@ async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   }
 }
 
+type SettingsRow = {
+  is_enabled?: boolean;
+  system_instructions?: string | null;
+  provider?: string | null;
+  model?: string | null;
+  fallback_models?: string[] | null;
+};
+
+type ChatContext = { settings: SettingsRow | null; dbSections: ContextSection[] };
+
+const CONTEXT_TTL_MS = 45_000;
+const contextCache = new Map<Mode, { at: number; value: ChatContext }>();
+
+function readContextCache(mode: Mode): ChatContext | undefined {
+  const hit = contextCache.get(mode);
+  if (hit && Date.now() - hit.at < CONTEXT_TTL_MS) return hit.value;
+  return undefined;
+}
+
+async function loadChatContext(mode: Mode): Promise<ChatContext> {
+  const hit = readContextCache(mode);
+  if (hit) return hit;
+
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const nowIso = new Date().toISOString();
+  const empty = { data: null as never };
+
+  const [settingsPack, knowledgePack, docsPack, noticesPack, annsPack] = await Promise.all([
+    withTimeout(
+      supabaseAdmin
+        .from("ai_settings")
+        .select("is_enabled, system_instructions, provider, model, fallback_models")
+        .eq("mode", mode)
+        .maybeSingle(),
+      1500,
+    ).catch(() => empty),
+    withTimeout(
+      supabaseAdmin
+        .from("ai_knowledge")
+        .select("category, title, content")
+        .eq("mode", mode)
+        .eq("is_active", true)
+        .limit(50),
+      1500,
+    ).catch(() => empty),
+    withTimeout(
+      supabaseAdmin
+        .from("ai_documents")
+        .select("title, doc_type, extracted_text")
+        .eq("mode", mode)
+        .eq("is_active", true)
+        .limit(40),
+      1500,
+    ).catch(() => empty),
+    mode === "assistant"
+      ? withTimeout(
+          supabaseAdmin
+            .from("notices")
+            .select("title, body, publish_at")
+            .eq("is_published", true)
+            .lte("publish_at", nowIso)
+            .order("publish_at", { ascending: false })
+            .limit(25),
+          1500,
+        ).catch(() => empty)
+      : Promise.resolve(empty),
+    mode === "assistant"
+      ? withTimeout(
+          supabaseAdmin
+            .from("announcements")
+            .select("message, publish_at")
+            .eq("is_published", true)
+            .lte("publish_at", nowIso)
+            .order("publish_at", { ascending: false })
+            .limit(15),
+          1500,
+        ).catch(() => empty)
+      : Promise.resolve(empty),
+  ]);
+
+  const settings = (settingsPack.data ?? null) as SettingsRow | null;
+  const knowledge = knowledgePack.data as
+    | { category: string; title: string; content: string }[]
+    | null;
+  const docs = docsPack.data as
+    | { title: string; doc_type: string; extracted_text: string | null }[]
+    | null;
+  const notices = noticesPack.data as
+    | { title: string; body: string; publish_at: string }[]
+    | null;
+  const anns = annsPack.data as { message: string; publish_at: string }[] | null;
+
+  const dbSections: ContextSection[] = [];
+  for (const k of knowledge ?? []) {
+    dbSections.push({ title: `${k.title} (${k.category})`, body: k.content });
+  }
+  for (const d of docs ?? []) {
+    if (d.extracted_text) {
+      dbSections.push({
+        title: `${d.title} (${d.doc_type})`,
+        body: String(d.extracted_text).slice(0, 2500),
+      });
+    }
+  }
+  if (mode === "assistant") {
+    if (notices?.length) {
+      dbSections.unshift({
+        title: "Notice board — current notices",
+        body: notices
+          .map((n) => `- ${new Date(n.publish_at).toDateString()}: ${n.title} — ${n.body}`)
+          .join("\n"),
+      });
+    }
+    if (anns?.length) {
+      dbSections.unshift({
+        title: "Announcements",
+        body: anns.map((a) => `- ${a.message}`).join("\n"),
+      });
+    }
+  }
+
+  const value = { settings, dbSections };
+  contextCache.set(mode, { at: Date.now(), value });
+  return value;
+}
+
 function parseClientHistory(raw: unknown): StudentTurn[] {
   if (!Array.isArray(raw)) return [];
   const out: StudentTurn[] = [];
@@ -98,136 +225,15 @@ export const Route = createFileRoute("/api/chat")({
           return errorJson("Image too large. Please upload an image under 5 MB.", 413);
         }
 
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-
-        type SettingsRow = {
-          is_enabled?: boolean;
-          system_instructions?: string | null;
-          provider?: string | null;
-          model?: string | null;
-          fallback_models?: string[] | null;
-        };
-        const nowIso = new Date().toISOString();
-        const empty = { data: null as never };
-
-        const [settingsPack, knowledgePack, docsPack, noticesPack, annsPack] = await Promise.all([
-          withTimeout(
-            supabaseAdmin
-              .from("ai_settings")
-              .select("is_enabled, system_instructions, provider, model, fallback_models")
-              .eq("mode", mode)
-              .maybeSingle(),
-            2500,
-          ).catch((error) => {
-            console.warn("[balo-ai] settings lookup timed out", error);
-            return empty;
-          }),
-          withTimeout(
-            supabaseAdmin
-              .from("ai_knowledge")
-              .select("category, title, content")
-              .eq("mode", mode)
-              .eq("is_active", true)
-              .limit(50),
-            2500,
-          ).catch((error) => {
-            console.warn("[balo-ai] knowledge lookup timed out", error);
-            return empty;
-          }),
-          withTimeout(
-            supabaseAdmin
-              .from("ai_documents")
-              .select("title, doc_type, extracted_text")
-              .eq("mode", mode)
-              .eq("is_active", true)
-              .limit(40),
-            2500,
-          ).catch((error) => {
-            console.warn("[balo-ai] documents lookup timed out", error);
-            return empty;
-          }),
-          mode === "assistant"
-            ? withTimeout(
-                supabaseAdmin
-                  .from("notices")
-                  .select("title, body, publish_at")
-                  .eq("is_published", true)
-                  .lte("publish_at", nowIso)
-                  .order("publish_at", { ascending: false })
-                  .limit(25),
-                2500,
-              ).catch((error) => {
-                console.warn("[balo-ai] notices lookup timed out", error);
-                return empty;
-              })
-            : Promise.resolve(empty),
-          mode === "assistant"
-            ? withTimeout(
-                supabaseAdmin
-                  .from("announcements")
-                  .select("message, publish_at")
-                  .eq("is_published", true)
-                  .lte("publish_at", nowIso)
-                  .order("publish_at", { ascending: false })
-                  .limit(15),
-                2500,
-              ).catch((error) => {
-                console.warn("[balo-ai] announcements lookup timed out", error);
-                return empty;
-              })
-            : Promise.resolve(empty),
-        ]);
-
-        const settings = (settingsPack.data ?? null) as SettingsRow | null;
-        const knowledge = knowledgePack.data as
-          | { category: string; title: string; content: string }[]
-          | null;
-        const docs = docsPack.data as
-          | { title: string; doc_type: string; extracted_text: string | null }[]
-          | null;
-        const notices = noticesPack.data as
-          | { title: string; body: string; publish_at: string }[]
-          | null;
-        const anns = annsPack.data as { message: string; publish_at: string }[] | null;
-
-        if (settings && settings.is_enabled === false) {
+        const cached = readContextCache(mode);
+        const ctxPromise = loadChatContext(mode);
+        if (cached?.settings?.is_enabled === false) {
           return errorJson(
             mode === "student"
               ? "BALO AI Student mode is currently switched off by the school. Please try again later."
               : "BALO Assistant is currently switched off by the school. Please try again later.",
             503,
           );
-        }
-
-        // ---- Build verified context -------------------------------------
-        const dbSections: ContextSection[] = [];
-        for (const k of knowledge ?? []) {
-          dbSections.push({ title: `${k.title} (${k.category})`, body: k.content });
-        }
-        for (const d of docs ?? []) {
-          if (d.extracted_text) {
-            dbSections.push({
-              title: `${d.title} (${d.doc_type})`,
-              body: String(d.extracted_text).slice(0, 4000),
-            });
-          }
-        }
-
-        if (mode === "assistant") {
-          if (notices?.length) {
-            dbSections.unshift({
-              title: "Notice board — current notices",
-              body: notices
-                .map((n) => `- ${new Date(n.publish_at).toDateString()}: ${n.title} — ${n.body}`)
-                .join("\n"),
-            });
-          }
-          if (anns?.length) {
-            dbSections.unshift({
-              title: "Announcements",
-              body: anns.map((a) => `- ${a.message}`).join("\n"),
-            });
-          }
         }
 
         // History lives only in this browser tab. Nothing is written to the database.
@@ -246,42 +252,79 @@ export const Route = createFileRoute("/api/chat")({
         // If Gemini is missing or fails, answer from the local school records
         // so the visitor still gets a reply instead of "could not answer that".
         if (mode === "assistant") {
-          const sections: ContextSection[] = [...dbSections, ...splitSiteFacts(SITE_FACTS)];
-          const local = composeAssistantAnswer(message, sections);
+          const site = splitSiteFacts(SITE_FACTS);
           const assistantKeys = secretList(
             "BALO_ASSISTANT_API_KEY",
             "BALO_ASSISTANT_API_KEY_BACKUP",
             "GEMINI_API_KEY",
             "GEMINI_API_KEY_BACKUP",
           );
+          const needsLive = /\b(notice|notices|announcement|announcements|circular)\b/i.test(message);
 
-          if (!assistantKeys.length) {
-            return json({ answer: local.answer, engine: "balo-assistant" });
-          }
+          const askGemini = async (sections: ContextSection[], settings: SettingsRow | null) => {
+            const local = composeAssistantAnswer(message, sections);
+            if (!assistantKeys.length) return local.answer;
+            const providerRule = asksAboutProvider(message)
+              ? 'The CURRENT question asks who powers you. Answer clearly: "No, I am BALO AI, powered by Google." Do not name a model unless specifically asked which model.'
+              : "The CURRENT question does not ask about your provider. Never mention Google, Gemini, a model, a provider, an API, or earlier provider-related conversation.";
+            const context = local.used
+              .map((s) => `[${s.title}]\n${s.body}`)
+              .join("\n\n---\n\n")
+              .slice(0, 5000);
+            const identity = settings?.system_instructions?.trim() || ASSISTANT_IDENTITY_RULES;
+            const system = `${identity}\n\n${providerRule}\n\nAnswer ONLY the latest user message. Keep it tight — a short ## heading, **bold** key facts, bullets for two or more items. No recap of earlier answers.\n\nAnswer only from this verified school context:\n${context}`;
+            try {
+              const result = await generateStudentAnswer({
+                system,
+                history: prepareChatHistory(history, message),
+                message,
+                imageDataUrl: null,
+                model: settings?.model ?? null,
+                fallbackModels: settings?.fallback_models ?? null,
+                apiKeys: assistantKeys,
+                budgetMs: 5_000,
+                maxOutputTokens: 700,
+              });
+              return result.answer;
+            } catch (error) {
+              console.error("[balo-ai] assistant backend failed, using school records", error);
+              return local.answer;
+            }
+          };
 
-          const providerRule = asksAboutProvider(message)
-            ? 'The CURRENT question asks who powers you. Answer clearly: "No, I am BALO AI, powered by Google." Do not name a model unless specifically asked which model.'
-            : "The CURRENT question does not ask about your provider. Never mention Google, Gemini, a model, a provider, an API, or earlier provider-related conversation.";
-          const context = local.used.map((s) => `[${s.title}]\n${s.body}`).join("\n\n---\n\n").slice(0, 8000);
-          const identity = settings?.system_instructions?.trim() || ASSISTANT_IDENTITY_RULES;
-          const system = `${identity}\n\n${providerRule}\n\nAnswer ONLY the latest user message. Keep it tight — a short ## heading, **bold** key facts, bullets for two or more items. No recap of earlier answers.\n\nAnswer only from this verified school context:\n${context}`;
-          try {
-            const result = await generateStudentAnswer({
-              system,
-              history: prepareChatHistory(history, message),
-              message,
-              imageDataUrl: null,
-              model: settings?.model ?? null,
-              fallbackModels: settings?.fallback_models ?? null,
-              apiKeys: assistantKeys,
-              budgetMs: 7_000,
-              maxOutputTokens: 900,
+          // Warm cache: Gemini starts immediately with full school records.
+          if (cached && !needsLive) {
+            return json({
+              answer: await askGemini([...cached.dbSections, ...site], cached.settings),
+              engine: "balo-assistant",
             });
-            return json({ answer: result.answer, engine: "balo-assistant" });
-          } catch (error) {
-            console.error("[balo-ai] assistant backend failed, using school records", error);
-            return json({ answer: local.answer, engine: "balo-assistant" });
           }
+
+          // Live notices, or first request: wait for DB then Gemini.
+          if (needsLive || !assistantKeys.length) {
+            const ctx = await ctxPromise;
+            if (ctx.settings?.is_enabled === false) {
+              return errorJson(
+                "BALO Assistant is currently switched off by the school. Please try again later.",
+                503,
+              );
+            }
+            return json({
+              answer: await askGemini([...ctx.dbSections, ...site], ctx.settings),
+              engine: "balo-assistant",
+            });
+          }
+
+          // Cold cache: start Gemini on website facts while DB loads in parallel.
+          const geminiP = askGemini(site, null);
+          const [answer, ctx] = await Promise.all([geminiP, ctxPromise]);
+          if (ctx.settings?.is_enabled === false) {
+            return errorJson(
+              "BALO Assistant is currently switched off by the school. Please try again later.",
+              503,
+            );
+          }
+          return json({ answer, engine: "balo-assistant" });
         }
 
         // =================================================================
@@ -299,10 +342,26 @@ export const Route = createFileRoute("/api/chat")({
           return errorJson("The tutor is not configured yet. Please inform the school office.", 500);
         }
 
-        const contextText = dbSections
-          .map((s) => `[${s.title}]\n${s.body}`)
+        const ctx = await ctxPromise;
+        if (ctx.settings?.is_enabled === false) {
+          return errorJson(
+            "BALO AI Student mode is currently switched off by the school. Please try again later.",
+            503,
+          );
+        }
+        const settings = ctx.settings;
+        const ranked = rankSections(
+          [classLabel, subject, topic, message].filter(Boolean).join(" "),
+          ctx.dbSections,
+          3,
+        );
+        const picked = ranked.length
+          ? ranked.map((r) => r.section)
+          : ctx.dbSections.slice(0, 2);
+        const contextText = picked
+          .map((s) => `[${s.title}]\n${s.body.slice(0, 1500)}`)
           .join("\n\n---\n\n")
-          .slice(0, 6_000);
+          .slice(0, 3500);
 
         const baseInstructions =
           settings?.system_instructions?.trim() ||
@@ -343,8 +402,8 @@ Rules you must never break:
             model: settings?.model ?? null,
             fallbackModels: settings?.fallback_models ?? null,
             apiKeys: studentKeys,
-            budgetMs: 9_000,
-            maxOutputTokens: 1200,
+            budgetMs: 6_000,
+            maxOutputTokens: 900,
           });
 
           if (attempts.length) {
